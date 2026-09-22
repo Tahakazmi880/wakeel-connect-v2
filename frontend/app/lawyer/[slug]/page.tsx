@@ -109,16 +109,18 @@ export default async function LawyerProfile({ params }: { params: Promise<{ slug
             <h2 className="text-2xl font-extrabold text-slate-900"><T en="About" ur="تعارف" /></h2>
             <p className="mt-3 text-lg leading-relaxed text-slate-700">{lawyer.bio}</p>
             <div className="mt-6 grid gap-4 sm:grid-cols-2">
+              {lawyer.education.length > 0 && (
               <div className="rounded-2xl bg-slate-50 p-5">
                 <p className="flex items-center gap-2 text-base font-extrabold text-slate-900">
                   <BriefcaseIcon className="h-5 w-5 text-emerald-700" /> <T en="Education" ur="تعلیم" />
                 </p>
                 <ul className="mt-2 space-y-2 text-base text-slate-700">
                   {lawyer.education.map((e) => (
-                    <li key={e.degree}>{e.degree} — {e.institution} ({e.year})</li>
+                    <li key={e.degree}>{e.degree}{e.institution ? ` — ${e.institution}` : ""}{e.year ? ` (${e.year})` : ""}</li>
                   ))}
                 </ul>
               </div>
+              )}
               <div className="rounded-2xl bg-slate-50 p-5">
                 <p className="flex items-center gap-2 text-base font-extrabold text-slate-900">
                   <ShieldIcon className="h-5 w-5 text-emerald-700" /> <T en="Bar & Courts" ur="بار اور عدالتیں" />
@@ -197,7 +199,7 @@ export default async function LawyerProfile({ params }: { params: Promise<{ slug
         {/* ===== Side column: booking card ===== */}
         <aside className="lg:sticky lg:top-24 lg:self-start">
           <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-lg">
-            <DemoNotice />
+            {lawyer.isDemo && <DemoNotice />}
             <div className="mt-5 rounded-2xl bg-emerald-50 p-5 text-center ring-1 ring-emerald-200">
               <p className="text-sm font-bold uppercase tracking-wide text-emerald-700"><T en="Consultation fee" ur="مشاورت کی فیس" /></p>
               <p className="mt-1 text-4xl font-extrabold text-emerald-900">{formatPKR(lawyer.consultationFeePaisa)}</p>

@@ -50,7 +50,7 @@ export interface ServiceFee {
 export interface Lawyer {
   slug: string;
   displayName: string;
-  photo: string; // /lawyers/<slug>.jpg — AI-generated demo portrait
+  photo: string; // /lawyers/<slug>.jpg — real photo, or AI portrait on demo profiles
   headline: string;
   bio: string;
   bioUrdu: string;
@@ -71,7 +71,7 @@ export interface Lawyer {
   reviewCount: number;
   reviews: Review[];
   totalConsultations: number;
-  isDemo: true;
+  isDemo: boolean;
 }
 
 // ---------------- Reference data ----------------
@@ -136,6 +136,125 @@ export function getCourt(slug: string): Court | undefined {
 // ---------------- Demo lawyers ----------------
 
 export const LAWYERS: Lawyer[] = [
+  // ============ REAL LAWYERS — The Legal House, Karachi ============
+  // Real profiles supplied by the client. Fees/experience are placeholders
+  // until confirmed — do NOT treat as final without client sign-off.
+  {
+    slug: "shamsuddin-rajper",
+    photo: "/lawyers/shamsuddin-rajper.jpg",
+    displayName: "Mr. Shamsuddin Rajper",
+    headline: "Founder & Senior Advocate · Ex-Deputy Attorney General for Pakistan",
+    bio: "Founder and Senior Advocate at The Legal House, Karachi. Former Deputy Attorney General for Pakistan and former Vice President of the Sindh High Court Bar Association, Sukkur.",
+    bioUrdu: "دی لیگل ہاؤس کراچی کے بانی اور سینئر ایڈووکیٹ۔ سابق ڈپٹی اٹارنی جنرل پاکستان اور سابق نائب صدر سندھ ہائی کورٹ بار ایسوسی ایشن سکھر۔",
+    gender: "male",
+    citySlug: "karachi",
+    yearsExperience: 25,
+    consultationFeePaisa: 1500000,
+    barCouncil: "Sindh Bar Council",
+    barCouncilNo: "Available on request",
+    courts: ["Sindh High Court", "Supreme Court of Pakistan"],
+    practiceAreaSlugs: ["constitutional-law", "criminal-law"],
+    langCodes: ["ur", "en", "sd"],
+    chamberName: "The Legal House",
+    chamberAddress: "Bungalow D-67/2, Lane 6, Block 2, Clifton, Karachi",
+    education: [],
+    services: [
+      { nameEn: "Online Consultation (30 min)", nameUr: "آن لائن مشاورت", feePaisa: 1500000 },
+      { nameEn: "Chamber Meeting (30 min)", nameUr: "چیمبر ملاقات", feePaisa: 1500000 },
+    ],
+    rating: 5.0,
+    reviewCount: 0,
+    totalConsultations: 0,
+    isDemo: false,
+    reviews: [],
+  },
+  {
+    slug: "fayazuddin-rajper",
+    photo: "/lawyers/fayazuddin-rajper.jpg",
+    displayName: "Mr. Fayazuddin Rajper",
+    headline: "Managing Partner & Advocate High Court · Corporate Advisory Lead",
+    bio: "Managing Partner and Advocate of the High Court at The Legal House. Holds an LL.M. in Corporate Law and leads the firm's corporate advisory practice.",
+    bioUrdu: "دی لیگل ہاؤس میں مینیجنگ پارٹنر اور ایڈووکیٹ ہائی کورٹ۔ کارپوریٹ لا میں ایل ایل ایم اور کارپوریٹ ایڈوائزری پریکٹس کے سربراہ۔",
+    gender: "male",
+    citySlug: "karachi",
+    yearsExperience: 12,
+    consultationFeePaisa: 800000,
+    barCouncil: "Sindh Bar Council",
+    barCouncilNo: "Available on request",
+    courts: ["Sindh High Court", "District Courts Karachi"],
+    practiceAreaSlugs: ["corporate-law", "tax-law"],
+    langCodes: ["ur", "en"],
+    chamberName: "The Legal House",
+    chamberAddress: "Bungalow D-67/2, Lane 6, Block 2, Clifton, Karachi",
+    education: [{ degree: "LL.M. in Corporate Law", institution: "", year: 0 }],
+    services: [
+      { nameEn: "Online Consultation (30 min)", nameUr: "آن لائن مشاورت", feePaisa: 800000 },
+      { nameEn: "Chamber Meeting (30 min)", nameUr: "چیمبر ملاقات", feePaisa: 800000 },
+    ],
+    rating: 5.0,
+    reviewCount: 0,
+    totalConsultations: 0,
+    isDemo: false,
+    reviews: [],
+  },
+  {
+    slug: "jahangir-shams",
+    photo: "/lawyers/jahangir-shams.jpg",
+    displayName: "Mr. Jahangir Shams",
+    headline: "Managing Partner & Advocate High Court · Head of Karachi Office",
+    bio: "Managing Partner and Advocate of the High Court at The Legal House. Holds an LL.B. (Hons) and heads the firm's Karachi head office operations.",
+    bioUrdu: "دی لیگل ہاؤس میں مینیجنگ پارٹنر اور ایڈووکیٹ ہائی کورٹ۔ ایل ایل بی (آنرز) اور کراچی ہیڈ آفس آپریشنز کے سربراہ۔",
+    gender: "male",
+    citySlug: "karachi",
+    yearsExperience: 14,
+    consultationFeePaisa: 800000,
+    barCouncil: "Sindh Bar Council",
+    barCouncilNo: "Available on request",
+    courts: ["Sindh High Court", "City Courts Karachi"],
+    practiceAreaSlugs: ["corporate-law", "property-law"],
+    langCodes: ["ur", "en"],
+    chamberName: "The Legal House",
+    chamberAddress: "Bungalow D-67/2, Lane 6, Block 2, Clifton, Karachi",
+    education: [{ degree: "LL.B. (Hons)", institution: "", year: 0 }],
+    services: [
+      { nameEn: "Online Consultation (30 min)", nameUr: "آن لائن مشاورت", feePaisa: 800000 },
+      { nameEn: "Chamber Meeting (30 min)", nameUr: "چیمبر ملاقات", feePaisa: 800000 },
+    ],
+    rating: 5.0,
+    reviewCount: 0,
+    totalConsultations: 0,
+    isDemo: false,
+    reviews: [],
+  },
+  {
+    slug: "raheem-dad-shujrah",
+    photo: "/lawyers/raheem-dad-shujrah.jpg",
+    displayName: "Mr. Raheem Dad Shujrah",
+    headline: "Partner & Advocate High Court · Banking & Property Specialist",
+    bio: "Partner and Advocate of the High Court at The Legal House. Holds an LL.B. from the University of London and specialises in banking and property matters.",
+    bioUrdu: "دی لیگل ہاؤس میں پارٹنر اور ایڈووکیٹ ہائی کورٹ۔ یونیورسٹی آف لندن سے ایل ایل بی، بینکاری اور جائیداد کے معاملات کے ماہر۔",
+    gender: "male",
+    citySlug: "karachi",
+    yearsExperience: 10,
+    consultationFeePaisa: 600000,
+    barCouncil: "Sindh Bar Council",
+    barCouncilNo: "Available on request",
+    courts: ["Sindh High Court", "City Courts Karachi"],
+    practiceAreaSlugs: ["banking-finance", "property-law"],
+    langCodes: ["ur", "en", "sd"],
+    chamberName: "The Legal House",
+    chamberAddress: "Bungalow D-67/2, Lane 6, Block 2, Clifton, Karachi",
+    education: [{ degree: "LL.B., University of London", institution: "", year: 0 }],
+    services: [
+      { nameEn: "Online Consultation (30 min)", nameUr: "آن لائن مشاورت", feePaisa: 600000 },
+      { nameEn: "Chamber Meeting (30 min)", nameUr: "چیمبر ملاقات", feePaisa: 600000 },
+    ],
+    rating: 5.0,
+    reviewCount: 0,
+    totalConsultations: 0,
+    isDemo: false,
+    reviews: [],
+  },
   {
     slug: "ahmed-raza-demo",
     photo: "/lawyers/ahmed-raza-demo.jpg",

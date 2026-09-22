@@ -157,7 +157,7 @@ export default function Home() {
           <div className="mx-auto mt-8 flex max-w-2xl flex-wrap items-center justify-center gap-x-8 gap-y-3 text-emerald-100">
             <span className="inline-flex items-center gap-2 text-lg font-bold">
               <CheckBadgeIcon className="h-5 w-5 text-amber-300" />
-              <T en={`${LAWYERS.length} demo lawyers`} ur={`${LAWYERS.length} ڈیمو وکیل`} />
+              <T en={`${LAWYERS.filter((l) => !l.isDemo).length} verified lawyers · ${LAWYERS.filter((l) => l.isDemo).length} demo profiles`} ur={`${LAWYERS.filter((l) => !l.isDemo).length} تصدیق شدہ وکیل · ${LAWYERS.filter((l) => l.isDemo).length} ڈیمو پروفائل`} />
             </span>
             <span className="inline-flex items-center gap-2 text-lg font-bold">
               <CheckBadgeIcon className="h-5 w-5 text-amber-300" />

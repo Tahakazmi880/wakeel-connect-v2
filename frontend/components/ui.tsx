@@ -109,13 +109,13 @@ export function SecondaryBtn({
   return <button type="button" onClick={onClick} className={cls}>{icon}{children}</button>;
 }
 
-/** Demo-data honesty strip. */
+/** Demo-data honesty strip. Shown on mixed listing pages. */
 export function DemoNotice() {
   return (
     <p className="rounded-xl bg-amber-50 px-4 py-3 text-center text-sm font-medium text-amber-900 ring-1 ring-amber-200">
       <T
-        en="Demo data: these lawyer profiles are samples for testing, not real verified lawyers."
-        ur="ڈیمو ڈیٹا: یہ وکیل پروفائلز صرف جانچ کے لیے ہیں، حقیقی وکیل نہیں۔"
+        en="Profiles marked (Demo) are samples for testing, not real lawyers."
+        ur="‎(Demo)‎ لکھے پروفائلز صرف جانچ کے لیے ہیں، حقیقی وکیل نہیں۔"
       />
     </p>
   );
