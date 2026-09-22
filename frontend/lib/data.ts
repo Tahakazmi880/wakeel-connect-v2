@@ -148,18 +148,24 @@ export function getCourt(slug: string): Court | undefined {
 
 export const LAWYERS: Lawyer[] = [
   // ============ REAL LAWYERS — Karachi Legal House, Karachi ============
-  // Real profiles supplied by the client. Fees/experience are placeholders
-  // until confirmed — do NOT treat as final without client sign-off.
+  // Real profiles cross-checked against karachilegalhouse.com and
+  // shamslawchamber.com on 2026-09-23.
+  // CONFIRMED from the sites: names, titles, education (where listed),
+  // practice areas, firm address (DHA Phase 2, Karachi), office hours
+  // (Mon-Sat 9 AM - 8 PM), Sindh Bar Council firm reg 663/BC.
+  // STILL PLACEHOLDER (client must confirm): consultation fees, years of
+  // experience (except founder: 24 yrs continuous practice since 2002),
+  // individual bar council numbers. Do NOT treat as final without sign-off.
   {
     slug: "shamsuddin-rajper",
     photo: "/lawyers/shamsuddin-rajper.jpg",
     displayName: "Mr. Shamsuddin Rajper",
-    headline: "Founder & Senior Advocate · Ex-Deputy Attorney General for Pakistan",
-    bio: "Founder and Senior Advocate at Karachi Legal House, Karachi. Former Deputy Attorney General for Pakistan and former Vice President of the Sindh High Court Bar Association, Sukkur.",
-    bioUrdu: "دی لیگل ہاؤس کراچی کے بانی اور سینئر ایڈووکیٹ۔ سابق ڈپٹی اٹارنی جنرل پاکستان اور سابق نائب صدر سندھ ہائی کورٹ بار ایسوسی ایشن سکھر۔",
+    headline: "Founder & Senior Advocate · Deputy Attorney General for Pakistan",
+    bio: "Founder and Senior Advocate at Karachi Legal House, Karachi. M.Com, LL.B. Deputy Attorney General for Pakistan (Sindh High Court, Hyderabad Circuit Bench, 2023–present); former Assistant Prosecutor General of Sindh (2008) and former Vice President of the Sindh High Court Bar Association, Sukkur (2019–2020). 24+ years of courtroom practice since founding the chamber in 2002.",
+    bioUrdu: "کراچی لیگل ہاؤس کے بانی اور سینئر ایڈووکیٹ۔ ایم کام، ایل ایل بی۔ ڈپٹی اٹارنی جنرل پاکستان (سندھ ہائی کورٹ، حیدرآباد سرکٹ بینچ)؛ سابق اسسٹنٹ پراسیکیوٹر جنرل سندھ اور سابق نائب صدر سندھ ہائی کورٹ بار ایسوسی ایشن سکھر۔ 2002 سے 24 سال سے زائد عدالتی تجربہ۔",
     gender: "male",
     citySlug: "karachi",
-    yearsExperience: 25,
+    yearsExperience: 24,
     consultationFeePaisa: 1500000,
     barCouncil: "Sindh Bar Council",
     barCouncilNo: "Available on request",
@@ -167,15 +173,19 @@ export const LAWYERS: Lawyer[] = [
     practiceAreaSlugs: ["constitutional-law", "criminal-law"],
     langCodes: ["ur", "en", "sd"],
     chamberName: "Karachi Legal House",
-    chamberAddress: "Bungalow D-67/2, Lane 6, Block 2, Clifton, Karachi",
-    education: [],
+    chamberAddress: "DHA Phase 2, Karachi",
+    education: [
+      { degree: "M.Com", institution: "", year: 0 },
+      { degree: "LL.B", institution: "", year: 0 },
+    ],
     services: [
       { nameEn: "Online Consultation (30 min)", nameUr: "آن لائن مشاورت", feePaisa: 1500000 },
       { nameEn: "Chamber Meeting (30 min)", nameUr: "چیمبر ملاقات", feePaisa: 1500000 },
     ],
     experience: [
       { title: "Founder & Senior Advocate", org: "Karachi Legal House, Karachi", status: "present" },
-      { title: "Deputy Attorney General for Pakistan", org: "Government of Pakistan", status: "former" },
+      { title: "Deputy Attorney General for Pakistan", org: "Sindh High Court, Hyderabad Circuit Bench", status: "present" },
+      { title: "Assistant Prosecutor General, Sindh", org: "Government of Sindh", status: "former" },
       { title: "Vice President", org: "Sindh High Court Bar Association, Sukkur", status: "former" },
     ],
     rating: 5.0,
@@ -189,8 +199,8 @@ export const LAWYERS: Lawyer[] = [
     photo: "/lawyers/fayazuddin-rajper.jpg",
     displayName: "Mr. Fayazuddin Rajper",
     headline: "Managing Partner & Advocate High Court · Corporate Advisory Lead",
-    bio: "Managing Partner and Advocate of the High Court at Karachi Legal House. Holds an LL.M. in Corporate Law and leads the firm's corporate advisory practice.",
-    bioUrdu: "دی لیگل ہاؤس میں مینیجنگ پارٹنر اور ایڈووکیٹ ہائی کورٹ۔ کارپوریٹ لا میں ایل ایل ایم اور کارپوریٹ ایڈوائزری پریکٹس کے سربراہ۔",
+    bio: "Managing Partner and Advocate of the High Court at Karachi Legal House. The founder's elder son, he took charge of the chamber's affairs in 2016 and built its diversified litigation and advisory practice from the Karachi office.",
+    bioUrdu: "کراچی لیگل ہاؤس میں مینیجنگ پارٹنر اور ایڈووکیٹ ہائی کورٹ۔ بانی کے بڑے صاحبزادے — 2016 سے چیمبر کے امور سنبھالے ہوئے ہیں اور کراچی آفس سے لٹیگیشن و ایڈوائزری پریکٹس کو وسعت دی۔",
     gender: "male",
     citySlug: "karachi",
     yearsExperience: 12,
@@ -201,7 +211,7 @@ export const LAWYERS: Lawyer[] = [
     practiceAreaSlugs: ["corporate-law", "tax-law"],
     langCodes: ["ur", "en"],
     chamberName: "Karachi Legal House",
-    chamberAddress: "Bungalow D-67/2, Lane 6, Block 2, Clifton, Karachi",
+    chamberAddress: "DHA Phase 2, Karachi",
     education: [{ degree: "LL.M. in Corporate Law", institution: "", year: 0 }],
     services: [
       { nameEn: "Online Consultation (30 min)", nameUr: "آن لائن مشاورت", feePaisa: 800000 },
@@ -209,6 +219,7 @@ export const LAWYERS: Lawyer[] = [
     ],
     experience: [
       { title: "Managing Partner — Corporate Advisory Lead", org: "Karachi Legal House, Karachi", status: "present" },
+      { title: "Took charge of chamber affairs", org: "Shams Law Chamber, Karachi", status: "former" },
     ],
     rating: 5.0,
     reviewCount: 0,
@@ -221,8 +232,8 @@ export const LAWYERS: Lawyer[] = [
     photo: "/lawyers/jahangir-shams.jpg",
     displayName: "Mr. Jahangir Shams",
     headline: "Managing Partner & Advocate High Court · Head of Karachi Office",
-    bio: "Managing Partner and Advocate of the High Court at Karachi Legal House. Holds an LL.B. (Hons) and heads the firm's Karachi head office operations.",
-    bioUrdu: "دی لیگل ہاؤس میں مینیجنگ پارٹنر اور ایڈووکیٹ ہائی کورٹ۔ ایل ایل بی (آنرز) اور کراچی ہیڈ آفس آپریشنز کے سربراہ۔",
+    bio: "Managing Partner and Advocate of the High Court at Karachi Legal House. He joined the chamber's leadership in 2016 alongside his brother, building the firm's litigation and advisory practice from the Karachi head office.",
+    bioUrdu: "کراچی لیگل ہاؤس میں مینیجنگ پارٹنر اور ایڈووکیٹ ہائی کورٹ۔ 2016 میں اپنے بھائی کے ہمراہ چیمبر کی قیادت میں شامل ہوئے اور کراچی ہیڈ آفس سے فرم کی پریکٹس کو آگے بڑھایا۔",
     gender: "male",
     citySlug: "karachi",
     yearsExperience: 14,
@@ -233,7 +244,7 @@ export const LAWYERS: Lawyer[] = [
     practiceAreaSlugs: ["corporate-law", "property-law"],
     langCodes: ["ur", "en"],
     chamberName: "Karachi Legal House",
-    chamberAddress: "Bungalow D-67/2, Lane 6, Block 2, Clifton, Karachi",
+    chamberAddress: "DHA Phase 2, Karachi",
     education: [{ degree: "LL.B. (Hons)", institution: "", year: 0 }],
     services: [
       { nameEn: "Online Consultation (30 min)", nameUr: "آن لائن مشاورت", feePaisa: 800000 },
@@ -241,6 +252,7 @@ export const LAWYERS: Lawyer[] = [
     ],
     experience: [
       { title: "Managing Partner — Head of Karachi Office", org: "Karachi Legal House, Karachi", status: "present" },
+      { title: "Joined chamber leadership", org: "Shams Law Chamber, Karachi", status: "former" },
     ],
     rating: 5.0,
     reviewCount: 0,
@@ -252,9 +264,9 @@ export const LAWYERS: Lawyer[] = [
     slug: "raheem-dad-shujrah",
     photo: "/lawyers/raheem-dad-shujrah.jpg",
     displayName: "Mr. Raheem Dad Shujrah",
-    headline: "Partner & Advocate High Court · Banking & Property Specialist",
-    bio: "Partner and Advocate of the High Court at Karachi Legal House. Holds an LL.B. from the University of London and specialises in banking and property matters.",
-    bioUrdu: "دی لیگل ہاؤس میں پارٹنر اور ایڈووکیٹ ہائی کورٹ۔ یونیورسٹی آف لندن سے ایل ایل بی، بینکاری اور جائیداد کے معاملات کے ماہر۔",
+    headline: "Senior Associate & Advocate High Court · Corporate & Banking Law",
+    bio: "Senior Associate and Advocate of the High Courts of Pakistan at Shams Law Chamber / Karachi Legal House. Joined the chamber in 2024 with a BBA and an LL.B (Hons.) from the University of London, bridging corporate insight with courtroom proficiency across civil, corporate, banking and constitutional litigation.",
+    bioUrdu: "شمس لا چیمبر / کراچی لیگل ہاؤس میں سینئر ایسوسی ایٹ اور ایڈووکیٹ ہائی کورٹ۔ 2024 میں چیمبر میں شامل ہوئے — بی بی اے اور یونیورسٹی آف لندن سے ایل ایل بی (آنرز)، سول، کارپوریٹ، بینکاری اور آئینی مقدمات میں مہارت۔",
     gender: "male",
     citySlug: "karachi",
     yearsExperience: 10,
@@ -262,17 +274,20 @@ export const LAWYERS: Lawyer[] = [
     barCouncil: "Sindh Bar Council",
     barCouncilNo: "Available on request",
     courts: ["Sindh High Court", "City Courts Karachi"],
-    practiceAreaSlugs: ["banking-finance", "property-law"],
+    practiceAreaSlugs: ["corporate-law", "banking-finance"],
     langCodes: ["ur", "en", "sd"],
     chamberName: "Karachi Legal House",
-    chamberAddress: "Bungalow D-67/2, Lane 6, Block 2, Clifton, Karachi",
-    education: [{ degree: "LL.B., University of London", institution: "", year: 0 }],
+    chamberAddress: "DHA Phase 2, Karachi",
+    education: [
+      { degree: "BBA", institution: "", year: 0 },
+      { degree: "LL.B. (Hons.), University of London", institution: "University of London", year: 0 },
+    ],
     services: [
       { nameEn: "Online Consultation (30 min)", nameUr: "آن لائن مشاورت", feePaisa: 600000 },
       { nameEn: "Chamber Meeting (30 min)", nameUr: "چیمبر ملاقات", feePaisa: 600000 },
     ],
     experience: [
-      { title: "Partner — Banking & Property", org: "Karachi Legal House, Karachi", status: "present" },
+      { title: "Senior Associate", org: "Shams Law Chamber / Karachi Legal House, Karachi", status: "present" },
     ],
     rating: 5.0,
     reviewCount: 0,
