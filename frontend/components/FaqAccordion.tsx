@@ -48,13 +48,20 @@ const FAQS = [
   },
 ];
 
+export interface FaqItem {
+  qEn: string;
+  qUr: string;
+  aEn: string;
+  aUr: string;
+}
+
 /** FAQ accordion with smooth expand/collapse and big tap targets. */
-export default function FaqAccordion() {
+export default function FaqAccordion({ items = FAQS, wide = false }: { items?: FaqItem[]; wide?: boolean }) {
   const [open, setOpen] = useState<number | null>(0);
 
   return (
-    <div className="mx-auto max-w-3xl">
-      {FAQS.map((f, i) => {
+    <div className={wide ? "w-full" : "mx-auto max-w-3xl"}>
+      {items.map((f, i) => {
         const isOpen = open === i;
         return (
           <div key={i} className="mb-3 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">

@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { T } from "@/components/LanguageContext";
 import { DemoNotice, PrimaryBtn, SectionHead } from "@/components/ui";
+import SeoArticle from "@/components/SeoArticle";
 import LawyerCard from "@/components/LawyerCard";
 import { ArrowIcon, BriefcaseIcon } from "@/components/icons";
 import { CITIES, getPracticeArea, LAWYERS, PRACTICE_AREAS } from "@/lib/data";
@@ -62,6 +63,8 @@ export default async function AreaPage({ params }: { params: Promise<{ area: str
           </div>
         </section>
       )}
+
+      <SeoArticle area={a} />
 
       <div className="mt-14 text-center">
         <PrimaryBtn href="/lawyers" icon={<ArrowIcon className="h-6 w-6" />}>

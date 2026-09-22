@@ -105,6 +105,9 @@ export default function BookingFlow({ lawyerSlug }: { lawyerSlug: string }) {
           <h1 className="text-2xl font-extrabold text-slate-900">
             <T en="When should we book you?" ur="کب بک کریں؟" />
           </h1>
+          <p className="mt-2 inline-flex items-center gap-2 rounded-full bg-emerald-50 px-4 py-1.5 text-sm font-bold text-emerald-800">
+            <T en="⚡ Takes about a minute · No account needed" ur="⚡ تقریباً ایک منٹ · اکاؤنٹ کی ضرورت نہیں" />
+          </p>
 
           <p className="mb-2 mt-6 text-base font-extrabold text-slate-700"><T en="How do you want to meet?" ur="ملاقات کیسے ہوگی؟" /></p>
           <div className="grid grid-cols-2 gap-3">
@@ -199,6 +202,13 @@ export default function BookingFlow({ lawyerSlug }: { lawyerSlug: string }) {
           </h1>
           <p className="mt-2 text-lg text-slate-600">
             <T en="We'll send a code to confirm. No password needed." ur="تصدیق کے لیے کوڈ بھیجیں گے۔ پاس ورڈ کی ضرورت نہیں۔" />
+          </p>
+          <p className="mt-3 flex items-start gap-2 rounded-2xl bg-amber-50 p-4 text-base font-semibold text-amber-900 ring-1 ring-amber-200">
+            <span aria-hidden>🔒</span>
+            <T
+              en="We share this number only with the lawyer you book, so they can confirm your appointment. It is never shown publicly."
+              ur="یہ نمبر صرف اس وکیل سے شیئر ہوگا جسے آپ بک کریں گے، تاکہ وہ آپ کی ملاقات کی تصدیق کر سکے۔ یہ کبھی عوامی نہیں دکھایا جائے گا۔"
+            />
           </p>
 
           <div className="mt-6 rounded-2xl bg-emerald-50 p-4 text-base font-semibold text-emerald-900 ring-1 ring-emerald-200">

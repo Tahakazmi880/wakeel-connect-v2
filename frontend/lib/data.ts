@@ -47,6 +47,13 @@ export interface ServiceFee {
   feePaisa: number;
 }
 
+export interface ExperienceEntry {
+  title: string;
+  org: string;
+  /** "present" or "former" — years are only shown when actually known. */
+  status: "present" | "former";
+}
+
 export interface Lawyer {
   slug: string;
   displayName: string;
@@ -67,6 +74,7 @@ export interface Lawyer {
   chamberAddress: string;
   education: Education[];
   services: ServiceFee[];
+  experience?: ExperienceEntry[];
   rating: number;
   reviewCount: number;
   reviews: Review[];
@@ -165,6 +173,11 @@ export const LAWYERS: Lawyer[] = [
       { nameEn: "Online Consultation (30 min)", nameUr: "آن لائن مشاورت", feePaisa: 1500000 },
       { nameEn: "Chamber Meeting (30 min)", nameUr: "چیمبر ملاقات", feePaisa: 1500000 },
     ],
+    experience: [
+      { title: "Founder & Senior Advocate", org: "The Legal House, Karachi", status: "present" },
+      { title: "Deputy Attorney General for Pakistan", org: "Government of Pakistan", status: "former" },
+      { title: "Vice President", org: "Sindh High Court Bar Association, Sukkur", status: "former" },
+    ],
     rating: 5.0,
     reviewCount: 0,
     totalConsultations: 0,
@@ -193,6 +206,9 @@ export const LAWYERS: Lawyer[] = [
     services: [
       { nameEn: "Online Consultation (30 min)", nameUr: "آن لائن مشاورت", feePaisa: 800000 },
       { nameEn: "Chamber Meeting (30 min)", nameUr: "چیمبر ملاقات", feePaisa: 800000 },
+    ],
+    experience: [
+      { title: "Managing Partner — Corporate Advisory Lead", org: "The Legal House, Karachi", status: "present" },
     ],
     rating: 5.0,
     reviewCount: 0,
@@ -223,6 +239,9 @@ export const LAWYERS: Lawyer[] = [
       { nameEn: "Online Consultation (30 min)", nameUr: "آن لائن مشاورت", feePaisa: 800000 },
       { nameEn: "Chamber Meeting (30 min)", nameUr: "چیمبر ملاقات", feePaisa: 800000 },
     ],
+    experience: [
+      { title: "Managing Partner — Head of Karachi Office", org: "The Legal House, Karachi", status: "present" },
+    ],
     rating: 5.0,
     reviewCount: 0,
     totalConsultations: 0,
@@ -251,6 +270,9 @@ export const LAWYERS: Lawyer[] = [
     services: [
       { nameEn: "Online Consultation (30 min)", nameUr: "آن لائن مشاورت", feePaisa: 600000 },
       { nameEn: "Chamber Meeting (30 min)", nameUr: "چیمبر ملاقات", feePaisa: 600000 },
+    ],
+    experience: [
+      { title: "Partner — Banking & Property", org: "The Legal House, Karachi", status: "present" },
     ],
     rating: 5.0,
     reviewCount: 0,

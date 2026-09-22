@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { T } from "./LanguageContext";
-import { BriefcaseIcon, DocIcon, PhoneIcon, ShieldIcon } from "./icons";
+import { BriefcaseIcon, DocIcon, ShieldIcon } from "./icons";
 import { CITIES, COURTS, PRACTICE_AREAS, getCity } from "@/lib/data";
 
 const GUIDES = [
@@ -144,13 +144,9 @@ export default function Footer() {
           </div>
         </div>
 
-        {/* Bottom bar: © + helpline */}
+        {/* Bottom bar: © — helpline number goes here once the real one is provided */}
         <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-emerald-800 pt-6 text-sm text-emerald-300 sm:flex-row">
           <p>© 2026 wakeel.connect — <T en="All rights reserved." ur="جملہ حقوق محفوظ ہیں۔" /></p>
-          <a href="tel:0800-00000" className="inline-flex min-h-[48px] items-center gap-2 font-bold text-white">
-            <PhoneIcon className="h-5 w-5" />
-            <T en="Helpline: 0800-00000" ur="ہیلپ لائن: 0800-00000" />
-          </a>
         </div>
       </div>
     </footer>

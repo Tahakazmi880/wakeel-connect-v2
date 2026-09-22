@@ -4,6 +4,7 @@ import Link from "next/link";
 import { T } from "@/components/LanguageContext";
 import { DemoNotice, PrimaryBtn, SectionHead } from "@/components/ui";
 import LawyerCard from "@/components/LawyerCard";
+import SeoArticle from "@/components/SeoArticle";
 import { ArrowIcon, CalendarIcon, CheckBadgeIcon, PhoneIcon, SearchIcon, ShieldIcon } from "@/components/icons";
 import {
   CITIES,
@@ -90,6 +91,8 @@ export default async function CityAreaPage({ params }: { params: Promise<{ city:
       <div className="mt-8 grid gap-6 md:grid-cols-2 xl:grid-cols-3">
         {lawyers.map((l) => <LawyerCard key={l.slug} lawyer={l} />)}
       </div>
+
+      <SeoArticle area={a} citySlug={c.slug} />
 
       {/* How booking works — tiny */}
       <section className="mt-14 rounded-3xl bg-emerald-50 p-8 ring-1 ring-emerald-100">

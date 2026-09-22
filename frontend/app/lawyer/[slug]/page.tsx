@@ -4,6 +4,8 @@ import Link from "next/link";
 import { T } from "@/components/LanguageContext";
 import { AvailableBadge, DemoNotice, PrimaryBtn, Rating, SecondaryBtn, Stars, VerifiedBadge } from "@/components/ui";
 import { PhotoAvatar } from "@/components/PhotoAvatar";
+import FaqAccordion from "@/components/FaqAccordion";
+import LawyerCard from "@/components/LawyerCard";
 import {
   BriefcaseIcon,
   CalendarIcon,
@@ -49,6 +51,52 @@ export default async function LawyerProfile({ params }: { params: Promise<{ slug
     star: s,
     pct: Math.round((lawyer.reviews.filter((r) => r.rating === s).length / Math.max(lawyer.reviewCount, 1)) * 100),
   }));
+
+  const similar = LAWYERS.filter((l) => l.slug !== lawyer.slug)
+    .map((l) => ({
+      l,
+      score:
+        (l.citySlug === lawyer.citySlug ? 2 : 0) +
+        l.practiceAreaSlugs.filter((a) => lawyer.practiceAreaSlugs.includes(a)).length,
+    }))
+    .filter((x) => x.score > 0)
+    .sort((a, b) => b.score - a.score)
+    .slice(0, 3)
+    .map((x) => x.l);
+
+  const langNames = langs.map((x) => x.nameEn).join(", ");
+  const profileFaqs = [
+    {
+      qEn: `What is ${lawyer.displayName}'s consultation fee?`,
+      qUr: `${lawyer.displayName} کی مشاورت کی فیس کیا ہے؟`,
+      aEn: `${formatPKR(lawyer.consultationFeePaisa)} for a 30-minute consultation — video call or chamber visit. The fee is shown upfront and confirmed before you book; you pay the lawyer directly.`,
+      aUr: `۳۰ منٹ کی مشاورت کے لیے ${formatPKR(lawyer.consultationFeePaisa)} — ویڈیو کال یا چیمبر ملاقات۔ فیس پہلے سے واضح ہوتی ہے اور بکنگ سے پہلے تصدیق ہوتی ہے؛ آپ فیس براہ راست وکیل کو ادا کرتے ہیں۔`,
+    },
+    {
+      qEn: `Does ${lawyer.displayName} offer video consultations?`,
+      qUr: `کیا ${lawyer.displayName} ویڈیو مشاورت دیتے ہیں؟`,
+      aEn: `Yes. Book a video call from anywhere in Pakistan, or visit the chamber at ${lawyer.chamberName}, ${cityName(lawyer.citySlug)}.`,
+      aUr: `جی ہاں۔ پاکستان میں کہیں سے بھی ویڈیو کال بک کریں، یا ${cityName(lawyer.citySlug)} میں ${lawyer.chamberName} تشریف لائیں۔`,
+    },
+    {
+      qEn: `Which languages does ${lawyer.displayName} speak?`,
+      qUr: `${lawyer.displayName} کون سی زبانیں بولتے ہیں؟`,
+      aEn: `${langNames}. Choose the language you are comfortable in when you book.`,
+      aUr: `${langNames}۔ بکنگ کے وقت اپنی سہولت کی زبان منتخب کریں۔`,
+    },
+    {
+      qEn: `Which courts does ${lawyer.displayName} practice in?`,
+      qUr: `${lawyer.displayName} کن عدالتوں میں پیش ہوتے ہیں؟`,
+      aEn: lawyer.courts.join(", ") + ".",
+      aUr: lawyer.courts.join("، ") + "۔",
+    },
+    {
+      qEn: "How do I book an appointment?",
+      qUr: "ملاقات کیسے بک کروں؟",
+      aEn: "Three steps: pick video call or chamber visit, choose a day and time, and enter your phone number. No account or password needed.",
+      aUr: "تین مراحل: ویڈیو کال یا چیمبر ملاقات چنیں، دن اور وقت منتخب کریں، اور اپنا فون نمبر لکھیں۔ اکاؤنٹ یا پاس ورڈ کی ضرورت نہیں۔",
+    },
+  ];
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-8">
@@ -159,6 +207,32 @@ export default async function LawyerProfile({ params }: { params: Promise<{ slug
             </ul>
           </section>
 
+          {/* Experience timeline */}
+          {lawyer.experience && lawyer.experience.length > 0 && (
+            <section className="mt-6 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
+              <h2 className="text-2xl font-extrabold text-slate-900"><T en="Experience" ur="تجربہ" /></h2>
+              <ol className="mt-5 space-y-0">
+                {lawyer.experience.map((e, i) => (
+                  <li key={i} className="relative flex gap-4 pb-6 last:pb-0">
+                    {i < lawyer.experience!.length - 1 && (
+                      <span className="absolute left-[11px] top-7 h-full w-0.5 bg-emerald-100" aria-hidden />
+                    )}
+                    <span className="relative z-10 mt-1 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-emerald-600 ring-4 ring-emerald-50">
+                      <BriefcaseIcon className="h-3.5 w-3.5 text-white" />
+                    </span>
+                    <div className="min-w-0">
+                      <p className="text-lg font-extrabold text-slate-900">{e.title}</p>
+                      <p className="text-base text-slate-600">{e.org}</p>
+                      <span className={`mt-1 inline-block rounded-full px-3 py-0.5 text-sm font-bold ${e.status === "present" ? "bg-emerald-100 text-emerald-800" : "bg-slate-100 text-slate-600"}`}>
+                        <T en={e.status === "present" ? "Current" : "Former"} ur={e.status === "present" ? "موجودہ" : "سابق"} />
+                      </span>
+                    </div>
+                  </li>
+                ))}
+              </ol>
+            </section>
+          )}
+
           {/* Reviews */}
           <section className="mt-6 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
             <h2 className="text-2xl font-extrabold text-slate-900">
@@ -201,6 +275,15 @@ export default async function LawyerProfile({ params }: { params: Promise<{ slug
               ))}
             </div>
           </section>
+          {/* Profile FAQs */}
+          <section className="mt-6 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
+            <h2 className="text-2xl font-extrabold text-slate-900">
+              <T en={`FAQs about ${lawyer.displayName}`} ur={`${lawyer.displayName} کے بارے میں سوالات`} />
+            </h2>
+            <div className="mt-4">
+              <FaqAccordion items={profileFaqs} wide />
+            </div>
+          </section>
         </div>
 
         {/* ===== Side column: booking card ===== */}
@@ -231,6 +314,23 @@ export default async function LawyerProfile({ params }: { params: Promise<{ slug
           </div>
         </aside>
       </div>
+
+      {/* Similar lawyers */}
+      {similar.length > 0 && (
+        <section className="mt-14">
+          <h2 className="text-center text-2xl font-extrabold text-slate-900 sm:text-3xl">
+            <T en="Similar lawyers" ur="ملتے جلتے وکیل" />
+          </h2>
+          <p className="mt-2 text-center text-lg text-slate-600">
+            <T en="More verified lawyers for your legal problem." ur="آپ کے قانونی مسئلے کے لیے مزید تصدیق شدہ وکیل۔" />
+          </p>
+          <div className="mt-8 grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+            {similar.map((l) => (
+              <LawyerCard key={l.slug} lawyer={l} />
+            ))}
+          </div>
+        </section>
+      )}
 
       {/* Sticky mobile CTA — one primary action */}
       <div className="fixed inset-x-0 bottom-0 z-30 border-t border-slate-200 bg-white/95 p-3 backdrop-blur lg:hidden">

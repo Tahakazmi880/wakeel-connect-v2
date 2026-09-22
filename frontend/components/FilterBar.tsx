@@ -40,7 +40,7 @@ export default function FilterBar() {
 
   return (
     <div className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
-      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
+      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
         <label className="block">
           <span className="mb-1 block text-sm font-bold text-slate-600"><T en="City" ur="شہر" /></span>
           <select value={get("city")} onChange={(e) => set("city", e.target.value)} className={selectCls}>
@@ -69,15 +69,25 @@ export default function FilterBar() {
             {LANGUAGES.map((l) => <option key={l.code} value={l.code}>{l.nameEn}</option>)}
           </select>
         </label>
-        <label className="block">
-          <span className="mb-1 block text-sm font-bold text-slate-600"><T en="Sort By" ur="ترتیب" /></span>
-          <select value={get("sort") || "recommended"} onChange={(e) => set("sort", e.target.value)} className={selectCls}>
-            <option value="recommended"><T en="Recommended" ur="تجویز کردہ" /></option>
-            <option value="exp"><T en="Most Experienced" ur="سب سے تجربہ کار" /></option>
-            <option value="fee"><T en="Lowest Fee" ur="کم ترین فیس" /></option>
-            <option value="rating"><T en="Highest Rated" ur="بہترین ریٹنگ" /></option>
-          </select>
-        </label>
+      </div>
+
+      {/* Sort chips — oladoc-style quick sort */}
+      <div className="mt-4">
+        <p className="mb-2 text-sm font-bold text-slate-600"><T en="Sort by" ur="ترتیب" /></p>
+        <div className="flex flex-wrap gap-2">
+          <Chip active={(get("sort") || "recommended") === "recommended"} onClick={() => set("sort", "recommended")}>
+            <T en="⭐ Recommended" ur="⭐ تجویز کردہ" />
+          </Chip>
+          <Chip active={get("sort") === "exp"} onClick={() => set("sort", "exp")}>
+            <T en="Most Experienced" ur="سب سے تجربہ کار" />
+          </Chip>
+          <Chip active={get("sort") === "fee"} onClick={() => set("sort", "fee")}>
+            <T en="Lowest Fee" ur="کم ترین فیس" />
+          </Chip>
+          <Chip active={get("sort") === "rating"} onClick={() => set("sort", "rating")}>
+            <T en="Highest Rated" ur="بہترین ریٹنگ" />
+          </Chip>
+        </div>
       </div>
 
       <div className="mt-4 flex flex-wrap gap-2">

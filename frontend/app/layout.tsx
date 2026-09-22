@@ -3,6 +3,7 @@ import "./globals.css";
 import { LanguageProvider } from "@/components/LanguageContext";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import CookieBanner from "@/components/CookieBanner";
 
 export const metadata: Metadata = {
   title: "wakeel.connect — Pakistan ke Verified Wakeel",
@@ -19,6 +20,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <Header />
           <main className="min-h-[60vh]">{children}</main>
           <Footer />
+          <CookieBanner />
         </LanguageProvider>
       </body>
     </html>

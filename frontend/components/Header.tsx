@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { LangToggle, T } from "./LanguageContext";
-import { BriefcaseIcon, CloseIcon, DocIcon, MenuIcon, PhoneIcon, SearchIcon } from "./icons";
+import { BriefcaseIcon, CloseIcon, DocIcon, MenuIcon, SearchIcon } from "./icons";
 
 function Logo() {
   return (
@@ -78,13 +78,7 @@ export default function Header() {
               </Link>
             ),
           )}
-          <a
-            href="tel:0800-00000"
-            className="mt-2 flex min-h-[52px] items-center gap-3 rounded-xl bg-emerald-700 px-3 text-lg font-bold text-white"
-          >
-            <PhoneIcon className="h-5 w-5" />
-            <T en="Call Helpline" ur="ہیلپ لائن کال کریں" />
-          </a>
+          {/* Helpline link removed until a real support number is provided — do not ship a fake number. */}
         </nav>
       )}
     </header>
