@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { T } from "./LanguageContext";
-import { Avatar, AvailableBadge, Stars, VerifiedBadge, nextAvailableText } from "./ui";
+import { AvailableBadge, Stars, VerifiedBadge, nextAvailableText } from "./ui";
+import { PhotoAvatar } from "./PhotoAvatar";
 import { CalendarIcon, OfficeIcon, VideoIcon } from "./icons";
 import { cityName, formatPKR, lawyerAreas, type Lawyer } from "@/lib/data";
 
@@ -11,7 +12,7 @@ export default function LawyerCard({ lawyer }: { lawyer: Lawyer }) {
   return (
     <article className="flex flex-col rounded-3xl border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-1 hover:shadow-xl">
       <div className="flex gap-4">
-        <Avatar name={lawyer.displayName} />
+        <PhotoAvatar name={lawyer.displayName} photo={lawyer.photo} />
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-center gap-2">
             <Link href={`/lawyer/${lawyer.slug}`} className="truncate text-xl font-extrabold text-slate-900 hover:text-emerald-800">

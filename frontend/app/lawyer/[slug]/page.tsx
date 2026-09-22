@@ -2,7 +2,8 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { T } from "@/components/LanguageContext";
-import { Avatar, AvailableBadge, DemoNotice, PrimaryBtn, SecondaryBtn, Stars, VerifiedBadge } from "@/components/ui";
+import { AvailableBadge, DemoNotice, PrimaryBtn, SecondaryBtn, Stars, VerifiedBadge } from "@/components/ui";
+import { PhotoAvatar } from "@/components/PhotoAvatar";
 import {
   BriefcaseIcon,
   CalendarIcon,
@@ -66,7 +67,7 @@ export default async function LawyerProfile({ params }: { params: Promise<{ slug
           {/* Header card */}
           <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
             <div className="flex flex-col gap-5 sm:flex-row">
-              <Avatar name={lawyer.displayName} size="xl" />
+              <PhotoAvatar name={lawyer.displayName} photo={lawyer.photo} size="xl" />
               <div className="min-w-0 flex-1">
                 <div className="flex flex-wrap items-center gap-2">
                   <h1 className="text-3xl font-extrabold text-slate-900">{lawyer.displayName}</h1>

@@ -3,7 +3,7 @@
 import { useRouter, useSearchParams } from "next/navigation";
 import { T } from "./LanguageContext";
 import { SearchIcon } from "./icons";
-import { CITIES, LANGUAGES, PRACTICE_AREAS } from "@/lib/data";
+import { CITIES, COURTS, LANGUAGES, PRACTICE_AREAS } from "@/lib/data";
 
 function Chip({ active, onClick, children }: { active: boolean; onClick: () => void; children: React.ReactNode }) {
   return (
@@ -40,7 +40,7 @@ export default function FilterBar() {
 
   return (
     <div className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
-      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
         <label className="block">
           <span className="mb-1 block text-sm font-bold text-slate-600"><T en="City" ur="شہر" /></span>
           <select value={get("city")} onChange={(e) => set("city", e.target.value)} className={selectCls}>
@@ -53,6 +53,13 @@ export default function FilterBar() {
           <select value={get("area")} onChange={(e) => set("area", e.target.value)} className={selectCls}>
             <option value=""><T en="All Areas" ur="تمام شعبے" /></option>
             {PRACTICE_AREAS.map((a) => <option key={a.slug} value={a.slug}>{a.nameEn}</option>)}
+          </select>
+        </label>
+        <label className="block">
+          <span className="mb-1 block text-sm font-bold text-slate-600"><T en="Court" ur="عدالت" /></span>
+          <select value={get("court")} onChange={(e) => set("court", e.target.value)} className={selectCls}>
+            <option value=""><T en="All Courts" ur="تمام عدالتیں" /></option>
+            {COURTS.map((c) => <option key={c.slug} value={c.slug}>{c.nameEn}</option>)}
           </select>
         </label>
         <label className="block">

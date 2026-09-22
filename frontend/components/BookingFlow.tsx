@@ -4,7 +4,8 @@ import { useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { T } from "./LanguageContext";
-import { Avatar, PrimaryBtn, SecondaryBtn, Stars, VerifiedBadge } from "./ui";
+import { PrimaryBtn, SecondaryBtn, Stars, VerifiedBadge } from "./ui";
+import { PhotoAvatar } from "./PhotoAvatar";
 import {
   CalendarIcon,
   CheckIcon,
@@ -86,7 +87,7 @@ export default function BookingFlow({ lawyerSlug }: { lawyerSlug: string }) {
     <div className="mx-auto max-w-3xl px-4 py-10">
       {/* lawyer summary */}
       <div className="flex items-center gap-4 rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
-        <Avatar name={lawyer.displayName} size="sm" />
+        <PhotoAvatar name={lawyer.displayName} photo={lawyer.photo} size="sm" />
         <div className="min-w-0 flex-1">
           <p className="flex flex-wrap items-center gap-2 text-lg font-extrabold text-slate-900">
             {lawyer.displayName} <VerifiedBadge />

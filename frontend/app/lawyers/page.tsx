@@ -25,6 +25,7 @@ export default async function LawyersPage({ searchParams }: Props) {
   const filter: LawyerFilter = {
     city: pick(sp.city),
     area: pick(sp.area),
+    court: pick(sp.court),
     q: pick(sp.q),
     availableToday: pick(sp.availableToday) === "1",
     maxFeePaisa: pick(sp.maxFee) ? Number(pick(sp.maxFee)) : undefined,
