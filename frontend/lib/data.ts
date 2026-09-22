@@ -153,9 +153,9 @@ export const LAWYERS: Lawyer[] = [
   // CONFIRMED from the sites: names, titles, education (where listed),
   // practice areas, firm address (DHA Phase 2, Karachi), office hours
   // (Mon-Sat 9 AM - 8 PM), Sindh Bar Council firm reg 663/BC.
-  // STILL PLACEHOLDER (client must confirm): consultation fees, years of
-  // experience (except founder: 24 yrs continuous practice since 2002),
-  // individual bar council numbers. Do NOT treat as final without sign-off.
+  // CONFIRMED by client 2026-09-23: consultation fees (Rs. 15k / 8k / 8k / 6k).
+  // STILL PLACEHOLDER: years of experience (except founder: 24 yrs continuous
+  // practice since 2002), individual bar council numbers.
   {
     slug: "shamsuddin-rajper",
     photo: "/lawyers/shamsuddin-rajper.jpg",
