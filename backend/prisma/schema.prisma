@@ -1,0 +1,419 @@
+// ============================================================
+// wakeel.connect — database schema (v2, fresh rebuild)
+// PostgreSQL + Prisma 6.
+//
+// Conventions:
+//  - Money: *Paisa Int (1 PKR = 100 paisa). Snapshot amounts on
+//    booking/payment rows; never store floats.
+//  - Timestamps: UTC in DB. Display in Asia/Karachi in app code.
+//  - PII: CNIC is stored as cnicHash ONLY — never plaintext.
+//    Verification documents are private; referenced by storageKey
+//    and served through signed URLs.
+//  - History: financial/legal rows are never cascade-deleted
+//    (onDelete: NoAction). Only pure join tables cascade.
+//  - DB-level guards that Prisma cannot express live in
+//    prisma/migrations/*_init/migration.sql (appended after
+//    `prisma migrate diff`): booking overlap EXCLUDE constraint,
+//    review rating CHECK, pg_trgm index, dayOfWeek CHECK.
+// ============================================================
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ---------------- Enums ----------------
+
+enum Role {
+  CLIENT
+  LAWYER
+  ADMIN
+}
+
+enum UserStatus {
+  ACTIVE
+  SUSPENDED
+}
+
+enum VerificationStatus {
+  PENDING
+  UNDER_REVIEW
+  APPROVED
+  REJECTED
+  SUSPENDED
+}
+
+enum BookingStatus {
+  PENDING
+  CONFIRMED
+  COMPLETED
+  CANCELLED
+  NO_SHOW
+}
+
+enum BookingMode {
+  ONLINE_VIDEO
+  IN_CHAMBER
+  PHONE
+}
+
+enum Gender {
+  MALE
+  FEMALE
+}
+
+enum PaymentStatus {
+  PENDING
+  HELD
+  RELEASED
+  REFUNDED
+  FAILED
+}
+
+enum DocType {
+  CNIC_FRONT
+  CNIC_BACK
+  BAR_COUNCIL_CERT
+  DEGREE
+  PROFILE_PHOTO
+  OTHER
+}
+
+enum DocStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+// ---------------- Users & auth ----------------
+
+model User {
+  id              String      @id @default(cuid())
+  phone           String      @unique // +92... E.164 — primary identifier (OTP auth)
+  phoneVerifiedAt DateTime?
+  email           String?     @unique // optional; always lowercase (service rule)
+  passwordHash    String? // optional fallback; OTP is the primary flow
+  fullName        String
+  role            Role        @default(CLIENT)
+  status          UserStatus  @default(ACTIVE)
+  avatarUrl       String?
+  cityId          String?
+  city            City?       @relation(fields: [cityId], references: [id])
+  lastLoginAt     DateTime?
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+
+  lawyerProfile Lawyer?
+  notifications Notification[]
+  auditLogs     AuditLog[]     @relation("AuditActor")
+  bookings      Booking[]      @relation("ClientBookings")
+  reviews       Review[]       @relation("ClientReviews")
+  reviewedDocs  VerificationDocument[] @relation("DocReviewer")
+  decisions     VerificationDecision[] @relation("DecisionAdmin")
+
+  @@index([role, status])
+}
+
+// ---------------- Reference data (seed) ----------------
+
+model City {
+  id       String  @id @default(cuid())
+  slug     String  @unique
+  nameEn   String
+  nameUr   String?
+  province String
+  isActive Boolean @default(true)
+
+  users    User[]
+  lawyers  Lawyer[]
+  chambers Chamber[]
+  lawyerCities LawyerCity[]
+
+  @@index([isActive])
+}
+
+model PracticeArea {
+  id          String  @id @default(cuid())
+  slug        String  @unique
+  nameEn      String
+  nameUr      String?
+  description String? @db.Text
+  sortOrder   Int     @default(0)
+  isActive    Boolean @default(true)
+
+  lawyers LawyerPracticeArea[]
+
+  @@index([isActive, sortOrder])
+}
+
+model Language {
+  code   String @id // ur, en, pa, sd, ps
+  nameEn String
+  nameUr String?
+
+  lawyers LawyerLanguage[]
+}
+
+// ---------------- Lawyers & verification ----------------
+
+model Lawyer {
+  id                   String             @id @default(cuid())
+  userId               String             @unique
+  user                 User               @relation(fields: [userId], references: [id], onDelete: NoAction)
+  slug                 String             @unique
+  displayName          String
+  headline             String?
+  bio                  String?            @db.Text
+  bioUrdu              String?            @db.Text
+  gender               Gender?
+  cityId               String
+  city                 City               @relation(fields: [cityId], references: [id])
+  yearsExperience      Int                @default(0)
+  consultationFeePaisa Int                @default(0)
+  courts               String[]           @default([]) // courts of appearance
+  barCouncil           String? // e.g. "Punjab Bar Council"
+  barCouncilNo         String? // enrolment / license number
+  enrolmentYear        Int?
+  cnicHash             String? // salted hash ONLY — never plaintext CNIC
+  verificationStatus   VerificationStatus @default(PENDING)
+  verifiedAt           DateTime?
+  isListed             Boolean            @default(false) // public only after APPROVED
+  isSeedData           Boolean            @default(false) // demo rows; never present as real lawyers
+  ratingAvg            Float              @default(0)
+  ratingCount          Int                @default(0)
+  totalConsultations   Int                @default(0)
+  createdAt            DateTime           @default(now())
+  updatedAt            DateTime           @updatedAt
+
+  practiceAreas LawyerPracticeArea[]
+  languages     LawyerLanguage[]
+  cities        LawyerCity[]
+  chambers      Chamber[]
+  education     Education[]
+  weeklyAvail   WeeklyAvailability[]
+  dateOverrides DateOverride[]
+  bookings      Booking[]              @relation("LawyerBookings")
+  reviews       Review[]               @relation("LawyerReviews")
+  documents     VerificationDocument[]
+  decisions     VerificationDecision[] @relation("DecisionLawyer")
+
+  @@index([cityId, isListed, verificationStatus])
+  @@index([isSeedData])
+}
+
+model LawyerPracticeArea {
+  lawyerId       String
+  lawyer         Lawyer       @relation(fields: [lawyerId], references: [id], onDelete: Cascade)
+  practiceAreaId String
+  practiceArea   PracticeArea @relation(fields: [practiceAreaId], references: [id], onDelete: Cascade)
+  isPrimary      Boolean      @default(false)
+
+  @@id([lawyerId, practiceAreaId])
+  @@index([practiceAreaId])
+}
+
+model LawyerLanguage {
+  lawyerId String
+  lawyer   Lawyer @relation(fields: [lawyerId], references: [id], onDelete: Cascade)
+  langCode String
+  language Language @relation(fields: [langCode], references: [code], onDelete: Cascade)
+
+  @@id([lawyerId, langCode])
+}
+
+model LawyerCity {
+  lawyerId String
+  lawyer   Lawyer @relation(fields: [lawyerId], references: [id], onDelete: Cascade)
+  cityId   String
+  city     City   @relation(fields: [cityId], references: [id], onDelete: Cascade)
+
+  @@id([lawyerId, cityId])
+  @@index([cityId])
+}
+
+model Education {
+  id          String @id @default(cuid())
+  lawyerId    String
+  lawyer      Lawyer @relation(fields: [lawyerId], references: [id], onDelete: Cascade)
+  degree      String
+  institution String
+  year        Int?
+
+  @@index([lawyerId])
+}
+
+model Chamber {
+  id        String  @id @default(cuid())
+  lawyerId  String
+  lawyer    Lawyer  @relation(fields: [lawyerId], references: [id], onDelete: Cascade)
+  name      String
+  address   String
+  cityId    String
+  city      City    @relation(fields: [cityId], references: [id])
+  phone     String?
+  isPrimary Boolean @default(false)
+  createdAt DateTime @default(now())
+
+  bookings Booking[]
+
+  @@index([lawyerId])
+}
+
+model WeeklyAvailability {
+  id        String @id @default(cuid())
+  lawyerId  String
+  lawyer    Lawyer @relation(fields: [lawyerId], references: [id], onDelete: Cascade)
+  dayOfWeek Int // 0 = Sunday … 6 = Saturday (CHECK 0–6 in migration SQL)
+  startTime Int // minutes since midnight (e.g. 540 = 09:00)
+  endTime   Int // minutes since midnight (e.g. 1020 = 17:00)
+  isActive  Boolean @default(true)
+
+  @@unique([lawyerId, dayOfWeek, startTime])
+  @@index([lawyerId, dayOfWeek])
+}
+
+model DateOverride {
+  id          String   @id @default(cuid())
+  lawyerId    String
+  lawyer      Lawyer   @relation(fields: [lawyerId], references: [id], onDelete: Cascade)
+  date        DateTime @db.Date
+  isAvailable Boolean  @default(true)
+  startTime   Int? // minutes since midnight; null = closed / default rules
+  endTime     Int?
+  reason      String?
+
+  @@unique([lawyerId, date])
+}
+
+model VerificationDocument {
+  id           String    @id @default(cuid())
+  lawyerId     String
+  lawyer       Lawyer    @relation(fields: [lawyerId], references: [id], onDelete: NoAction)
+  type         DocType
+  storageKey   String // private object-store key; signed URLs only
+  mimeType     String
+  sizeBytes    Int
+  status       DocStatus @default(PENDING)
+  reviewedById String?
+  reviewedBy   User?     @relation("DocReviewer", fields: [reviewedById], references: [id], onDelete: NoAction)
+  reviewedAt   DateTime?
+  reviewNote   String?
+  uploadedAt   DateTime  @default(now())
+
+  @@index([lawyerId, status])
+}
+
+model VerificationDecision {
+  id         String             @id @default(cuid())
+  lawyerId   String
+  lawyer     Lawyer             @relation("DecisionLawyer", fields: [lawyerId], references: [id], onDelete: NoAction)
+  adminId    String
+  admin      User               @relation("DecisionAdmin", fields: [adminId], references: [id], onDelete: NoAction)
+  fromStatus VerificationStatus
+  toStatus   VerificationStatus
+  note       String?            @db.Text
+  createdAt  DateTime           @default(now())
+
+  @@index([lawyerId])
+}
+
+// ---------------- Bookings & payments ----------------
+
+model Booking {
+  id           String        @id @default(cuid())
+  clientId     String
+  client       User          @relation("ClientBookings", fields: [clientId], references: [id], onDelete: NoAction)
+  lawyerId     String
+  lawyer       Lawyer        @relation("LawyerBookings", fields: [lawyerId], references: [id], onDelete: NoAction)
+  chamberId    String?
+  chamber      Chamber?      @relation(fields: [chamberId], references: [id], onDelete: NoAction)
+  startAt      DateTime      @db.Timestamptz
+  endAt        DateTime      @db.Timestamptz
+  status       BookingStatus @default(PENDING)
+  mode         BookingMode   @default(IN_CHAMBER)
+  feePaisa     Int // snapshot of the fee at booking time
+  clientPhone  String // contact snapshot; shown to lawyer only after confirmation
+  clientNote   String?       @db.Text
+  cancelledAt  DateTime?
+  cancelReason String?
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+
+  payment Payment?
+  review  Review?
+
+  @@index([lawyerId, startAt])
+  @@index([clientId, status])
+}
+
+model Payment {
+  id           String        @id @default(cuid())
+  bookingId    String?       @unique
+  booking      Booking?      @relation(fields: [bookingId], references: [id], onDelete: NoAction)
+  amountPaisa  Int
+  currency     String        @default("PKR")
+  provider     String // JAZZCASH | EASYPAISA | BANK (real credentials required)
+  status       PaymentStatus @default(PENDING)
+  providerRef  String?
+  attempts     Json? // every attempt preserved across retries
+  failureReason String?
+  paidAt       DateTime?
+  releasedAt   DateTime?
+  refundedAt   DateTime?
+  createdAt    DateTime      @default(now())
+
+  @@index([status])
+}
+
+// ---------------- Reviews (completed bookings only) ----------------
+
+model Review {
+  id        String   @id @default(cuid())
+  bookingId String   @unique // one review per booking (service rule: only COMPLETED)
+  booking   Booking  @relation(fields: [bookingId], references: [id], onDelete: NoAction)
+  lawyerId  String
+  lawyer    Lawyer   @relation("LawyerReviews", fields: [lawyerId], references: [id], onDelete: NoAction)
+  clientId  String
+  client    User     @relation("ClientReviews", fields: [clientId], references: [id], onDelete: NoAction)
+  rating    Int // 1–5 enforced by CHECK constraint in migration SQL
+  comment   String?  @db.Text
+  verified  Boolean  @default(true) // verified client of a completed booking
+  createdAt DateTime @default(now())
+
+  @@index([lawyerId, createdAt])
+}
+
+// ---------------- Notifications & audit ----------------
+
+model Notification {
+  id        String    @id @default(cuid())
+  userId    String
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type      String // booking.confirmed, verification.approved, …
+  title     String
+  body      String?
+  link      String?
+  data      Json?
+  readAt    DateTime?
+  createdAt DateTime  @default(now())
+
+  @@index([userId, readAt])
+}
+
+model AuditLog {
+  id         String   @id @default(cuid())
+  actorId    String?
+  actor      User?    @relation("AuditActor", fields: [actorId], references: [id], onDelete: NoAction)
+  action     String // verification.approved, booking.cancelled, …
+  entityType String
+  entityId   String?
+  metadata   Json?
+  createdAt  DateTime @default(now())
+
+  @@index([entityType, entityId])
+  @@index([actorId, createdAt])
+}
