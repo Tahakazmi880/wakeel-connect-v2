@@ -15,11 +15,13 @@ export function PhotoAvatar({
 }: {
   name: string;
   photo?: string;
-  size?: "sm" | "lg" | "xl" | "2xl";
+  size?: "sm" | "lg" | "xl" | "2xl" | "3xl";
 }) {
   const [failed, setFailed] = useState(false);
   const dims =
-    size === "2xl"
+    size === "3xl"
+      ? "h-56 w-56"
+      : size === "2xl"
       ? "h-40 w-40"
       : size === "xl"
         ? "h-28 w-28"
@@ -27,7 +29,9 @@ export function PhotoAvatar({
           ? "h-12 w-12"
           : "h-20 w-20";
   const text =
-    size === "2xl"
+    size === "3xl"
+      ? "text-7xl"
+      : size === "2xl"
       ? "text-6xl"
       : size === "xl"
         ? "text-4xl"

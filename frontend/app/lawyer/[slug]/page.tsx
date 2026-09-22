@@ -67,7 +67,7 @@ export default async function LawyerProfile({ params }: { params: Promise<{ slug
           {/* Header card */}
           <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
             <div className="flex flex-col gap-5 sm:flex-row">
-              <PhotoAvatar name={lawyer.displayName} photo={lawyer.photo} size="xl" />
+              <PhotoAvatar name={lawyer.displayName} photo={lawyer.photo} size="3xl" />
               <div className="min-w-0 flex-1">
                 <div className="flex flex-wrap items-center gap-2">
                   <h1 className="text-3xl font-extrabold text-slate-900">{lawyer.displayName}</h1>
