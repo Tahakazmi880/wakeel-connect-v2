@@ -15,13 +15,25 @@ export function PhotoAvatar({
 }: {
   name: string;
   photo?: string;
-  size?: "sm" | "lg" | "xl";
+  size?: "sm" | "lg" | "xl" | "2xl";
 }) {
   const [failed, setFailed] = useState(false);
   const dims =
-    size === "xl" ? "h-28 w-28" : size === "sm" ? "h-12 w-12" : "h-20 w-20";
+    size === "2xl"
+      ? "h-32 w-32"
+      : size === "xl"
+        ? "h-28 w-28"
+        : size === "sm"
+          ? "h-12 w-12"
+          : "h-20 w-20";
   const text =
-    size === "xl" ? "text-4xl" : size === "sm" ? "text-lg" : "text-2xl";
+    size === "2xl"
+      ? "text-5xl"
+      : size === "xl"
+        ? "text-4xl"
+        : size === "sm"
+          ? "text-lg"
+          : "text-2xl";
   const plainName = name.replace(" (Demo)", "");
   const initials = plainName
     .split(" ")
@@ -44,7 +56,7 @@ export function PhotoAvatar({
   return (
     <img
       src={photo}
-      alt={`Demo portrait of ${plainName}`}
+      alt={`Photo of ${plainName}`}
       onError={() => setFailed(true)}
       loading="lazy"
       className={`shrink-0 rounded-2xl object-cover shadow-inner ring-1 ring-slate-200 ${dims}`}

@@ -11,11 +11,11 @@ export default function LawyerCard({ lawyer }: { lawyer: Lawyer }) {
   const areas = lawyerAreas(lawyer).slice(0, 2);
   return (
     <article className="flex flex-col rounded-3xl border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-1 hover:shadow-xl">
-      <div className="flex gap-4">
-        <PhotoAvatar name={lawyer.displayName} photo={lawyer.photo} />
+      <div className="flex items-start gap-4">
+        <PhotoAvatar name={lawyer.displayName} photo={lawyer.photo} size="2xl" />
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-center gap-2">
-            <Link href={`/lawyer/${lawyer.slug}`} className="truncate text-xl font-extrabold text-slate-900 hover:text-emerald-800">
+            <Link href={`/lawyer/${lawyer.slug}`} className="text-xl font-extrabold leading-snug text-slate-900 hover:text-emerald-800">
               {lawyer.displayName}
             </Link>
           </div>
