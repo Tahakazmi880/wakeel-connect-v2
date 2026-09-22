@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { T } from "@/components/LanguageContext";
-import { Avatar, DemoNotice, PrimaryBtn, Stars, VerifiedBadge } from "@/components/ui";
+import { Avatar, DemoNotice, PrimaryBtn, Rating, VerifiedBadge } from "@/components/ui";
 import { BriefcaseIcon, CalendarIcon, CheckIcon, ClockIcon, DocIcon, UserIcon, WalletIcon } from "@/components/icons";
 import { getLawyer } from "@/lib/data";
 
@@ -27,7 +27,7 @@ export default function LawyerDashboard() {
             <h1 className="flex flex-wrap items-center gap-2 text-2xl font-extrabold text-slate-900">
               {me.displayName} <VerifiedBadge />
             </h1>
-            <Stars rating={me.rating} count={me.reviewCount} />
+            <Rating rating={me.rating} count={me.reviewCount} />
           </div>
         </div>
         <PrimaryBtn href={`/lawyer/${me.slug}`} icon={<UserIcon className="h-6 w-6" />}>

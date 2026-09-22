@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { T } from "./LanguageContext";
-import { AvailableBadge, Stars, VerifiedBadge, nextAvailableText } from "./ui";
+import { AvailableBadge, Rating, Stars, VerifiedBadge, nextAvailableText } from "./ui";
 import { PhotoAvatar } from "./PhotoAvatar";
 import { CalendarIcon, OfficeIcon, VideoIcon } from "./icons";
 import { cityName, formatPKR, lawyerAreas, type Lawyer } from "@/lib/data";
@@ -43,7 +43,7 @@ export default function LawyerCard({ lawyer }: { lawyer: Lawyer }) {
       </div>
 
       <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2 text-base text-slate-600">
-        <Stars rating={lawyer.rating} count={lawyer.reviewCount} />
+        <Rating rating={lawyer.rating} count={lawyer.reviewCount} />
         <span className="inline-flex items-center gap-1 font-semibold text-emerald-700">
           <CalendarIcon className="h-5 w-5" />
           <T en={next.en} ur={next.ur} />

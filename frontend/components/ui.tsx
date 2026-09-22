@@ -14,6 +14,19 @@ export function Stars({ rating, count, className = "" }: { rating: number; count
   );
 }
 
+/** Lawyer rating with zero-review honesty: never shows a star score without reviews. */
+export function Rating({ rating, count, className = "" }: { rating: number; count: number; className?: string }) {
+  if (count === 0) {
+    return (
+      <span className={`inline-flex items-center gap-1 text-base font-semibold text-slate-500 ${className}`}>
+        <StarIcon className="h-5 w-5 text-slate-300" />
+        <T en="No reviews yet" ur="ابھی کوئی رائے نہیں" />
+      </span>
+    );
+  }
+  return <Stars rating={rating} count={count} className={className} />;
+}
+
 /** Green "Verified Lawyer" pill. */
 export function VerifiedBadge({ className = "" }: { className?: string }) {
   return (

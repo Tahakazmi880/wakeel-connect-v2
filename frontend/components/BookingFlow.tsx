@@ -4,7 +4,7 @@ import { useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { T } from "./LanguageContext";
-import { PrimaryBtn, SecondaryBtn, Stars, VerifiedBadge } from "./ui";
+import { PrimaryBtn, Rating, SecondaryBtn, VerifiedBadge } from "./ui";
 import { PhotoAvatar } from "./PhotoAvatar";
 import {
   CalendarIcon,
@@ -92,7 +92,7 @@ export default function BookingFlow({ lawyerSlug }: { lawyerSlug: string }) {
           <p className="flex flex-wrap items-center gap-2 text-lg font-extrabold text-slate-900">
             {lawyer.displayName} <VerifiedBadge />
           </p>
-          <Stars rating={lawyer.rating} count={lawyer.reviewCount} />
+          <Rating rating={lawyer.rating} count={lawyer.reviewCount} />
         </div>
         <p className="text-xl font-extrabold text-emerald-800">{fee}</p>
       </div>

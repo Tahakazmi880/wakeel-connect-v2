@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { T } from "@/components/LanguageContext";
-import { AvailableBadge, DemoNotice, PrimaryBtn, SecondaryBtn, Stars, VerifiedBadge } from "@/components/ui";
+import { AvailableBadge, DemoNotice, PrimaryBtn, Rating, SecondaryBtn, Stars, VerifiedBadge } from "@/components/ui";
 import { PhotoAvatar } from "@/components/PhotoAvatar";
 import {
   BriefcaseIcon,
@@ -75,7 +75,7 @@ export default async function LawyerProfile({ params }: { params: Promise<{ slug
                 </div>
                 <p className="mt-2 text-lg text-slate-600">{lawyer.headline}</p>
                 <div className="mt-3 flex flex-wrap items-center gap-x-5 gap-y-2 text-base">
-                  <Stars rating={lawyer.rating} count={lawyer.reviewCount} />
+                  <Rating rating={lawyer.rating} count={lawyer.reviewCount} />
                   <span className="font-semibold text-slate-600">
                     <T en={`${lawyer.yearsExperience} years experience`} ur={`${lawyer.yearsExperience} سال تجربہ`} />
                   </span>
@@ -164,6 +164,12 @@ export default async function LawyerProfile({ params }: { params: Promise<{ slug
             <h2 className="text-2xl font-extrabold text-slate-900">
               <T en={`Client reviews (${lawyer.reviewCount})`} ur={`کلائنٹ کی آراء (${lawyer.reviewCount})`} />
             </h2>
+            {lawyer.reviewCount === 0 ? (
+              <p className="mt-4 rounded-2xl bg-slate-50 p-5 text-base text-slate-600">
+                <T en="No client reviews yet. Book a consultation — after your case, your review will appear here."
+                   ur="ابھی کوئی رائے نہیں۔ مشورہ بک کریں — آپ کے کیس کے بعد آپ کی رائے یہاں نظر آئے گی۔" />
+              </p>
+            ) : (
             <div className="mt-4 flex items-center gap-4">
               <p className="text-5xl font-extrabold text-slate-900">{lawyer.rating.toFixed(1)}</p>
               <div className="flex-1 space-y-1.5">
@@ -177,6 +183,7 @@ export default async function LawyerProfile({ params }: { params: Promise<{ slug
                 ))}
               </div>
             </div>
+            )}
             <div className="mt-6 space-y-4">
               {lawyer.reviews.map((r) => (
                 <div key={r.id} className="rounded-2xl bg-slate-50 p-5">
