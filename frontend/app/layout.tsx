@@ -1,20 +1,26 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import { LanguageProvider } from "@/components/LanguageContext";
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
 
 export const metadata: Metadata = {
-  title: "wakeel.connect — Verified Lawyers in Pakistan",
+  title: "wakeel.connect — Pakistan ke Verified Wakeel",
   description:
-    "Find and book verified lawyers across Pakistan. Bar Council verified profiles, transparent fees, online or in-chamber consultations.",
+    "Find verified lawyers across Pakistan. Book video consultations or chamber visits in 3 easy steps. Family, criminal, property, corporate law and more.",
+  metadataBase: new URL("https://wakeel.connect"),
 };
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body className="bg-slate-50 text-slate-900 antialiased">
+        <LanguageProvider>
+          <Header />
+          <main className="min-h-[60vh]">{children}</main>
+          <Footer />
+        </LanguageProvider>
+      </body>
     </html>
   );
 }

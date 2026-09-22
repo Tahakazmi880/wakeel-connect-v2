@@ -1,9 +1,41 @@
 @import "tailwindcss";
 
 :root {
-  --brand: #0b5fff;
+  --wc-green: #047857;
+  --wc-green-dark: #065f46;
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 body {
-  font-family: ui-sans-serif, system-ui, sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+/* Big, visible focus rings for keyboard + low-vision users */
+:focus-visible {
+  outline: 3px solid #f59e0b;
+  outline-offset: 2px;
+  border-radius: 8px;
+}
+
+/* Subtle dotted texture for the hero */
+.wc-hero-pattern {
+  background-image: radial-gradient(rgba(255, 255, 255, 0.14) 1.5px, transparent 1.5px);
+  background-size: 26px 26px;
+}
+
+/* Thin scrollbar for the slot/date rails */
+.wc-rail {
+  scrollbar-width: thin;
+  scrollbar-color: #a7f3d0 transparent;
+}
+.wc-rail::-webkit-scrollbar {
+  height: 8px;
+}
+.wc-rail::-webkit-scrollbar-thumb {
+  background: #a7f3d0;
+  border-radius: 8px;
 }
