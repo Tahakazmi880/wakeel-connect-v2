@@ -306,36 +306,56 @@ export default function Home() {
         <div className="mx-auto max-w-7xl px-4">
           <SectionHead
             eyebrowUr="عدالتیں"
-            title={<T en="Lawyers by high court" ur="ہائی کورٹ کے حساب سے وکیل" />}
+            title={<T en="Lawyers by court" ur="عدالت کے حساب سے وکیل" />}
           />
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
+          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
             {COURTS.map((c) => {
               const city = getCity(c.citySlug);
               return (
                 <Link
                   key={c.slug}
                   href={`/lawyers?court=${c.slug}`}
-                  className="group flex flex-col items-center rounded-3xl bg-white p-6 text-center shadow-sm ring-1 ring-emerald-100 transition hover:-translate-y-1 hover:shadow-lg"
+                  className="group overflow-hidden rounded-3xl bg-white text-center shadow-sm ring-1 ring-emerald-100 transition hover:-translate-y-1 hover:shadow-lg"
                 >
-                  <span className="flex h-14 w-14 items-center justify-center rounded-2xl bg-emerald-700 text-white">
-                    <BriefcaseIcon className="h-7 w-7" />
-                  </span>
-                  <p className="mt-4 text-lg font-extrabold text-slate-900 group-hover:text-emerald-800">
-                    <T en={c.nameEn} ur={c.nameUr} />
-                  </p>
-                  {city && (
-                    <p className="mt-1 inline-flex items-center gap-1 text-sm font-bold text-slate-500">
-                      <PinIcon className="h-4 w-4" />
-                      <T en={city.nameEn} ur={city.nameUr} />
-                    </p>
+                  {c.image ? (
+                    <div className="relative h-40 overflow-hidden">
+                      <img
+                        src={c.image}
+                        alt={c.nameEn}
+                        loading="lazy"
+                        className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
+                      />
+                      <span className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
+                      <span className="absolute bottom-3 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full bg-white/95 px-3 py-1 text-xs font-extrabold text-emerald-800">
+                        <T en={`${countByCourt(c.slug)} lawyers`} ur={`${countByCourt(c.slug)} وکیل`} />
+                      </span>
+                    </div>
+                  ) : (
+                    <div className="flex h-40 flex-col items-center justify-center gap-2 bg-gradient-to-br from-emerald-700 to-emerald-900 text-white">
+                      <BriefcaseIcon className="h-10 w-10 opacity-90" />
+                      <span className="rounded-full bg-white/15 px-3 py-1 text-xs font-extrabold">
+                        <T en={`${countByCourt(c.slug)} lawyers`} ur={`${countByCourt(c.slug)} وکیل`} />
+                      </span>
+                    </div>
                   )}
-                  <p className="mt-3 inline-flex min-h-[44px] items-center rounded-full bg-emerald-50 px-4 text-sm font-extrabold text-emerald-800">
-                    <T en={`${countByCourt(c.slug)} lawyers`} ur={`${countByCourt(c.slug)} وکیل`} />
-                  </p>
+                  <div className="p-5">
+                    <p className="text-lg font-extrabold text-slate-900 group-hover:text-emerald-800">
+                      <T en={c.nameEn} ur={c.nameUr} />
+                    </p>
+                    {city && (
+                      <p className="mt-1 inline-flex items-center gap-1 text-sm font-bold text-slate-500">
+                        <PinIcon className="h-4 w-4" />
+                        <T en={city.nameEn} ur={city.nameUr} />
+                      </p>
+                    )}
+                  </div>
                 </Link>
               );
             })}
           </div>
+          <p className="mt-4 text-center text-xs text-slate-400">
+            <T en="Court photos: Wikimedia Commons contributors (CC BY-SA)" ur="عدالتوں کی تصاویر: ویکیمیڈیا کامنز (CC BY-SA)" />
+          </p>
         </div>
       </section>
 

@@ -42,7 +42,7 @@ const STATS = [
   { target: LAWYERS.length, en: "Lawyers", ur: "وکیل" },
   { target: CITIES.length, en: "Cities", ur: "شہر" },
   { target: PRACTICE_AREAS.length, en: "Practice Areas", ur: "قانونی شعبے" },
-  { target: COURTS.length, en: "High Courts", ur: "ہائی کورٹس" },
+  { target: COURTS.length, en: "Courts", ur: "عدالتیں" },
 ];
 
 /** Dark emerald animated stats band. */

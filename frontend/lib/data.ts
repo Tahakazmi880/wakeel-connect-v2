@@ -119,14 +119,17 @@ export interface Court {
   nameEn: string;
   nameUr: string;
   citySlug: string; // home city of the court
+  image?: string; // /courts/<slug>.jpg — real building photo (Wikimedia Commons, CC BY-SA)
 }
 
 export const COURTS: Court[] = [
-  { slug: "sindh-high-court", nameEn: "Sindh High Court", nameUr: "سندھ ہائی کورٹ", citySlug: "karachi" },
-  { slug: "lahore-high-court", nameEn: "Lahore High Court", nameUr: "لاہور ہائی کورٹ", citySlug: "lahore" },
+  { slug: "supreme-court-pakistan", nameEn: "Supreme Court of Pakistan", nameUr: "سپریم کورٹ آف پاکستان", citySlug: "islamabad", image: "/courts/supreme-court-pakistan.jpg" },
+  { slug: "sindh-high-court", nameEn: "Sindh High Court", nameUr: "سندھ ہائی کورٹ", citySlug: "karachi", image: "/courts/sindh-high-court.jpg" },
+  { slug: "lahore-high-court", nameEn: "Lahore High Court", nameUr: "لاہور ہائی کورٹ", citySlug: "lahore", image: "/courts/lahore-high-court.jpg" },
   { slug: "islamabad-high-court", nameEn: "Islamabad High Court", nameUr: "اسلام آباد ہائی کورٹ", citySlug: "islamabad" },
   { slug: "peshawar-high-court", nameEn: "Peshawar High Court", nameUr: "پشاور ہائی کورٹ", citySlug: "peshawar" },
-  { slug: "balochistan-high-court", nameEn: "Balochistan High Court", nameUr: "بلوچستان ہائی کورٹ", citySlug: "quetta" },
+  { slug: "balochistan-high-court", nameEn: "Balochistan High Court", nameUr: "بلوچستان ہائی کورٹ", citySlug: "quetta", image: "/courts/balochistan-high-court.jpg" },
+  { slug: "city-courts-karachi", nameEn: "City Courts Karachi", nameUr: "سٹی کورٹس کراچی", citySlug: "karachi", image: "/courts/city-courts-karachi.jpg" },
 ];
 
 export function getCourt(slug: string): Court | undefined {
