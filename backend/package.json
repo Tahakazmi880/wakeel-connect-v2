@@ -1,0 +1,29 @@
+{
+  "dependencies": {
+    "@fastify/cors": "^10.0.1",
+    "@prisma/client": "^6.0.0",
+    "dotenv": "^16.4.5",
+    "fastify": "^5.2.0"
+  },
+  "description": "Wakeel Connect API — Fastify + Prisma + PostgreSQL",
+  "devDependencies": {
+    "@types/node": "^20.14.0",
+    "prisma": "^6.0.0",
+    "tsx": "^4.16.2",
+    "typescript": "^5.5.4"
+  },
+  "name": "wakeel-connect-backend",
+  "private": true,
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "dev": "tsx watch src/server.ts",
+    "prisma:deploy": "prisma migrate deploy",
+    "prisma:generate": "prisma generate",
+    "prisma:migrate": "prisma migrate dev",
+    "prisma:seed": "tsx prisma/seed.ts",
+    "prisma:studio": "prisma studio",
+    "start": "node dist/server.js",
+    "typecheck": "tsc --noEmit && tsc --noEmit prisma/seed.ts --esModuleInterop --skipLibCheck --module nodenext --moduleResolution nodenext --target es2022 --strict"
+  },
+  "version": "0.1.0"
+}

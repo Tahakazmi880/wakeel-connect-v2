@@ -1,0 +1,33 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.*
+
+# Build outputs
+dist/
+.next/
+out/
+build/
+
+# Environment & secrets — NEVER commit real credentials
+.env
+.env.*
+!.env.example
+
+# Prisma
+# (migrations are committed; generated client is not)
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.swp
+
+# Test / coverage
+coverage/
+.nyc_output/
