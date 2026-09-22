@@ -51,7 +51,7 @@ export function Avatar({ name, size = "lg" }: { name: string; size?: "sm" | "lg"
   const dims = size === "xl" ? "h-28 w-28 text-4xl" : size === "sm" ? "h-12 w-12 text-lg" : "h-20 w-20 text-2xl";
   return (
     <div
-      className={`flex shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-600 to-emerald-900 font-extrabold text-white shadow-inner ${dims}`}
+      className={`flex shrink-0 items-center justify-center rounded-2xl bg-linear-to-br from-emerald-600 to-emerald-900 font-extrabold text-white shadow-inner ${dims}`}
       aria-hidden
     >
       {initials}

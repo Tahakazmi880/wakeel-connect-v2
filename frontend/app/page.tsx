@@ -38,7 +38,7 @@ export default function Home() {
   return (
     <>
       {/* ============ HERO ============ */}
-      <section className="wc-hero-pattern relative overflow-hidden bg-gradient-to-br from-emerald-950 via-emerald-900 to-emerald-700">
+      <section className="wc-hero-pattern relative overflow-hidden bg-linear-to-br from-emerald-950 via-emerald-900 to-emerald-700">
         <div className="mx-auto max-w-7xl px-4 pb-16 pt-14 text-center sm:pt-20">
           <p className="inline-flex items-center gap-2 rounded-full bg-white/10 px-5 py-2 text-base font-bold text-emerald-100 ring-1 ring-white/20">
             <ShieldIcon className="h-5 w-5 text-amber-300" />
@@ -183,7 +183,7 @@ export default function Home() {
 
       {/* ============ JOIN CTA ============ */}
       <section className="mx-auto max-w-7xl px-4 pb-4">
-        <div className="wc-hero-pattern overflow-hidden rounded-[2rem] bg-gradient-to-br from-emerald-800 to-emerald-600 p-10 text-center shadow-xl sm:p-14">
+        <div className="wc-hero-pattern overflow-hidden rounded-[2rem] bg-linear-to-br from-emerald-800 to-emerald-600 p-10 text-center shadow-xl sm:p-14">
           <span className="mx-auto flex h-20 w-20 items-center justify-center rounded-3xl bg-white/15 text-white">
             <UserIcon className="h-10 w-10" />
           </span>

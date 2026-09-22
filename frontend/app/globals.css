@@ -21,10 +21,23 @@ body {
   border-radius: 8px;
 }
 
-/* Subtle dotted texture for the hero */
+/* Subtle dotted texture for the hero — rendered as an overlay so it never
+   overrides the Tailwind gradient background underneath */
 .wc-hero-pattern {
-  background-image: radial-gradient(rgba(255, 255, 255, 0.14) 1.5px, transparent 1.5px);
+  position: relative;
+}
+.wc-hero-pattern::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background-image: radial-gradient(rgba(255, 255, 255, 0.14) 1.5px, transparent 1.6px);
   background-size: 26px 26px;
+  pointer-events: none;
+}
+.wc-hero-pattern > * {
+  position: relative;
+  z-index: 1;
 }
 
 /* Thin scrollbar for the slot/date rails */
