@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { LangToggle, T } from "./LanguageContext";
-import { BriefcaseIcon, CloseIcon, MenuIcon, PhoneIcon, SearchIcon } from "./icons";
+import { BriefcaseIcon, CloseIcon, DocIcon, MenuIcon, PhoneIcon, SearchIcon } from "./icons";
 
 function Logo() {
   return (
@@ -25,6 +25,7 @@ export default function Header() {
     { href: "/lawyers", en: "Find a Lawyer", ur: "وکیل تلاش کریں", icon: <SearchIcon className="h-5 w-5" /> },
     { href: "/practice-areas", en: "Practice Areas", ur: "قانونی شعبے", icon: <BriefcaseIcon className="h-5 w-5" /> },
     { href: "/cities", en: "Cities", ur: "شہر", icon: <SearchIcon className="h-5 w-5" /> },
+    { href: "/guides", en: "Legal Guides", ur: "قانونی رہنمائی", icon: <DocIcon className="h-5 w-5" /> },
   ];
   return (
     <header className="sticky top-0 z-40 border-b border-emerald-100 bg-white/95 backdrop-blur">
