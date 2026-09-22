@@ -1,0 +1,38 @@
+import type { Metadata } from "next";
+import Link from "next/link";
+import { T } from "@/components/LanguageContext";
+import { SectionHead } from "@/components/ui";
+import { ArrowIcon } from "@/components/icons";
+import { CITIES, LAWYERS } from "@/lib/data";
+
+export const metadata: Metadata = {
+  title: "Lawyers by City — wakeel.connect",
+  description: "Find verified lawyers in Karachi, Lahore, Islamabad, Rawalpindi and more cities across Pakistan.",
+};
+
+export default function CitiesHub() {
+  return (
+    <div className="mx-auto max-w-7xl px-4 py-12">
+      <SectionHead
+        eyebrowUr="شہر"
+        title={<T en="Lawyers across Pakistan" ur="پورے پاکستان میں وکیل" />}
+        sub={<T en="Choose your city to see verified lawyers near you." ur="اپنے قریب تصدیق شدہ وکیل دیکھنے کے لیے اپنا شہر چنیں۔" />}
+      />
+      <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
+        {CITIES.map((c) => {
+          const n = LAWYERS.filter((l) => l.citySlug === c.slug).length;
+          return (
+            <Link key={c.slug} href={`/cities/${c.slug}`}
+              className="group rounded-3xl border border-slate-200 bg-white p-6 text-center shadow-sm transition hover:-translate-y-1 hover:border-emerald-300 hover:shadow-xl">
+              <p className="text-xl font-extrabold text-slate-900 group-hover:text-emerald-800"><T en={c.nameEn} ur={c.nameUr} /></p>
+              <p className="mt-1 text-sm font-semibold text-slate-500"><T en={`${n} lawyers`} ur={`${n} وکیل`} /></p>
+              <span className="mt-3 inline-flex items-center gap-1 text-base font-bold text-emerald-700">
+                <T en="View" ur="دیکھیں" /> <ArrowIcon className="h-5 w-5 transition group-hover:translate-x-1" />
+              </span>
+            </Link>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
