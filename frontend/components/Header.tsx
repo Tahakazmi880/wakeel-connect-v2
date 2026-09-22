@@ -3,7 +3,8 @@
 import { useState } from "react";
 import Link from "next/link";
 import { LangToggle, T } from "./LanguageContext";
-import { BriefcaseIcon, CloseIcon, DocIcon, MenuIcon, SearchIcon } from "./icons";
+import { BriefcaseIcon, CalendarIcon, CloseIcon, DocIcon, MenuIcon, PhoneIcon, SearchIcon } from "./icons";
+import { useSession } from "@/lib/session";
 
 function Logo() {
   return (
@@ -21,6 +22,7 @@ function Logo() {
 
 export default function Header() {
   const [open, setOpen] = useState(false);
+  const { session, ready, logout } = useSession();
   const links = [
     { href: "/lawyers", en: "Find a Lawyer", ur: "وکیل تلاش کریں", icon: <SearchIcon className="h-5 w-5" /> },
     { href: "/practice-areas", en: "Practice Areas", ur: "قانونی شعبے", icon: <BriefcaseIcon className="h-5 w-5" /> },
@@ -45,6 +47,23 @@ export default function Header() {
         </nav>
         <div className="flex items-center gap-2">
           <LangToggle />
+          {ready && session ? (
+            <Link
+              href="/dashboard"
+              className="hidden min-h-[48px] items-center gap-2 rounded-2xl border-2 border-emerald-700 px-5 text-base font-bold text-emerald-800 transition hover:bg-emerald-50 md:inline-flex"
+            >
+              <CalendarIcon className="h-5 w-5" />
+              <T en="My bookings" ur="میری بکنگز" />
+            </Link>
+          ) : (
+            <Link
+              href="/login"
+              className="hidden min-h-[48px] items-center gap-2 rounded-2xl border-2 border-emerald-700 px-5 text-base font-bold text-emerald-800 transition hover:bg-emerald-50 md:inline-flex"
+            >
+              <PhoneIcon className="h-5 w-5" />
+              <T en="Login" ur="لاگ اِن" />
+            </Link>
+          )}
           <Link
             href="/join"
             className="hidden min-h-[48px] items-center gap-2 rounded-2xl bg-emerald-700 px-5 text-base font-bold text-white shadow transition hover:bg-emerald-800 md:inline-flex"
@@ -79,6 +98,35 @@ export default function Header() {
             ),
           )}
           {/* Helpline link removed until a real support number is provided — do not ship a fake number. */}
+          {ready && session ? (
+            <>
+              <Link
+                href="/dashboard"
+                onClick={() => setOpen(false)}
+                className="flex min-h-[52px] items-center gap-3 rounded-xl px-3 text-lg font-bold text-slate-700 hover:bg-emerald-50"
+              >
+                <CalendarIcon className="h-5 w-5" />
+                <T en="My bookings" ur="میری بکنگز" />
+              </Link>
+              <button
+                type="button"
+                onClick={() => { logout(); setOpen(false); }}
+                className="flex min-h-[52px] w-full items-center gap-3 rounded-xl px-3 text-lg font-bold text-slate-700 hover:bg-emerald-50"
+              >
+                <PhoneIcon className="h-5 w-5" />
+                <T en="Logout" ur="لاگ آؤٹ" />
+              </button>
+            </>
+          ) : (
+            <Link
+              href="/login"
+              onClick={() => setOpen(false)}
+              className="flex min-h-[52px] items-center gap-3 rounded-xl px-3 text-lg font-bold text-slate-700 hover:bg-emerald-50"
+            >
+              <PhoneIcon className="h-5 w-5" />
+              <T en="Login" ur="لاگ اِن" />
+            </Link>
+          )}
         </nav>
       )}
     </header>

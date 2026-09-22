@@ -16,6 +16,7 @@ import {
   WalletIcon,
 } from "./icons";
 import { formatPKR, getLawyer, nextSlotDays } from "@/lib/data";
+import { saveBooking } from "@/lib/session";
 
 const MODE_LABEL = { video: { en: "Video Call", ur: "ویڈیو کال" }, chamber: { en: "Office Visit", ur: "دفتر کی ملاقات" } };
 
@@ -258,7 +259,26 @@ export default function BookingFlow({ lawyerSlug }: { lawyerSlug: string }) {
                 />
               </label>
               <div className="mt-5">
-                <PrimaryBtn className="w-full" icon={<CheckIcon className="h-6 w-6" />} onClick={() => otp.length === 4 && setStep(3)}>
+                <PrimaryBtn
+                  className="w-full"
+                  icon={<CheckIcon className="h-6 w-6" />}
+                  onClick={() => {
+                    if (otp.length !== 4) return;
+                    saveBooking({
+                      id: bookingRef,
+                      lawyerSlug: lawyer.slug,
+                      mode,
+                      dateLabel: day?.label ?? "",
+                      dateSub: day?.sub ?? "",
+                      time: slot ?? "",
+                      feePaisa: lawyer.consultationFeePaisa,
+                      phone,
+                      createdAt: Date.now(),
+                      status: "upcoming",
+                    });
+                    setStep(3);
+                  }}
+                >
                   <T en="Confirm booking" ur="بکنگ پکی کریں" />
                 </PrimaryBtn>
               </div>
