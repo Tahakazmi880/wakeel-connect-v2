@@ -20,7 +20,7 @@ export function PhotoAvatar({
   const [failed, setFailed] = useState(false);
   const dims =
     size === "2xl"
-      ? "h-32 w-32"
+      ? "h-40 w-40"
       : size === "xl"
         ? "h-28 w-28"
         : size === "sm"
@@ -28,7 +28,7 @@ export function PhotoAvatar({
           : "h-20 w-20";
   const text =
     size === "2xl"
-      ? "text-5xl"
+      ? "text-6xl"
       : size === "xl"
         ? "text-4xl"
         : size === "sm"
