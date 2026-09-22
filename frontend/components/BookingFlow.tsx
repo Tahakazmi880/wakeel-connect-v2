@@ -287,8 +287,8 @@ export default function BookingFlow({ lawyerSlug }: { lawyerSlug: string }) {
           <p className="mx-auto mt-6 flex max-w-md items-start gap-2 text-left text-base text-slate-600">
             <ShieldIcon className="h-6 w-6 shrink-0 text-emerald-700" />
             <T
-              en="Demo booking — no real payment was taken. On the live site you'll pay securely with JazzCash or Easypaisa."
-              ur="ڈیمو بکنگ — کوئی حقیقی ادائیگی نہیں ہوئی۔ اصل سائٹ پر آپ جاز کیش یا ایزی پیسہ سے محفوظ ادائیگی کریں گے۔"
+              en="Demo booking — no real payment was taken. Payment options will appear here on the live site."
+              ur="ڈیمو بکنگ — کوئی حقیقی ادائیگی نہیں ہوئی۔ اصل سائٹ پر ادائیگی کے طریقے یہاں نظر آئیں گے۔"
             />
           </p>
 
@@ -303,7 +303,7 @@ export default function BookingFlow({ lawyerSlug }: { lawyerSlug: string }) {
 
           <p className="mt-6 inline-flex items-center gap-2 text-base font-bold text-slate-500">
             <WalletIcon className="h-5 w-5" />
-            <T en="Pay with JazzCash / Easypaisa at the chamber" ur="چیمبر میں جاز کیش / ایزی پیسہ سے ادائیگی" />
+            <T en="Pay the fee directly to the lawyer" ur="فیس وکیل کو براہِ راست ادا کریں" />
           </p>
         </section>
       )}

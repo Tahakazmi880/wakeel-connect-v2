@@ -214,9 +214,9 @@ export default async function LawyerProfile({ params }: { params: Promise<{ slug
               </SecondaryBtn>
             </div>
             <ul className="mt-6 space-y-3 text-base text-slate-600">
-              <li className="flex gap-2"><CheckBadgeIcon className="h-5 w-5 shrink-0 text-emerald-600" /><T en="Free rescheduling up to 4 hours before" ur="۴ گھنٹے پہلے تک مفت تبدیلی" /></li>
+              <li className="flex gap-2"><CheckBadgeIcon className="h-5 w-5 shrink-0 text-emerald-600" /><T en="Transparent fee — confirmed before you book" ur="واضح فیس — بکنگ سے پہلے تصدیق شدہ" /></li>
               <li className="flex gap-2"><CheckBadgeIcon className="h-5 w-5 shrink-0 text-emerald-600" /><T en="Your number stays private until confirmed" ur="تصدیق تک آپ کا نمبر نجی رہتا ہے" /></li>
-              <li className="flex gap-2"><CheckBadgeIcon className="h-5 w-5 shrink-0 text-emerald-600" /><T en="Pay securely with JazzCash / Easypaisa" ur="جاز کیش / ایزی پیسہ سے محفوظ ادائیگی" /></li>
+              <li className="flex gap-2"><CheckBadgeIcon className="h-5 w-5 shrink-0 text-emerald-600" /><T en="Pay the fee directly — online or at the chamber" ur="فیس براہِ راست ادا کریں — آن لائن یا چیمبر میں" /></li>
             </ul>
           </div>
         </aside>
