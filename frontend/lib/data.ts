@@ -147,7 +147,7 @@ export function getCourt(slug: string): Court | undefined {
 // ---------------- Demo lawyers ----------------
 
 export const LAWYERS: Lawyer[] = [
-  // ============ REAL LAWYERS — The Legal House, Karachi ============
+  // ============ REAL LAWYERS — Karachi Legal House, Karachi ============
   // Real profiles supplied by the client. Fees/experience are placeholders
   // until confirmed — do NOT treat as final without client sign-off.
   {
@@ -155,7 +155,7 @@ export const LAWYERS: Lawyer[] = [
     photo: "/lawyers/shamsuddin-rajper.jpg",
     displayName: "Mr. Shamsuddin Rajper",
     headline: "Founder & Senior Advocate · Ex-Deputy Attorney General for Pakistan",
-    bio: "Founder and Senior Advocate at The Legal House, Karachi. Former Deputy Attorney General for Pakistan and former Vice President of the Sindh High Court Bar Association, Sukkur.",
+    bio: "Founder and Senior Advocate at Karachi Legal House, Karachi. Former Deputy Attorney General for Pakistan and former Vice President of the Sindh High Court Bar Association, Sukkur.",
     bioUrdu: "دی لیگل ہاؤس کراچی کے بانی اور سینئر ایڈووکیٹ۔ سابق ڈپٹی اٹارنی جنرل پاکستان اور سابق نائب صدر سندھ ہائی کورٹ بار ایسوسی ایشن سکھر۔",
     gender: "male",
     citySlug: "karachi",
@@ -166,7 +166,7 @@ export const LAWYERS: Lawyer[] = [
     courts: ["Sindh High Court", "Supreme Court of Pakistan"],
     practiceAreaSlugs: ["constitutional-law", "criminal-law"],
     langCodes: ["ur", "en", "sd"],
-    chamberName: "The Legal House",
+    chamberName: "Karachi Legal House",
     chamberAddress: "Bungalow D-67/2, Lane 6, Block 2, Clifton, Karachi",
     education: [],
     services: [
@@ -174,7 +174,7 @@ export const LAWYERS: Lawyer[] = [
       { nameEn: "Chamber Meeting (30 min)", nameUr: "چیمبر ملاقات", feePaisa: 1500000 },
     ],
     experience: [
-      { title: "Founder & Senior Advocate", org: "The Legal House, Karachi", status: "present" },
+      { title: "Founder & Senior Advocate", org: "Karachi Legal House, Karachi", status: "present" },
       { title: "Deputy Attorney General for Pakistan", org: "Government of Pakistan", status: "former" },
       { title: "Vice President", org: "Sindh High Court Bar Association, Sukkur", status: "former" },
     ],
@@ -189,7 +189,7 @@ export const LAWYERS: Lawyer[] = [
     photo: "/lawyers/fayazuddin-rajper.jpg",
     displayName: "Mr. Fayazuddin Rajper",
     headline: "Managing Partner & Advocate High Court · Corporate Advisory Lead",
-    bio: "Managing Partner and Advocate of the High Court at The Legal House. Holds an LL.M. in Corporate Law and leads the firm's corporate advisory practice.",
+    bio: "Managing Partner and Advocate of the High Court at Karachi Legal House. Holds an LL.M. in Corporate Law and leads the firm's corporate advisory practice.",
     bioUrdu: "دی لیگل ہاؤس میں مینیجنگ پارٹنر اور ایڈووکیٹ ہائی کورٹ۔ کارپوریٹ لا میں ایل ایل ایم اور کارپوریٹ ایڈوائزری پریکٹس کے سربراہ۔",
     gender: "male",
     citySlug: "karachi",
@@ -200,7 +200,7 @@ export const LAWYERS: Lawyer[] = [
     courts: ["Sindh High Court", "District Courts Karachi"],
     practiceAreaSlugs: ["corporate-law", "tax-law"],
     langCodes: ["ur", "en"],
-    chamberName: "The Legal House",
+    chamberName: "Karachi Legal House",
     chamberAddress: "Bungalow D-67/2, Lane 6, Block 2, Clifton, Karachi",
     education: [{ degree: "LL.M. in Corporate Law", institution: "", year: 0 }],
     services: [
@@ -208,7 +208,7 @@ export const LAWYERS: Lawyer[] = [
       { nameEn: "Chamber Meeting (30 min)", nameUr: "چیمبر ملاقات", feePaisa: 800000 },
     ],
     experience: [
-      { title: "Managing Partner — Corporate Advisory Lead", org: "The Legal House, Karachi", status: "present" },
+      { title: "Managing Partner — Corporate Advisory Lead", org: "Karachi Legal House, Karachi", status: "present" },
     ],
     rating: 5.0,
     reviewCount: 0,
@@ -221,7 +221,7 @@ export const LAWYERS: Lawyer[] = [
     photo: "/lawyers/jahangir-shams.jpg",
     displayName: "Mr. Jahangir Shams",
     headline: "Managing Partner & Advocate High Court · Head of Karachi Office",
-    bio: "Managing Partner and Advocate of the High Court at The Legal House. Holds an LL.B. (Hons) and heads the firm's Karachi head office operations.",
+    bio: "Managing Partner and Advocate of the High Court at Karachi Legal House. Holds an LL.B. (Hons) and heads the firm's Karachi head office operations.",
     bioUrdu: "دی لیگل ہاؤس میں مینیجنگ پارٹنر اور ایڈووکیٹ ہائی کورٹ۔ ایل ایل بی (آنرز) اور کراچی ہیڈ آفس آپریشنز کے سربراہ۔",
     gender: "male",
     citySlug: "karachi",
@@ -232,7 +232,7 @@ export const LAWYERS: Lawyer[] = [
     courts: ["Sindh High Court", "City Courts Karachi"],
     practiceAreaSlugs: ["corporate-law", "property-law"],
     langCodes: ["ur", "en"],
-    chamberName: "The Legal House",
+    chamberName: "Karachi Legal House",
     chamberAddress: "Bungalow D-67/2, Lane 6, Block 2, Clifton, Karachi",
     education: [{ degree: "LL.B. (Hons)", institution: "", year: 0 }],
     services: [
@@ -240,7 +240,7 @@ export const LAWYERS: Lawyer[] = [
       { nameEn: "Chamber Meeting (30 min)", nameUr: "چیمبر ملاقات", feePaisa: 800000 },
     ],
     experience: [
-      { title: "Managing Partner — Head of Karachi Office", org: "The Legal House, Karachi", status: "present" },
+      { title: "Managing Partner — Head of Karachi Office", org: "Karachi Legal House, Karachi", status: "present" },
     ],
     rating: 5.0,
     reviewCount: 0,
@@ -253,7 +253,7 @@ export const LAWYERS: Lawyer[] = [
     photo: "/lawyers/raheem-dad-shujrah.jpg",
     displayName: "Mr. Raheem Dad Shujrah",
     headline: "Partner & Advocate High Court · Banking & Property Specialist",
-    bio: "Partner and Advocate of the High Court at The Legal House. Holds an LL.B. from the University of London and specialises in banking and property matters.",
+    bio: "Partner and Advocate of the High Court at Karachi Legal House. Holds an LL.B. from the University of London and specialises in banking and property matters.",
     bioUrdu: "دی لیگل ہاؤس میں پارٹنر اور ایڈووکیٹ ہائی کورٹ۔ یونیورسٹی آف لندن سے ایل ایل بی، بینکاری اور جائیداد کے معاملات کے ماہر۔",
     gender: "male",
     citySlug: "karachi",
@@ -264,7 +264,7 @@ export const LAWYERS: Lawyer[] = [
     courts: ["Sindh High Court", "City Courts Karachi"],
     practiceAreaSlugs: ["banking-finance", "property-law"],
     langCodes: ["ur", "en", "sd"],
-    chamberName: "The Legal House",
+    chamberName: "Karachi Legal House",
     chamberAddress: "Bungalow D-67/2, Lane 6, Block 2, Clifton, Karachi",
     education: [{ degree: "LL.B., University of London", institution: "", year: 0 }],
     services: [
@@ -272,7 +272,7 @@ export const LAWYERS: Lawyer[] = [
       { nameEn: "Chamber Meeting (30 min)", nameUr: "چیمبر ملاقات", feePaisa: 600000 },
     ],
     experience: [
-      { title: "Partner — Banking & Property", org: "The Legal House, Karachi", status: "present" },
+      { title: "Partner — Banking & Property", org: "Karachi Legal House, Karachi", status: "present" },
     ],
     rating: 5.0,
     reviewCount: 0,
