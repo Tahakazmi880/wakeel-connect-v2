@@ -248,6 +248,8 @@ model Lawyer {
   barCouncilNo         String? // enrolment / license number
   enrolmentYear        Int?
   cnicHash             String? // salted hash ONLY — never plaintext CNIC
+  uploadTokenHash      String? // SHA-256 of the one-time document-upload token issued at application time
+  uploadTokenExpiresAt DateTime? // upload token validity (24h); null = no active token
   verificationStatus   VerificationStatus @default(PENDING)
   verifiedAt           DateTime?
   isListed             Boolean            @default(false) // public only after APPROVED

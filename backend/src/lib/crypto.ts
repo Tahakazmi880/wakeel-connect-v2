@@ -5,12 +5,8 @@ export function normalizePhone(input: string): string | null {
   const digits = input.replace(/\D/g, "");
   let local: string | null = null;
   if (/^03\d{9}$/.test(digits)) local = digits; // 03XXXXXXXXX
+  else if (/^3\d{9}$/.test(digits)) local = "0" + digits; // 3XXXXXXXXX (leading zero omitted)
   else if (/^923\d{9}$/.test(digits)) local = "0" + digits.slice(2); // 923XXXXXXXXX
-  else if (/^\+?92?3\d{9}$/.test(input.replace(/\s/g, ""))) {
-    const d = input.replace(/\D/g, "");
-    const stripped = d.startsWith("92") ? d.slice(2) : d;
-    if (/^3\d{9}$/.test(stripped)) local = "0" + stripped;
-  }
   if (!local) return null;
   return "+92" + local.slice(1);
 }
