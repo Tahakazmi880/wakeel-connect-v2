@@ -311,6 +311,40 @@ export default async function Home() {
 
       <SpecialtyCircles />
 
+      {/* ============ PARTNERSHIP — corporate benefits ============ */}
+      <section className="mx-auto max-w-7xl px-4 pt-14 sm:pt-20">
+        <div className="wc-jali relative overflow-hidden rounded-3xl bg-court-900 px-6 py-10 sm:px-12 sm:py-14">
+          <div className="pointer-events-none absolute -right-20 -top-20 h-72 w-72 rounded-full bg-brass-500/15 blur-2xl" aria-hidden />
+          <div className="pointer-events-none absolute -bottom-24 -left-16 h-72 w-72 rounded-full bg-court-500/25 blur-2xl" aria-hidden />
+          <div className="relative flex flex-col items-start gap-8 lg:flex-row lg:items-center lg:justify-between">
+            <div className="max-w-2xl">
+              <p className="text-[0.85rem] font-bold uppercase tracking-[0.2em] text-brass-300">
+                <T en="For businesses & institutions" ur="کاروبار اور اداروں کے لیے" />
+              </p>
+              <h2 className="mt-3 font-display text-[1.7rem] font-semibold leading-snug text-white sm:text-[2.1rem]">
+                <T
+                  en="Avail exclusive partnership benefits for your brand, clients and employees."
+                  ur="اپنے برانڈ، کلائنٹس اور ملازمین کے لیے خصوصی پارٹنرشپ فوائد حاصل کریں۔"
+                />
+              </h2>
+              <p className="mt-3 text-[1.05rem] leading-relaxed text-court-100">
+                <T
+                  en="Partner with wakeel.connect — panel rates, priority bookings and a dedicated legal desk for your team."
+                  ur="wakeel.connect کے ساتھ شراکت کریں — آپ کی ٹیم کے لیے خصوصی رعایتی فیس، ترجیحی بکنگ اور مخصوص لیگل ڈیسک۔"
+                />
+              </p>
+            </div>
+            <Link
+              href="/callback"
+              className="group inline-flex shrink-0 items-center gap-3 rounded-2xl bg-brass-400 px-8 py-4 text-[1.1rem] font-bold text-court-950 shadow-lift transition hover:bg-brass-300"
+            >
+              <T en="Become a Partner" ur="پارٹنر بنیں" />
+              <ArrowIcon className="h-5 w-5 transition group-hover:translate-x-1 rtl:rotate-180" />
+            </Link>
+          </div>
+        </div>
+      </section>
+
       {/* ============ FEATURED LAWYERS ============ */}
       <section className="mx-auto max-w-7xl px-4 pt-14 sm:pt-20">
         <RowHead

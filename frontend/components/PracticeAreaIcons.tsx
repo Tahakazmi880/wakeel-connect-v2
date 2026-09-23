@@ -9,7 +9,7 @@ const NAVY = "#1E3A5F";
 const BLUE = "#3B82C4";
 const LIGHT = "#9FC1E8";
 const BRASS = "#C9A227";
-const GOLD = "#F5C044";
+const GOLD = "#D2A24A";
 const SKIN = "#F0C297";
 const RED = "#D64545";
 const WHITE = "#FFFFFF";
@@ -101,8 +101,8 @@ function LabourLawIcon() {
   return (
     <Frame>
       <path d="M18,37 a14,14 0 0 1 28,0 z" fill={GOLD} />
-      <rect x="29" y="20" width="6" height="13" rx="3" fill="#D9A420" />
-      <rect x="14" y="37" width="36" height="5.5" rx="2.75" fill="#D9A420" />
+      <rect x="29" y="20" width="6" height="13" rx="3" fill="#B98A2E" />
+      <rect x="14" y="37" width="36" height="5.5" rx="2.75" fill="#B98A2E" />
     </Frame>
   );
 }
@@ -116,7 +116,7 @@ function BankingLawIcon() {
       ))}
       <rect x="14" y="46" width="36" height="5" rx="2" fill={NAVY} />
       <circle cx="46" cy="14" r="6.5" fill={GOLD} />
-      <circle cx="46" cy="14" r="4" fill="none" stroke="#D9A420" strokeWidth="1.6" />
+      <circle cx="46" cy="14" r="4" fill="none" stroke="#B98A2E" strokeWidth="1.6" />
     </Frame>
   );
 }
