@@ -5,6 +5,7 @@ import path from "node:path";
 import { ZodError } from "zod";
 import { env, isProd } from "./lib/env.js";
 import { prisma } from "./lib/prisma.js";
+import { bootstrapDatabase } from "./lib/bootstrap.js";
 import { AppError } from "./lib/errors.js";
 import { registerSecurity } from "./plugins/security.js";
 import { authRoutes } from "./routes/auth.js";
@@ -83,6 +84,8 @@ export async function buildApp() {
 
 async function main() {
   const app = await buildApp();
+  // Seed a fresh database (production first deploy) before serving.
+  await bootstrapDatabase();
   // Graceful shutdown: finish in-flight requests, close DB pool.
   for (const sig of ["SIGINT", "SIGTERM"] as const) {
     process.on(sig, async () => {
