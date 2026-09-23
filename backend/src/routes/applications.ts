@@ -16,10 +16,26 @@ const applySchema = z.object({
   fullName: z.string().min(3).max(80),
   phone: z.string().min(10).max(20),
   citySlug: z.string().min(2).max(64),
+  headline: z.string().max(120).optional(),
   yearsExperience: z.number().int().min(0).max(60),
   consultationFeePaisa: z.number().int().min(0).max(10_000_00 * 100),
   barCouncil: z.string().max(80).optional(),
   barCouncilNo: z.string().max(40).optional(),
+  enrolmentYear: z.number().int().min(1950).max(2026).optional(),
+  courts: z.array(z.string().max(80)).max(8).optional(),
+  languageCodes: z.array(z.string().max(8)).max(8).optional(),
+  education: z
+    .array(
+      z.object({
+        degree: z.string().min(2).max(80),
+        institution: z.string().min(2).max(120),
+        year: z.number().int().min(1950).max(2026).optional(),
+      })
+    )
+    .max(5)
+    .optional(),
+  chamberName: z.string().max(120).optional(),
+  chamberAddress: z.string().max(300).optional(),
   practiceAreaSlugs: z.array(z.string().max(64)).min(1).max(6),
   bio: z.string().max(2000).optional(),
 });
@@ -128,22 +144,51 @@ export async function applicationRoutes(app: FastifyInstance) {
 
       const uploadToken = crypto.randomBytes(32).toString("hex");
 
+      // Keep only language codes that exist in the Language table.
+      const langCodes = parsed.data.languageCodes?.length
+        ? (await prisma.language.findMany({ where: { code: { in: parsed.data.languageCodes } }, select: { code: true } })).map((l) => l.code)
+        : [];
+
       const lawyer = await prisma.lawyer.create({
         data: {
           userId: user.id,
           slug,
           displayName: parsed.data.fullName,
+          headline: parsed.data.headline,
           cityId: city.id,
           yearsExperience: parsed.data.yearsExperience,
           consultationFeePaisa: parsed.data.consultationFeePaisa,
           barCouncil: parsed.data.barCouncil,
           barCouncilNo: parsed.data.barCouncilNo,
+          enrolmentYear: parsed.data.enrolmentYear,
+          courts: parsed.data.courts ?? [],
           bio: parsed.data.bio,
           verificationStatus: "PENDING",
           isListed: false,
           uploadTokenHash: hashUploadToken(uploadToken),
           uploadTokenExpiresAt: new Date(Date.now() + UPLOAD_TOKEN_TTL_MS),
           practiceAreas: { create: areas.map((a, i) => ({ practiceAreaId: a.id, isPrimary: i === 0 })) },
+          languages: { create: langCodes.map((code) => ({ langCode: code })) },
+          education: {
+            create: (parsed.data.education ?? []).map((e) => ({
+              degree: e.degree,
+              institution: e.institution,
+              year: e.year,
+            })),
+          },
+          chambers:
+            parsed.data.chamberName || parsed.data.chamberAddress
+              ? {
+                  create: [
+                    {
+                      name: parsed.data.chamberName || "Main chamber",
+                      address: parsed.data.chamberAddress || "",
+                      cityId: city.id,
+                      isPrimary: true,
+                    },
+                  ],
+                }
+              : undefined,
         },
         select: { id: true, slug: true, verificationStatus: true },
       });
