@@ -16,8 +16,10 @@
  */
 
 const RAW_BASE = (process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000").replace(/\/+$/, "");
-export const API_BASE = RAW_BASE;
-export const API_V1 = `${RAW_BASE}/api/v1`;
+// Accept NEXT_PUBLIC_API_URL with or without the /api/v1 suffix — never double it.
+const API_ROOT = RAW_BASE.replace(/\/api\/v1$/, "");
+export const API_BASE = API_ROOT;
+export const API_V1 = `${API_ROOT}/api/v1`;
 
 export function apiUrl(path: string): string {
   return `${API_V1}${path.startsWith("/") ? path : `/${path}`}`;
