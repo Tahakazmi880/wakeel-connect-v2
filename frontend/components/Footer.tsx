@@ -140,6 +140,11 @@ export default function Footer() {
                   </Link>
                 </li>
                 <li>
+                  <Link className={LINK_CLS} href="/callback">
+                    <T en="Request a Callback" ur="کال بیک کی درخواست" />
+                  </Link>
+                </li>
+                <li>
                   <Link className={LINK_CLS} href="/questions">
                     <T en="Q&A Forum" ur="سوال جواب" />
                   </Link>
@@ -147,6 +152,24 @@ export default function Footer() {
               </ul>
             </div>
           </div>
+        </div>
+
+        {/* SEO link mesh: practice area x city */}
+        <div className="mt-12 rounded-2xl bg-ink-50/60 p-6 ring-1 ring-ink-900/5 sm:p-8">
+          <h3 className="mb-5 text-[0.8rem] font-bold uppercase tracking-[0.16em] text-ink-500">
+            <T en="Find lawyers by city & practice area" ur="شہر اور شعبے کے حساب سے وکیل تلاش کریں" />
+          </h3>
+          <ul className="grid gap-x-6 gap-y-2.5 text-[0.95rem] sm:grid-cols-2 lg:grid-cols-4">
+            {CITIES.slice(0, 6).flatMap((c) =>
+              PRACTICE_AREAS.slice(0, 6).map((a) => (
+                <li key={`${c.slug}-${a.slug}`}>
+                  <Link className={LINK_CLS} href={`/${c.slug}/${a.slug}`}>
+                    <T en={`${a.nameEn} Lawyers in ${c.nameEn}`} ur={`${c.nameUr} میں ${a.nameUr} کے وکیل`} />
+                  </Link>
+                </li>
+              ))
+            )}
+          </ul>
         </div>
 
         {/* Bottom bar: © — helpline number goes here once the real one is provided */}

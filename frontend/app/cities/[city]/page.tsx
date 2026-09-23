@@ -2,11 +2,10 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { T } from "@/components/LanguageContext";
-import { PrimaryBtn, SectionHead } from "@/components/ui";
-import LawyerCard from "@/components/LawyerCard";
-import { ArrowIcon, PinIcon } from "@/components/icons";
-import { CITIES, getCity, PRACTICE_AREAS } from "@/lib/data";
-import { API_V1, type LawyerSummary } from "@/lib/api";
+import { PrimaryBtn, SecondaryBtn } from "@/components/ui";
+import FaqAccordion from "@/components/FaqAccordion";
+import { ArrowIcon, CheckBadgeIcon, PinIcon } from "@/components/icons";
+import { CITIES, getCity, PRACTICE_AREAS, COURTS } from "@/lib/data";
 
 export async function generateStaticParams() {
   return CITIES.map((c) => ({ city: c.slug }));
@@ -18,87 +17,168 @@ export async function generateMetadata({ params }: { params: Promise<{ city: str
   if (!c) return {};
   return {
     title: `Lawyers in ${c.nameEn} — wakeel.connect`,
-    description: `Find lawyers in ${c.nameEn}. Compare fees, ratings and experience, then book a video consultation or chamber visit in 3 steps.`,
+    description: `Find the best lawyers in ${c.nameEn} by practice area or court. Book a video consultation or chamber visit in 3 easy steps.`,
   };
 }
 
-async function fetchCityLawyers(citySlug: string): Promise<LawyerSummary[]> {
-  try {
-    const res = await fetch(`${API_V1}/lawyers?city=${citySlug}&limit=50`, { next: { revalidate: 60 } });
-    if (!res.ok) return [];
-    const data = await res.json();
-    if (!data?.ok) return [];
-    return data.lawyers ?? [];
-  } catch {
-    return [];
-  }
-}
-
+/**
+ * Pure directory hub (oladoc city-root pattern): banner + H1 + intro,
+ * practice-area link grids, court links, city FAQs. No lawyer listings —
+ * every link funnels into a filtered listing page.
+ */
 export default async function CityPage({ params }: { params: Promise<{ city: string }> }) {
   const { city } = await params;
   const c = getCity(city);
   if (!c) notFound();
-  const lawyers = await fetchCityLawyers(c.slug);
-  const areaSlugs = new Set<string>();
-  for (const l of lawyers) for (const a of l.practiceAreas) areaSlugs.add(a.practiceArea.slug);
-  const areasHere = PRACTICE_AREAS.filter((a) => areaSlugs.has(a.slug));
+  const courtsHere = COURTS.filter((k) => k.citySlug === c.slug);
+
+  const faqs = [
+    {
+      qEn: `How do I book a lawyer in ${c.nameEn}?`,
+      qUr: `${c.nameUr} میں وکیل کیسے بک کروں؟`,
+      aEn: "Pick a practice area above, choose a lawyer, select a day and time, then verify your mobile number with a code. That's it — three steps, no account or password needed.",
+      aUr: "اوپر کوئی قانونی شعبہ چنیں، وکیل منتخب کریں، دن اور وقت منتخب کریں، پھر کوڈ سے موبائل نمبر کی تصدیق کریں۔ بس — تین مراحل، نہ اکاؤنٹ نہ پاس ورڈ۔",
+    },
+    {
+      qEn: `What are the consultation fees in ${c.nameEn}?`,
+      qUr: `${c.nameUr} میں مشاورت کی فیس کیا ہے؟`,
+      aEn: "Every lawyer sets their own fee and it is shown on their profile before you book — never after. Some lawyers keep the fee on request; you can message them through the platform to ask.",
+      aUr: "ہر وکیل اپنی فیس خود طے کرتا ہے اور بکنگ سے پہلے پروفائل پر لکھی ہوتی ہے — بعد میں نہیں۔ کچھ وکیلوں کی فیس معلوم کرنے پر بتائی جاتی ہے؛ پلیٹ فارم کے ذریعے پوچھ سکتے ہیں۔",
+    },
+    {
+      qEn: "Are these lawyers verified?",
+      qUr: "کیا یہ وکیل تصدیق شدہ ہیں؟",
+      aEn: "Every public profile is reviewed by our team before it goes live. Lawyers submit their CNIC and Bar Council documents through our portal, and our team checks them before listing.",
+      aUr: "عوامی ہونے سے پہلے ہماری ٹیم ہر پروفائل کا جائزہ لیتی ہے۔ وکیل اپنے شناختی کارڈ اور بار کونسل کی دستاویزات ہمارے پورٹل پر جمع کراتے ہیں، اور ہماری ٹیم درج کرنے سے پہلے ان کی جانچ کرتی ہے۔",
+    },
+    {
+      qEn: "Can I consult a lawyer online instead of visiting?",
+      qUr: "کیا میں ملاقات کے بجائے آن لائن مشورہ لے سکتا ہوں؟",
+      aEn: "Yes — many lawyers offer video consultations. Look for the video option when you book; you can join from anywhere in Pakistan with your phone or laptop.",
+      aUr: "جی ہاں — کئی وکیل ویڈیو مشاورت دیتے ہیں۔ بکنگ کے وقت ویڈیو کا آپشن دیکھیں؛ فون یا لیپ ٹاپ سے پاکستان میں کہیں سے بھی شامل ہو سکتے ہیں۔",
+    },
+    {
+      qEn: "What if I need to reschedule or cancel?",
+      qUr: "اگر وقت بدلنا یا منسوخ کرنا ہو تو؟",
+      aEn: "Open your dashboard, find the booking, and choose reschedule or cancel. Rescheduling is free; please do it as early as you can so someone else can take the slot.",
+      aUr: "اپنا ڈیش بورڈ کھولیں، بکنگ تلاش کریں، اور وقت بدلیں یا منسوخ کریں کا انتخاب کریں۔ وقت بدلنا مفت ہے؛ جتنی جلدی ہو سکے کریں تاکہ کوئی اور یہ وقت لے سکے۔",
+    },
+    {
+      qEn: "My legal problem is complicated — who should I talk to first?",
+      qUr: "میرا قانونی مسئلہ پیچیدہ ہے — پہلے کس سے بات کروں؟",
+      aEn: "If you're not sure which lawyer fits your case, request a callback — tell us your matter and our team will call you back within 24 hours and point you to the right lawyers.",
+      aUr: "اگر سمجھ نہ آئے کہ آپ کے کیس کے لیے کون سا وکیل درست ہے تو کال بیک کی درخواست کریں — اپنا مسئلہ بتائیں اور ہماری ٹیم ۲۴ گھنٹوں میں آپ کو کال کر کے درست وکیلوں کی طرف رہنمائی کرے گی۔",
+    },
+  ];
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-10">
-      <p className="inline-flex items-center gap-2 rounded-full bg-court-50 px-4 py-1.5 text-sm font-bold text-court-800 ring-1 ring-court-700/20">
-        <PinIcon className="h-4 w-4" /> <T en={c.province} ur={c.nameUr} />
-      </p>
-      <h1 className="mt-3 font-display text-[2.5rem] font-semibold leading-tight text-ink-950 sm:text-5xl">
-        <T en={<>Lawyers in <span className="text-court-700">{c.nameEn}</span></>} ur={<><span className="text-court-700">{c.nameUr}</span> میں وکیل</>} />
-      </h1>
-      <p className="mt-4 max-w-3xl text-lg leading-relaxed text-ink-600">
-        <T
-          en={`Looking for a wakeel in ${c.nameEn}? Compare ${lawyers.length} ${lawyers.length === 1 ? "lawyer" : "lawyers"} below — check their experience, fees and client reviews, then book a video call or chamber visit in 3 easy steps.`}
-          ur={`${c.nameUr} میں وکیل تلاش کر رہے ہیں؟ نیچے ${lawyers.length} وکیلوں کا موازنہ کریں — تجربہ، فیس اور آراء دیکھیں، پھر صرف ۳ مراحل میں ویڈیو کال یا ملاقات بک کریں۔`}
-        />
-      </p>
-
-      {lawyers.length > 0 ? (
-        <div className="mt-8 grid gap-6 md:grid-cols-2 xl:grid-cols-3">
-          {lawyers.map((l) => <LawyerCard key={l.slug} lawyer={l} />)}
+      {/* ============ BANNER ============ */}
+      <div className="relative overflow-hidden rounded-[1.75rem] bg-ink-950 shadow-lift">
+        <div className="absolute inset-0 bg-gradient-to-l from-court-800 via-court-900 to-ink-950" aria-hidden />
+        <div className="absolute -right-20 -top-20 h-72 w-72 rounded-full bg-brass-500/25 blur-3xl" aria-hidden />
+        <div className="relative p-7 sm:p-10 lg:p-12">
+          <p className="inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-2 text-[0.95rem] font-bold text-paper ring-1 ring-white/20">
+            <PinIcon className="h-5 w-5 text-brass-300" />
+            <T en={c.province} ur={c.nameUr} />
+          </p>
+          <h1 className="mt-5 max-w-3xl font-display text-[2.4rem] font-semibold leading-[1.12] text-white sm:text-[3rem]">
+            <T
+              en={<>Find and book the <span className="text-brass-300">best lawyers</span> in {c.nameEn}</>}
+              ur={<>{c.nameUr} میں <span className="text-brass-300">بہترین وکیل</span> تلاش کریں اور بک کریں</>}
+            />
+          </h1>
+          <p className="mt-4 max-w-2xl text-[1.1rem] leading-relaxed text-ink-200">
+            <T
+              en={`Browse ${c.nameEn}'s lawyers by the legal problem you have — family, criminal, property, corporate and more. Video consultation or chamber visit, booked in 3 easy steps.`}
+              ur={`اپنے قانونی مسئلے کے حساب سے ${c.nameUr} کے وکیل دیکھیں — خاندانی، فوجداری، جائیداد، کاروباری اور مزید۔ ویڈیو مشاورت یا چیمبر ملاقات، صرف ۳ آسان مراحل میں۔`}
+            />
+          </p>
+          <p className="mt-5 inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-2 text-[0.95rem] font-bold text-paper ring-1 ring-white/20">
+            <CheckBadgeIcon className="h-5 w-5 text-brass-300" />
+            <T en="Every profile is reviewed by our team" ur="ہر پروفائل ہماری ٹیم کی نظر سے گزرتا ہے" />
+          </p>
         </div>
-      ) : (
-        <p className="mt-8 rounded-lg bg-white p-8 text-center text-lg text-ink-600 ring-1 ring-ink-900/10">
-          <T en="No lawyers listed in this city yet — check back soon." ur="اس شہر میں ابھی کوئی وکیل درج نہیں — جلد دوبارہ دیکھیں۔" />
-        </p>
-      )}
+      </div>
 
-      {areasHere.length > 0 && (
+      {/* ============ BEST {AREA} IN {CITY} ============ */}
+      <section className="mt-14">
+        <div className="mb-6">
+          <p className="wc-kicker"><T en="Browse by legal problem" ur="قانونی مسئلے کے حساب سے" /></p>
+          <h2 className="mt-2 font-display text-[1.7rem] font-semibold text-ink-950 sm:text-[2rem]">
+            <T en={`Best lawyers in ${c.nameEn} — by practice area`} ur={`${c.nameUr} میں بہترین وکیل — شعبے کے حساب سے`} />
+          </h2>
+        </div>
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          {PRACTICE_AREAS.map((a) => (
+            <Link
+              key={a.slug}
+              href={`/${c.slug}/${a.slug}`}
+              className="group flex min-h-[64px] items-center justify-between rounded-lg border border-ink-900/10 bg-white px-5 py-4 shadow-card transition hover:border-court-700/40 hover:shadow-lift"
+            >
+              <span className="text-[1.05rem] font-bold text-ink-950 transition group-hover:text-court-800">
+                <T en={`Best ${a.nameEn} in ${c.nameEn}`} ur={`${c.nameUr} میں بہترین ${a.nameUr}`} />
+              </span>
+              <ArrowIcon className="h-5 w-5 shrink-0 text-ink-300 transition group-hover:text-court-600" />
+            </Link>
+          ))}
+        </div>
+      </section>
+
+      {/* ============ COURTS IN THIS CITY ============ */}
+      {courtsHere.length > 0 && (
         <section className="mt-14">
-          <SectionHead eyebrowEn="Browse" eyebrowUr="شعبے" title={<T en={`Legal help in ${c.nameEn}`} ur={`${c.nameUr} میں قانونی مدد`} />} />
-          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
-            {areasHere.map((a) => (
-              <Link key={a.slug} href={`/${c.slug}/${a.slug}`}
-                className="group flex min-h-[64px] items-center justify-between rounded-lg border border-ink-900/10 bg-white px-5 py-4 shadow-card transition hover:border-court-700/40 hover:shadow-lift">
-                <span className="text-[1.05rem] font-bold text-ink-950 transition group-hover:text-court-800"><T en={a.nameEn} ur={a.nameUr} /></span>
-                <ArrowIcon className="h-5 w-5 text-ink-300 group-hover:text-court-600" />
+          <div className="mb-6">
+            <p className="wc-kicker"><T en="Courts" ur="عدالتیں" /></p>
+            <h2 className="mt-2 font-display text-[1.7rem] font-semibold text-ink-950 sm:text-[2rem]">
+              <T en={`Courts in ${c.nameEn}`} ur={`${c.nameUr} کی عدالتیں`} />
+            </h2>
+          </div>
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            {courtsHere.map((k) => (
+              <Link
+                key={k.slug}
+                href={`/lawyers?court=${k.slug}`}
+                className="group flex min-h-[64px] items-center justify-between rounded-lg border border-ink-900/10 bg-white px-5 py-4 shadow-card transition hover:border-court-700/40 hover:shadow-lift"
+              >
+                <span className="text-[1.05rem] font-bold text-ink-950 transition group-hover:text-court-800">
+                  <T en={k.nameEn} ur={k.nameUr} />
+                </span>
+                <ArrowIcon className="h-5 w-5 shrink-0 text-ink-300 transition group-hover:text-court-600" />
               </Link>
             ))}
           </div>
         </section>
       )}
 
-      <section className="mt-14 rounded-lg bg-white p-8 ring-1 ring-ink-900/10">
-        <h2 className="font-display text-[1.65rem] font-semibold text-ink-950"><T en={`FAQs — lawyers in ${c.nameEn}`} ur={`${c.nameUr} میں وکیل — سوالات`} /></h2>
-        <div className="mt-4 space-y-4 text-lg text-ink-700">
-          <div>
-            <p className="font-bold text-ink-950"><T en="How do I book a lawyer in this city?" ur="اس شہر میں وکیل کیسے بک کروں؟" /></p>
-            <p><T en="Pick a lawyer, choose a time, then verify your phone number with a code — done. Three steps." ur="وکیل چنیں، وقت منتخب کریں، پھر کوڈ سے فون نمبر تصدیق کریں — ہو گیا۔ تین مراحل۔" /></p>
-          </div>
-          <div>
-            <p className="font-bold text-ink-950"><T en="How are profiles listed?" ur="پروفائلز کیسے درج ہوتے ہیں؟" /></p>
-            <p><T en="Every public profile is reviewed by our team before listing." ur="عوامی ہونے سے پہلے ہماری ٹیم ہر پروفائل کا جائزہ لیتی ہے۔" /></p>
-          </div>
+      {/* ============ CITY FAQ ============ */}
+      <section className="mx-auto mt-14 max-w-3xl">
+        <div className="mb-6 text-center">
+          <h2 className="font-display text-[1.7rem] font-semibold text-ink-950 sm:text-[2rem]">
+            <T en={`Lawyers in ${c.nameEn} — FAQs`} ur={`${c.nameUr} میں وکیل — سوالات`} />
+          </h2>
         </div>
-        <div className="mt-8 text-center">
+        <FaqAccordion items={faqs} wide />
+      </section>
+
+      {/* ============ CTA ============ */}
+      <section className="mt-14 rounded-[1.75rem] bg-court-900 px-6 py-12 text-center shadow-lift sm:px-12">
+        <h2 className="mx-auto max-w-2xl font-display text-2xl font-semibold leading-tight text-white sm:text-3xl">
+          <T en={`Not sure which lawyer fits your case in ${c.nameEn}?`} ur={`${c.nameUr} میں آپ کے کیس کے لیے کون سا وکیل درست ہے؟`} />
+        </h2>
+        <p className="mx-auto mt-3 max-w-xl text-[1.05rem] text-court-100">
+          <T
+            en="Request a callback — our team will call you back within 24 hours and guide you."
+            ur="کال بیک کی درخواست کریں — ہماری ٹیم ۲۴ گھنٹوں میں آپ کو کال کر کے رہنمائی کرے گی۔"
+          />
+        </p>
+        <div className="mt-7 flex flex-col items-center justify-center gap-3 sm:flex-row">
           <PrimaryBtn href="/lawyers" icon={<ArrowIcon className="h-6 w-6" />}>
             <T en="Browse all lawyers" ur="تمام وکیل دیکھیں" />
           </PrimaryBtn>
+          <SecondaryBtn href="/callback" className="!border-white/40 !bg-transparent !text-white hover:!bg-white/10">
+            <T en="Request a callback" ur="کال بیک کی درخواست" />
+          </SecondaryBtn>
         </div>
       </section>
     </div>

@@ -31,6 +31,19 @@ async function fetchFeatured(): Promise<{ lawyers: LawyerSummary[]; total: numbe
   }
 }
 
+/** Honest live count of lawyers offering video consultation (backend ?online=1). */
+async function fetchOnlineCount(): Promise<number> {
+  try {
+    const res = await fetch(`${API_V1}/lawyers?online=1&limit=1`, { next: { revalidate: 60 } });
+    if (!res.ok) return 0;
+    const data = await res.json();
+    if (!data?.ok) return 0;
+    return data.total ?? 0;
+  } catch {
+    return 0;
+  }
+}
+
 /** Two-letter initials for the specialty circles, e.g. "Family Law" → "FL". */
 function initials(nameEn: string): string {
   const words = nameEn.split(/\s+/).filter((w) => /[A-Za-z]/.test(w[0] ?? ""));
@@ -200,6 +213,7 @@ function RowHead({ title, href, linkEn, linkUr }: { title: React.ReactNode; href
 
 export default async function Home() {
   const { lawyers: featured, total: lawyerCount } = await fetchFeatured();
+  const onlineCount = await fetchOnlineCount();
   const heroPortrait = fileUrl("/lawyers/shamsuddin-rajper.jpg");
 
   return (
@@ -250,6 +264,52 @@ export default async function Home() {
               </div>
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* ============ CONVERSION CARDS — online vs chamber ============ */}
+      <section className="mx-auto max-w-7xl px-4 pt-8 sm:pt-10">
+        <div className="grid gap-5 sm:grid-cols-2">
+          <Link
+            href="/lawyers?online=1"
+            className="group flex items-center gap-5 rounded-2xl bg-court-700 p-6 text-white shadow-lift transition hover:bg-court-800 sm:p-7"
+          >
+            <span className="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-white/15 ring-1 ring-white/25">
+              <VideoIcon className="h-7 w-7" />
+            </span>
+            <span className="min-w-0 flex-1">
+              <span className="block font-display text-[1.35rem] font-semibold">
+                <T en="Consult Online Now" ur="ابھی آن لائن مشورہ کریں" />
+              </span>
+              <span className="mt-1 block text-[1.02rem] text-court-100">
+                <T
+                  en={`${onlineCount} lawyers available for video consultation`}
+                  ur={`ویڈیو مشورے کے لیے ${onlineCount} وکیل دستیاب`}
+                />
+              </span>
+            </span>
+            <ArrowIcon className="h-6 w-6 shrink-0 transition group-hover:translate-x-1 rtl:rotate-180" />
+          </Link>
+          <Link
+            href="/lawyers"
+            className="group flex items-center gap-5 rounded-2xl bg-white p-6 text-ink-950 shadow-lift ring-1 ring-ink-900/10 transition hover:ring-court-300 sm:p-7"
+          >
+            <span className="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-brass-100 text-brass-700 ring-1 ring-brass-200">
+              <OfficeIcon className="h-7 w-7" />
+            </span>
+            <span className="min-w-0 flex-1">
+              <span className="block font-display text-[1.35rem] font-semibold">
+                <T en="Visit a Chamber" ur="چیمبر تشریف لائیں" />
+              </span>
+              <span className="mt-1 block text-[1.02rem] text-ink-600">
+                <T
+                  en="Meet your wakeel in person — Karachi, Hyderabad, Sukkur & more"
+                  ur="اپنے وکیل سے بالمشافہ ملیں — کراچی، حیدرآباد، سکھر اور مزید"
+                />
+              </span>
+            </span>
+            <ArrowIcon className="h-6 w-6 shrink-0 text-court-700 transition group-hover:translate-x-1 rtl:rotate-180" />
+          </Link>
         </div>
       </section>
 
