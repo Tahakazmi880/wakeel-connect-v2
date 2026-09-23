@@ -14,12 +14,16 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     const saved = localStorage.getItem("wc-lang");
-    if (saved === "ur" || saved === "en") setLangState(saved);
+    const initial = saved === "ur" || saved === "en" ? saved : "en";
+    setLangState(initial);
+    // Drives the Urdu typography rules in globals.css ([data-lang="ur"]).
+    document.documentElement.dataset.lang = initial;
   }, []);
 
   const setLang = (l: Lang) => {
     setLangState(l);
     localStorage.setItem("wc-lang", l);
+    document.documentElement.dataset.lang = l;
   };
 
   return <LangContext.Provider value={{ lang, setLang }}>{children}</LangContext.Provider>;

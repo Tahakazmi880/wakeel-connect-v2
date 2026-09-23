@@ -1,8 +1,72 @@
 @import "tailwindcss";
 
-:root {
-  --wc-green: #047857;
-  --wc-green-dark: #065f46;
+/* =====================================================================
+   wakeel.connect — editorial legal directory theme
+   Palette: warm paper, deep ink navy, one courtroom blue, one brass.
+   ===================================================================== */
+
+@theme {
+  /* Warm paper neutrals (page surfaces) */
+  --color-paper: #faf7f1;
+  --color-paper-dark: #f1ece1;
+  --color-paper-deep: #e7dfcd;
+
+  /* Ink — deep navy used for all text/borders (replaces slate) */
+  --color-ink-50: #f3f6fa;
+  --color-ink-100: #e7edf5;
+  --color-ink-200: #d2dcea;
+  --color-ink-300: #b1c1d8;
+  --color-ink-400: #8296b6;
+  --color-ink-500: #5c7194;
+  --color-ink-600: #41546f;
+  --color-ink-700: #2c3e5b;
+  --color-ink-800: #1c2b46;
+  --color-ink-900: #141f36;
+  --color-ink-950: #0d1526;
+
+  /* Court — one confident directory blue (replaces emerald) */
+  --color-court-50: #eef3f9;
+  --color-court-100: #dce7f4;
+  --color-court-200: #b9cfe8;
+  --color-court-300: #8aadd6;
+  --color-court-400: #5b87be;
+  --color-court-500: #3a68a3;
+  --color-court-600: #2a5389;
+  --color-court-700: #1f4373;
+  --color-court-800: #18345c;
+  --color-court-900: #122847;
+  --color-court-950: #0c1b31;
+
+  /* Brass — premium legal accent for fees, rules, kickers */
+  --color-brass-50: #faf6eb;
+  --color-brass-100: #f3ead2;
+  --color-brass-200: #e7d6a6;
+  --color-brass-300: #d9be78;
+  --color-brass-400: #c9a254;
+  --color-brass-500: #b3873b;
+  --color-brass-600: #8f6b2d;
+  --color-brass-700: #6f5324;
+  --color-brass-800: #54401d;
+  --color-brass-900: #3d2f16;
+
+  /* Semantic-only muted tones (never decorative) */
+  --color-moss-100: #e4efe6;
+  --color-moss-600: #3e7c4f;
+  --color-moss-700: #2f6240;
+  --color-clay-50: #faf0ec;
+  --color-clay-100: #f6e3dc;
+  --color-clay-200: #ecc5b8;
+  --color-clay-600: #b04a3a;
+  --color-clay-700: #8e3a2e;
+
+  /* Type */
+  --font-display: var(--font-fraunces), "Iowan Old Style", Georgia, "Times New Roman", serif;
+  --font-sans: var(--font-public-sans), ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-urdu: var(--font-nastaliq), var(--font-public-sans), serif;
+
+  /* Warm-toned shadows */
+  --shadow-card: 0 1px 2px rgba(20, 31, 54, 0.05), 0 10px 28px -18px rgba(20, 31, 54, 0.28);
+  --shadow-lift: 0 2px 6px rgba(20, 31, 54, 0.07), 0 22px 44px -22px rgba(20, 31, 54, 0.32);
 }
 
 html {
@@ -12,43 +76,87 @@ html {
 body {
   font-size: 16px;
   line-height: 1.6;
+  text-rendering: optimizeLegibility;
+}
+
+::selection {
+  background: var(--color-court-200);
+  color: var(--color-ink-950);
 }
 
 /* Big, visible focus rings for keyboard + low-vision users */
 :focus-visible {
-  outline: 3px solid #f59e0b;
+  outline: 3px solid var(--color-court-600);
   outline-offset: 2px;
-  border-radius: 8px;
+  border-radius: 6px;
 }
 
-/* Subtle dotted texture for the hero — rendered as an overlay so it never
-   overrides the Tailwind gradient background underneath */
-.wc-hero-pattern {
-  position: relative;
+/* ---- Editorial kicker: small brass label above section titles ---- */
+.wc-kicker {
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--color-brass-600);
 }
-.wc-hero-pattern::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  background-image: radial-gradient(rgba(255, 255, 255, 0.14) 1.5px, transparent 1.6px);
-  background-size: 26px 26px;
-  pointer-events: none;
+
+/* ---- Faint jali-inspired lattice. VERY subtle — footer bands only. ---- */
+.wc-jali {
+  background-image:
+    repeating-linear-gradient(45deg, rgba(179, 135, 59, 0.055) 0 1px, transparent 1px 16px),
+    repeating-linear-gradient(-45deg, rgba(179, 135, 59, 0.055) 0 1px, transparent 1px 16px);
 }
-.wc-hero-pattern > * {
-  position: relative;
-  z-index: 1;
+.wc-jali-light {
+  background-image:
+    repeating-linear-gradient(45deg, rgba(250, 246, 235, 0.05) 0 1px, transparent 1px 16px),
+    repeating-linear-gradient(-45deg, rgba(250, 246, 235, 0.05) 0 1px, transparent 1px 16px);
+}
+
+/* ---- Serif numerals for PKR fees ---- */
+.wc-fee {
+  font-family: var(--font-display);
+  font-variant-numeric: lining-nums;
+  letter-spacing: 0.01em;
+}
+
+/* ---- Hairline divider ---- */
+.wc-hr {
+  border: 0;
+  border-top: 1px solid rgba(20, 31, 54, 0.12);
 }
 
 /* Thin scrollbar for the slot/date rails */
 .wc-rail {
   scrollbar-width: thin;
-  scrollbar-color: #a7f3d0 transparent;
+  scrollbar-color: var(--color-court-300) transparent;
 }
 .wc-rail::-webkit-scrollbar {
   height: 8px;
 }
 .wc-rail::-webkit-scrollbar-thumb {
-  background: #a7f3d0;
+  background: var(--color-court-300);
   border-radius: 8px;
+}
+
+/* =====================================================================
+   Urdu mode — the toggle sets data-lang="ur" on <html>.
+   Nastaliq needs generous line-height and no letter-spacing.
+   ===================================================================== */
+[data-lang="ur"] body {
+  font-family: var(--font-urdu);
+  line-height: 2;
+}
+[data-lang="ur"] .font-display {
+  font-family: var(--font-urdu);
+}
+[data-lang="ur"] .wc-kicker {
+  text-transform: none;
+  letter-spacing: 0;
+  font-size: 0.95rem;
+}
+[data-lang="ur"] input,
+[data-lang="ur"] select,
+[data-lang="ur"] textarea,
+[data-lang="ur"] button {
+  line-height: 2;
 }
