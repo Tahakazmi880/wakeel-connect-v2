@@ -4,10 +4,9 @@ import Link from "next/link";
 import { T } from "@/components/LanguageContext";
 import GuideBody from "@/components/GuideBody";
 import LawyerCard from "@/components/LawyerCard";
-import { DemoNotice } from "@/components/ui";
 import { ArrowIcon, ClockIcon, DocIcon, ShieldIcon } from "@/components/icons";
 import { getGuide, GUIDES, GUIDE_DISCLAIMER_EN, GUIDE_DISCLAIMER_UR } from "@/lib/guides";
-import { searchLawyers } from "@/lib/data";
+import { API_V1, type LawyerSummary } from "@/lib/api";
 
 export async function generateStaticParams() {
   return GUIDES.map((g) => ({ slug: g.slug }));
@@ -32,7 +31,16 @@ export default async function GuidePage({ params }: { params: Promise<{ slug: st
   const prev = GUIDES[(idx - 1 + GUIDES.length) % GUIDES.length];
   const next = GUIDES[(idx + 1) % GUIDES.length];
 
-  const related = searchLawyers({ area: guide.relatedAreaSlugs[0] }).slice(0, 3);
+  const related = await (async (): Promise<LawyerSummary[]> => {
+    try {
+      const res = await fetch(`${API_V1}/lawyers?area=${guide.relatedAreaSlugs[0]}&limit=3`, { next: { revalidate: 60 } });
+      if (!res.ok) return [];
+      const data = await res.json();
+      return data?.ok ? (data.lawyers ?? []) : [];
+    } catch {
+      return [];
+    }
+  })();
 
   return (
     <div className="mx-auto max-w-4xl px-4 py-10">
@@ -94,7 +102,6 @@ export default async function GuidePage({ params }: { params: Promise<{ slug: st
             ur="یہ وکیل اس مضمون جیسے معاملات دیکھتے ہیں۔"
           />
         </p>
-        <DemoNotice />
         <div className="mt-6 grid gap-5 md:grid-cols-3">
           {related.map((l) => (
             <LawyerCard key={l.slug} lawyer={l} />

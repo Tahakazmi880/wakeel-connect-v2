@@ -39,13 +39,13 @@ export default function Footer() {
             </div>
             <p className="mt-4 text-base leading-relaxed text-emerald-200">
               <T
-                en="Pakistan's verified lawyer directory. Find the right wakeel for your case — online or in person."
-                ur="پاکستان کی تصدیق شدہ وکیل ڈائریکٹری۔ اپنے کیس کے لیے درست وکیل تلاش کریں — آن لائن یا ملاقات کے ذریعے۔"
+                en="Pakistan's lawyer directory. Find the right wakeel for your case — online or in person."
+                ur="پاکستان کی وکیل ڈائریکٹری۔ اپنے کیس کے لیے درست وکیل تلاش کریں — آن لائن یا ملاقات کے ذریعے۔"
               />
             </p>
             <p className="mt-4 inline-flex items-center gap-2 rounded-xl bg-emerald-900 px-4 py-2 text-sm font-bold text-emerald-100">
               <ShieldIcon className="h-5 w-5 text-amber-400" />
-              <T en="Every lawyer is verified by our team" ur="ہر وکیل ہماری ٹیم سے تصدیق شدہ" />
+              <T en="Every profile is reviewed by our team" ur="ہر پروفائل ہماری ٹیم کی نظر سے گزرتا ہے" />
             </p>
           </div>
 

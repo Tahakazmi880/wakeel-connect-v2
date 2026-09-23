@@ -2,11 +2,12 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { T } from "@/components/LanguageContext";
-import { DemoNotice, PrimaryBtn, SectionHead } from "@/components/ui";
+import { PrimaryBtn, SectionHead } from "@/components/ui";
 import SeoArticle from "@/components/SeoArticle";
 import LawyerCard from "@/components/LawyerCard";
 import { ArrowIcon, BriefcaseIcon } from "@/components/icons";
-import { CITIES, getPracticeArea, LAWYERS, PRACTICE_AREAS } from "@/lib/data";
+import { CITIES, getPracticeArea, PRACTICE_AREAS } from "@/lib/data";
+import { API_V1, type LawyerSummary } from "@/lib/api";
 
 export async function generateStaticParams() {
   return PRACTICE_AREAS.map((a) => ({ area: a.slug }));
@@ -18,16 +19,29 @@ export async function generateMetadata({ params }: { params: Promise<{ area: str
   if (!a) return {};
   return {
     title: `${a.nameEn} Lawyers in Pakistan — wakeel.connect`,
-    description: `${a.description} Compare verified ${a.nameEn.toLowerCase()} lawyers across Pakistan and book in 3 easy steps.`,
+    description: `${a.description} Compare ${a.nameEn.toLowerCase()} lawyers across Pakistan and book in 3 easy steps.`,
   };
+}
+
+async function fetchAreaLawyers(areaSlug: string): Promise<LawyerSummary[]> {
+  try {
+    const res = await fetch(`${API_V1}/lawyers?area=${areaSlug}&limit=50`, { next: { revalidate: 60 } });
+    if (!res.ok) return [];
+    const data = await res.json();
+    if (!data?.ok) return [];
+    return data.lawyers ?? [];
+  } catch {
+    return [];
+  }
 }
 
 export default async function AreaPage({ params }: { params: Promise<{ area: string }> }) {
   const { area } = await params;
   const a = getPracticeArea(area);
   if (!a) notFound();
-  const lawyers = LAWYERS.filter((l) => l.practiceAreaSlugs.includes(a.slug));
-  const citiesHere = CITIES.filter((c) => lawyers.some((l) => l.citySlug === c.slug));
+  const lawyers = await fetchAreaLawyers(a.slug);
+  const citySlugs = new Set(lawyers.map((l) => l.city.slug));
+  const citiesHere = CITIES.filter((c) => citySlugs.has(c.slug));
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-10">
@@ -39,16 +53,20 @@ export default async function AreaPage({ params }: { params: Promise<{ area: str
       </h1>
       <p className="mt-4 max-w-3xl text-lg leading-relaxed text-slate-600">
         <T
-          en={`${a.description} Below are ${lawyers.length} verified lawyers handling ${a.nameEn.toLowerCase()} matters. Compare experience, fees and reviews, then book in 3 easy steps.`}
-          ur={`${a.description} نیچے ${lawyers.length} تصدیق شدہ وکیل ہیں جو ${a.nameUr} کے معاملات دیکھتے ہیں۔ تجربہ، فیس اور آراء کا موازنہ کریں، پھر ۳ آسان مراحل میں بک کریں۔`}
+          en={`${a.description} Below are ${lawyers.length} ${lawyers.length === 1 ? "lawyer" : "lawyers"} handling ${a.nameEn.toLowerCase()} matters. Compare experience, fees and reviews, then book in 3 easy steps.`}
+          ur={`${a.description} نیچے ${lawyers.length} وکیل ہیں جو ${a.nameUr} کے معاملات دیکھتے ہیں۔ تجربہ، فیس اور آراء کا موازنہ کریں، پھر ۳ آسان مراحل میں بک کریں۔`}
         />
       </p>
 
-      <div className="mx-auto mt-6 max-w-3xl"><DemoNotice /></div>
-
-      <div className="mt-8 grid gap-6 md:grid-cols-2 xl:grid-cols-3">
-        {lawyers.map((l) => <LawyerCard key={l.slug} lawyer={l} />)}
-      </div>
+      {lawyers.length === 0 ? (
+        <p className="mt-8 rounded-3xl bg-white p-8 text-center text-lg text-slate-600 ring-1 ring-slate-200">
+          <T en="No lawyers listed in this practice area yet — check back soon." ur="اس شعبے میں ابھی کوئی وکیل درج نہیں — جلد دوبارہ دیکھیں۔" />
+        </p>
+      ) : (
+        <div className="mt-8 grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+          {lawyers.map((l) => <LawyerCard key={l.slug} lawyer={l} />)}
+        </div>
+      )}
 
       {citiesHere.length > 0 && (
         <section className="mt-14">

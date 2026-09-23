@@ -1,68 +1,65 @@
 import Link from "next/link";
 import { T } from "./LanguageContext";
-import { AvailableBadge, Rating, Stars, VerifiedBadge, nextAvailableText } from "./ui";
+import { Rating } from "./ui";
 import { PhotoAvatar } from "./PhotoAvatar";
 import { CalendarIcon, OfficeIcon, VideoIcon } from "./icons";
-import { cityName, formatPKR, lawyerAreas, type Lawyer } from "@/lib/data";
+import { fileUrl, formatExperience, formatFee, type LawyerSummary } from "@/lib/api";
 
-/** Rich lawyer card: scannable at a glance — photo, rating, fee, availability, 2 booking CTAs. */
-export default function LawyerCard({ lawyer }: { lawyer: Lawyer }) {
-  const next = nextAvailableText(lawyer);
-  const areas = lawyerAreas(lawyer).slice(0, 2);
+/** Rich lawyer card for a real API profile: photo, rating, fee, booking CTAs. */
+export default function LawyerCard({ lawyer }: { lawyer: LawyerSummary }) {
+  const areas = lawyer.practiceAreas.slice(0, 2);
+  const fee = formatFee(lawyer.consultationFeePaisa);
+  const exp = formatExperience(lawyer.yearsExperience);
+
   return (
     <article className="flex flex-col rounded-3xl border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-1 hover:shadow-xl">
       <div className="flex items-start gap-4">
-        <PhotoAvatar name={lawyer.displayName} photo={lawyer.photo} size="2xl" />
+        <PhotoAvatar name={lawyer.displayName} photo={fileUrl(lawyer.photoUrl) ?? undefined} size="2xl" />
         <div className="min-w-0 flex-1">
-          <div className="flex flex-wrap items-center gap-2">
-            <Link href={`/lawyer/${lawyer.slug}`} className="text-xl font-extrabold leading-snug text-slate-900 hover:text-emerald-800">
-              {lawyer.displayName}
-            </Link>
-          </div>
+          <Link href={`/lawyer/${lawyer.slug}`} className="text-xl font-extrabold leading-snug text-slate-900 hover:text-emerald-800">
+            {lawyer.displayName}
+          </Link>
           <p className="mt-1 line-clamp-2 text-base text-slate-600">{lawyer.headline}</p>
-          <div className="mt-2 flex flex-wrap items-center gap-2">
-            <VerifiedBadge />
-            <AvailableBadge />
-          </div>
         </div>
       </div>
 
-      <div className="mt-4 grid grid-cols-3 gap-2 text-center">
+      <div className={`mt-4 grid gap-2 text-center ${exp ? "grid-cols-3" : "grid-cols-2"}`}>
+        {exp && (
+          <div className="rounded-2xl bg-slate-50 px-2 py-3">
+            <p className="text-2xl font-extrabold text-slate-900">{exp}</p>
+            <p className="text-sm text-slate-500"><T en="Experience" ur="تجربہ" /></p>
+          </div>
+        )}
         <div className="rounded-2xl bg-slate-50 px-2 py-3">
-          <p className="text-2xl font-extrabold text-slate-900">{lawyer.yearsExperience}</p>
-          <p className="text-sm text-slate-500"><T en="Years Exp." ur="سال تجربہ" /></p>
-        </div>
-        <div className="rounded-2xl bg-slate-50 px-2 py-3">
-          <p className="text-2xl font-extrabold text-slate-900">{lawyer.reviewCount}</p>
+          <p className="text-2xl font-extrabold text-slate-900">{lawyer.ratingCount}</p>
           <p className="text-sm text-slate-500"><T en="Reviews" ur="آراء" /></p>
         </div>
         <div className="rounded-2xl bg-emerald-50 px-2 py-3">
-          <p className="text-2xl font-extrabold text-emerald-800">{formatPKR(lawyer.consultationFeePaisa)}</p>
+          <p className={`font-extrabold text-emerald-800 ${fee ? "text-2xl" : "text-lg leading-9"}`}>
+            {fee ?? <T en="Fee on request" ur="فیس معلوم کریں" />}
+          </p>
           <p className="text-sm text-slate-500"><T en="Fee" ur="فیس" /></p>
         </div>
       </div>
 
       <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2 text-base text-slate-600">
-        <Rating rating={lawyer.rating} count={lawyer.reviewCount} />
+        <Rating rating={lawyer.ratingAvg} count={lawyer.ratingCount} />
         <span className="inline-flex items-center gap-1 font-semibold text-emerald-700">
           <CalendarIcon className="h-5 w-5" />
-          <T en={next.en} ur={next.ur} />
+          <T en={lawyer.city.nameEn} ur={lawyer.city.nameUr} />
         </span>
       </div>
 
       <div className="mt-3 flex flex-wrap gap-2">
         {areas.map((a) => (
           <Link
-            key={a.slug}
-            href={`/practice-areas/${a.slug}`}
+            key={a.practiceArea.slug}
+            href={`/practice-areas/${a.practiceArea.slug}`}
             className="rounded-full bg-slate-100 px-3 py-1.5 text-sm font-semibold text-slate-700 hover:bg-emerald-100 hover:text-emerald-800"
           >
-            <T en={a.nameEn} ur={a.nameUr} />
+            <T en={a.practiceArea.nameEn} ur={a.practiceArea.nameUr} />
           </Link>
         ))}
-        <span className="rounded-full bg-slate-100 px-3 py-1.5 text-sm font-semibold text-slate-500">
-          {cityName(lawyer.citySlug)}
-        </span>
       </div>
 
       <div className="mt-5 grid grid-cols-2 gap-3">

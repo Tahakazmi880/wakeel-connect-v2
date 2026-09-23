@@ -2,25 +2,52 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { T } from "@/components/LanguageContext";
-import { DemoNotice, PrimaryBtn, SectionHead } from "@/components/ui";
+import { PrimaryBtn, SectionHead } from "@/components/ui";
 import LawyerCard from "@/components/LawyerCard";
 import SeoArticle from "@/components/SeoArticle";
 import { ArrowIcon, CalendarIcon, CheckBadgeIcon, PhoneIcon, SearchIcon, ShieldIcon } from "@/components/icons";
 import {
   CITIES,
-  countByCityArea,
   getCity,
   getPracticeArea,
-  LAWYERS,
   PRACTICE_AREAS,
 } from "@/lib/data";
+import { API_V1, type LawyerSummary } from "@/lib/api";
+
+async function fetchCityAreaLawyers(citySlug: string, areaSlug: string): Promise<LawyerSummary[]> {
+  try {
+    const res = await fetch(`${API_V1}/lawyers?city=${citySlug}&area=${areaSlug}&limit=50`, { next: { revalidate: 60 } });
+    if (!res.ok) return [];
+    const data = await res.json();
+    if (!data?.ok) return [];
+    return data.lawyers ?? [];
+  } catch {
+    return [];
+  }
+}
 
 export async function generateStaticParams() {
-  const params: { city: string; "practice-area": string }[] = [];
-  for (const c of CITIES)
-    for (const a of PRACTICE_AREAS)
-      if (countByCityArea(c.slug, a.slug) > 0) params.push({ city: c.slug, "practice-area": a.slug });
-  return params;
+  // Build-time best effort: only pre-render combos that exist in the live API.
+  try {
+    const res = await fetch(`${API_V1}/lawyers?limit=50`);
+    if (!res.ok) return [];
+    const data = await res.json();
+    if (!data?.ok) return [];
+    const seen = new Set<string>();
+    const params: { city: string; "practice-area": string }[] = [];
+    for (const l of (data.lawyers ?? []) as LawyerSummary[]) {
+      for (const a of l.practiceAreas) {
+        const key = `${l.city.slug}/${a.practiceArea.slug}`;
+        if (!seen.has(key)) {
+          seen.add(key);
+          params.push({ city: l.city.slug, "practice-area": a.practiceArea.slug });
+        }
+      }
+    }
+    return params;
+  } catch {
+    return [];
+  }
 }
 
 export async function generateMetadata({ params }: { params: Promise<{ city: string; "practice-area": string }> }): Promise<Metadata> {
@@ -29,8 +56,8 @@ export async function generateMetadata({ params }: { params: Promise<{ city: str
   const a = getPracticeArea(area);
   if (!c || !a) return {};
   return {
-    title: `Best ${a.nameEn} Lawyers in ${c.nameEn} — wakeel.connect`,
-    description: `Compare verified ${a.nameEn.toLowerCase()} lawyers in ${c.nameEn}. Transparent fees, real reviews, 3-step booking on wakeel.connect.`,
+    title: `${a.nameEn} Lawyers in ${c.nameEn} — wakeel.connect`,
+    description: `Compare ${a.nameEn.toLowerCase()} lawyers in ${c.nameEn}. Fees in PKR, client reviews, 3-step booking on wakeel.connect.`,
   };
 }
 
@@ -39,15 +66,17 @@ export default async function CityAreaPage({ params }: { params: Promise<{ city:
   const c = getCity(city);
   const a = getPracticeArea(areaSlug);
   if (!c || !a) notFound();
-  const lawyers = LAWYERS.filter((l) => l.citySlug === c.slug && l.practiceAreaSlugs.includes(a.slug));
+  const lawyers = await fetchCityAreaLawyers(c.slug, a.slug);
   if (lawyers.length === 0) notFound();
 
-  const otherAreas = PRACTICE_AREAS.filter(
-    (x) => x.slug !== a.slug && countByCityArea(c.slug, x.slug) > 0
-  ).slice(0, 6);
-  const otherCities = CITIES.filter(
-    (x) => x.slug !== c.slug && countByCityArea(x.slug, a.slug) > 0
-  ).slice(0, 6);
+  const areaSlugs = new Set<string>();
+  const citySlugs = new Set<string>();
+  for (const l of lawyers) {
+    citySlugs.add(l.city.slug);
+    for (const x of l.practiceAreas) areaSlugs.add(x.practiceArea.slug);
+  }
+  // Cross-links: same city + other areas, and same area + other cities — via directory filters.
+  const otherAreas = PRACTICE_AREAS.filter((x) => x.slug !== a.slug && areaSlugs.has(x.slug)).slice(0, 6);
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-10">
@@ -61,21 +90,21 @@ export default async function CityAreaPage({ params }: { params: Promise<{ city:
 
       <h1 className="text-3xl font-extrabold text-slate-900 sm:text-5xl">
         <T
-          en={<>Best <span className="text-emerald-700">{a.nameEn}</span> lawyers in <span className="text-emerald-700">{c.nameEn}</span></>}
-          ur={<><span className="text-emerald-700">{c.nameUr}</span> میں <span className="text-emerald-700">{a.nameUr}</span> کے بہترین وکیل</>}
+          en={<><span className="text-emerald-700">{a.nameEn}</span> lawyers in <span className="text-emerald-700">{c.nameEn}</span></>}
+          ur={<><span className="text-emerald-700">{c.nameUr}</span> میں <span className="text-emerald-700">{a.nameUr}</span> کے وکیل</>}
         />
       </h1>
       <p className="mt-4 max-w-3xl text-lg leading-relaxed text-slate-600">
         <T
-          en={`${lawyers.length} verified ${a.nameEn.toLowerCase()} ${lawyers.length === 1 ? "lawyer" : "lawyers"} practising in ${c.nameEn}. ${a.description} Compare profiles below — experience, fees in PKR and verified client reviews — then book a video consultation or chamber visit in 3 easy steps.`}
-          ur={`${c.nameUr} میں ${a.nameUr} کے ${lawyers.length} تصدیق شدہ وکیل۔ ${a.description} نیچے پروفائلز کا موازنہ کریں — تجربہ، فیس اور تصدیق شدہ آراء — پھر ۳ آسان مراحل میں بک کریں۔`}
+          en={`${lawyers.length} ${a.nameEn.toLowerCase()} ${lawyers.length === 1 ? "lawyer" : "lawyers"} practising in ${c.nameEn}. ${a.description} Compare profiles below — experience, fees in PKR and client reviews — then book a video consultation or chamber visit in 3 easy steps.`}
+          ur={`${c.nameUr} میں ${a.nameUr} کے ${lawyers.length} وکیل۔ ${a.description} نیچے پروفائلز کا موازنہ کریں — تجربہ، فیس اور آراء — پھر ۳ آسان مراحل میں بک کریں۔`}
         />
       </p>
 
       {/* trust strip */}
       <div className="mt-6 grid gap-3 sm:grid-cols-3">
         {[
-          { icon: <ShieldIcon className="h-6 w-6" />, en: "Bar Council verified", ur: "بار کونسل تصدیق شدہ" },
+          { icon: <ShieldIcon className="h-6 w-6" />, en: "Reviewed profiles", ur: "جانچی ہوئی پروفائلز" },
           { icon: <CalendarIcon className="h-6 w-6" />, en: "Book in 3 easy steps", ur: "۳ آسان مراحل میں بکنگ" },
           { icon: <PhoneIcon className="h-6 w-6" />, en: "Phone-number login only", ur: "صرف فون نمبر سے لاگ اِن" },
         ].map((t) => (
@@ -85,8 +114,6 @@ export default async function CityAreaPage({ params }: { params: Promise<{ city:
           </div>
         ))}
       </div>
-
-      <div className="mx-auto mt-6 max-w-3xl"><DemoNotice /></div>
 
       <div className="mt-8 grid gap-6 md:grid-cols-2 xl:grid-cols-3">
         {lawyers.map((l) => <LawyerCard key={l.slug} lawyer={l} />)}
@@ -103,7 +130,7 @@ export default async function CityAreaPage({ params }: { params: Promise<{ city:
           {[
             { icon: <SearchIcon className="h-7 w-7" />, en: "1. Choose your wakeel", ur: "۱۔ وکیل چنیں" },
             { icon: <CalendarIcon className="h-7 w-7" />, en: "2. Pick a time", ur: "۲۔ وقت منتخب کریں" },
-            { icon: <PhoneIcon className="h-7 w-7" />, en: "3. Enter phone — done", ur: "۳۔ فون نمبر — ہو گیا" },
+            { icon: <PhoneIcon className="h-7 w-7" />, en: "3. Verify phone — done", ur: "۳۔ فون تصدیق — ہو گیا" },
           ].map((s) => (
             <div key={s.en} className="flex items-center gap-3 rounded-2xl bg-white p-4 shadow-sm">
               <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-emerald-700 text-white">{s.icon}</span>
@@ -114,44 +141,23 @@ export default async function CityAreaPage({ params }: { params: Promise<{ city:
       </section>
 
       {/* internal links */}
-      {(otherAreas.length > 0 || otherCities.length > 0) && (
+      {otherAreas.length > 0 && (
         <section className="mt-14">
           <SectionHead eyebrowUr="مزید دیکھیں" title={<T en="Keep exploring" ur="مزید دیکھیں" />} />
-          <div className="grid gap-8 md:grid-cols-2">
-            {otherAreas.length > 0 && (
-              <div>
-                <h3 className="mb-3 text-xl font-extrabold text-slate-900">
-                  <T en={`More in ${c.nameEn}`} ur={`${c.nameUr} میں مزید`} />
-                </h3>
-                <ul className="space-y-2">
-                  {otherAreas.map((x) => (
-                    <li key={x.slug}>
-                      <Link href={`/${c.slug}/${x.slug}`} className="inline-flex min-h-[48px] items-center gap-2 text-lg font-bold text-emerald-800 hover:underline">
-                        <CheckBadgeIcon className="h-5 w-5 text-emerald-600" />
-                        <T en={`${x.nameEn} lawyers in ${c.nameEn}`} ur={`${c.nameUr} میں ${x.nameUr} کے وکیل`} />
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
-            {otherCities.length > 0 && (
-              <div>
-                <h3 className="mb-3 text-xl font-extrabold text-slate-900">
-                  <T en={`${a.nameEn} elsewhere`} ur={`${a.nameUr} دیگر شہروں میں`} />
-                </h3>
-                <ul className="space-y-2">
-                  {otherCities.map((x) => (
-                    <li key={x.slug}>
-                      <Link href={`/${x.slug}/${a.slug}`} className="inline-flex min-h-[48px] items-center gap-2 text-lg font-bold text-emerald-800 hover:underline">
-                        <CheckBadgeIcon className="h-5 w-5 text-emerald-600" />
-                        <T en={`${a.nameEn} lawyers in ${x.nameEn}`} ur={`${x.nameUr} میں ${a.nameUr} کے وکیل`} />
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
+          <div>
+            <h3 className="mb-3 text-xl font-extrabold text-slate-900">
+              <T en={`More in ${c.nameEn}`} ur={`${c.nameUr} میں مزید`} />
+            </h3>
+            <ul className="space-y-2">
+              {otherAreas.map((x) => (
+                <li key={x.slug}>
+                  <Link href={`/lawyers?city=${c.slug}&area=${x.slug}`} className="inline-flex min-h-[48px] items-center gap-2 text-lg font-bold text-emerald-800 hover:underline">
+                    <CheckBadgeIcon className="h-5 w-5 text-emerald-600" />
+                    <T en={`${x.nameEn} lawyers in ${c.nameEn}`} ur={`${c.nameUr} میں ${x.nameUr} کے وکیل`} />
+                  </Link>
+                </li>
+              ))}
+            </ul>
           </div>
         </section>
       )}

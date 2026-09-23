@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { T } from "@/components/LanguageContext";
-import { DemoNotice, PrimaryBtn, SectionHead, Stars } from "@/components/ui";
+import { PrimaryBtn, SectionHead, Stars } from "@/components/ui";
 import LawyerCard from "@/components/LawyerCard";
 import SearchHero from "@/components/SearchHero";
 import StatsBand from "@/components/StatsBand";
@@ -21,7 +21,20 @@ import {
   VideoIcon,
   WalletIcon,
 } from "@/components/icons";
-import { CITIES, COURTS, LAWYERS, PRACTICE_AREAS, countByCourt, getCity } from "@/lib/data";
+import { CITIES, COURTS, PRACTICE_AREAS, getCity } from "@/lib/data";
+import { API_V1, type LawyerSummary } from "@/lib/api";
+
+async function fetchFeatured(): Promise<{ lawyers: LawyerSummary[]; total: number }> {
+  try {
+    const res = await fetch(`${API_V1}/lawyers?limit=4`, { next: { revalidate: 60 } });
+    if (!res.ok) return { lawyers: [], total: 0 };
+    const data = await res.json();
+    if (!data?.ok) return { lawyers: [], total: 0 };
+    return { lawyers: data.lawyers ?? [], total: data.total ?? 0 };
+  } catch {
+    return { lawyers: [], total: 0 };
+  }
+}
 
 const SERVICES = [
   { icon: <VideoIcon className="h-9 w-9" />, en: "Online Consultation", ur: "آن لائن مشاورت" },
@@ -40,10 +53,10 @@ const STEPS = [
 const WHY_WAKEEL = [
   {
     icon: <ShieldIcon className="h-9 w-9" />,
-    en: "Verified lawyers",
-    ur: "تصدیق شدہ وکیل",
-    enSub: "Our team checks every Bar Council enrolment before a profile goes public.",
-    urSub: "پروفائل عوامی ہونے سے پہلے ہماری ٹیم ہر بار کونسل اندراج چیک کرتی ہے۔",
+    en: "Reviewed profiles",
+    ur: "جانچی ہوئی پروفائلز",
+    enSub: "Every public profile is reviewed by our team before listing.",
+    urSub: "عوامی ہونے سے پہلے ہماری ٹیم ہر پروفائل کا جائزہ لیتی ہے۔",
   },
   {
     icon: <WalletIcon className="h-9 w-9" />,
@@ -130,8 +143,8 @@ const GUIDES = [
   },
 ];
 
-export default function Home() {
-  const featured = LAWYERS.slice(0, 4);
+export default async function Home() {
+  const { lawyers: featured, total: lawyerCount } = await fetchFeatured();
   return (
     <>
       {/* ============ HERO ============ */}
@@ -139,12 +152,12 @@ export default function Home() {
         <div className="mx-auto max-w-7xl px-4 pb-16 pt-14 text-center sm:pt-20">
           <p className="inline-flex items-center gap-2 rounded-full bg-white/10 px-5 py-2 text-base font-bold text-emerald-100 ring-1 ring-white/20">
             <ShieldIcon className="h-5 w-5 text-amber-300" />
-            <T en="Bar Council verified lawyers" ur="بار کونسل سے تصدیق شدہ وکیل" />
+            <T en="Lawyer directory for Pakistan" ur="پاکستان کی وکیل ڈائریکٹری" />
           </p>
           <h1 className="mx-auto mt-6 max-w-3xl text-4xl font-extrabold leading-tight text-white sm:text-6xl">
             <T
-              en={<>Pakistan ke <span className="text-amber-300">verified wakeel</span>, ab ek click par</>}
-              ur={<>پاکستان کے <span className="text-amber-300">تصدیق شدہ وکیل</span>، اب ایک کلک پر</>}
+              en={<>Pakistan ke <span className="text-amber-300">wakeel</span>, ab ek click par</>}
+              ur={<>پاکستان کے <span className="text-amber-300">وکیل</span>، اب ایک کلک پر</>}
             />
           </h1>
           <p className="mx-auto mt-4 max-w-2xl text-lg text-emerald-100 sm:text-xl">
@@ -157,7 +170,7 @@ export default function Home() {
           <div className="mx-auto mt-8 flex max-w-2xl flex-wrap items-center justify-center gap-x-8 gap-y-3 text-emerald-100">
             <span className="inline-flex items-center gap-2 text-lg font-bold">
               <CheckBadgeIcon className="h-5 w-5 text-amber-300" />
-              <T en={`${LAWYERS.filter((l) => !l.isDemo).length} verified lawyers · ${LAWYERS.filter((l) => l.isDemo).length} demo profiles`} ur={`${LAWYERS.filter((l) => !l.isDemo).length} تصدیق شدہ وکیل · ${LAWYERS.filter((l) => l.isDemo).length} ڈیمو پروفائل`} />
+              <T en={`${lawyerCount} lawyers`} ur={`${lawyerCount} وکیل`} />
             </span>
             <span className="inline-flex items-center gap-2 text-lg font-bold">
               <CheckBadgeIcon className="h-5 w-5 text-amber-300" />
@@ -224,7 +237,6 @@ export default function Home() {
           eyebrowUr="نمایاں وکیل"
           title={<T en="Featured lawyers" ur="نمایاں وکیل" />}
         />
-        <div className="mx-auto mb-6 max-w-3xl"><DemoNotice /></div>
         <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
           {featured.map((l) => (
             <LawyerCard key={l.slug} lawyer={l} />
@@ -279,7 +291,7 @@ export default function Home() {
       </section>
 
       {/* ============ STATS BAND ============ */}
-      <StatsBand />
+      <StatsBand lawyerCount={lawyerCount} />
 
       {/* ============ WHY WAKEEL.CONNECT ============ */}
       <section className="mx-auto max-w-7xl px-4 py-14">
@@ -314,7 +326,7 @@ export default function Home() {
               return (
                 <Link
                   key={c.slug}
-                  href={`/lawyers?court=${c.slug}`}
+                  href={city ? `/cities/${city.slug}` : "/lawyers"}
                   className="group overflow-hidden rounded-3xl bg-white text-center shadow-sm ring-1 ring-emerald-100 transition hover:-translate-y-1 hover:shadow-lg"
                 >
                   {c.image ? (
@@ -326,16 +338,10 @@ export default function Home() {
                         className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
                       />
                       <span className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
-                      <span className="absolute bottom-3 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full bg-white/95 px-3 py-1 text-xs font-extrabold text-emerald-800">
-                        <T en={`${countByCourt(c.slug)} lawyers`} ur={`${countByCourt(c.slug)} وکیل`} />
-                      </span>
                     </div>
                   ) : (
                     <div className="flex h-40 flex-col items-center justify-center gap-2 bg-gradient-to-br from-emerald-700 to-emerald-900 text-white">
                       <BriefcaseIcon className="h-10 w-10 opacity-90" />
-                      <span className="rounded-full bg-white/15 px-3 py-1 text-xs font-extrabold">
-                        <T en={`${countByCourt(c.slug)} lawyers`} ur={`${countByCourt(c.slug)} وکیل`} />
-                      </span>
                     </div>
                   )}
                   <div className="p-5">

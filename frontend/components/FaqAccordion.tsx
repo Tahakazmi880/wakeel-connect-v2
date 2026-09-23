@@ -7,8 +7,8 @@ const FAQS = [
   {
     qEn: "How do I book a lawyer?",
     qUr: "میں وکیل کیسے بک کروں؟",
-    aEn: "Three simple steps: choose your wakeel, pick a date and time, and enter your phone number. No account or password needed.",
-    aUr: "صرف تین آسان مراحل: اپنا وکیل چنیں، تاریخ اور وقت منتخب کریں، اور اپنا فون نمبر لکھیں۔ اکاؤنٹ یا پاس ورڈ کی ضرورت نہیں۔",
+    aEn: "Three simple steps: choose your wakeel, pick a date and time, then verify your phone number with a code. Done.",
+    aUr: "صرف تین آسان مراحل: اپنا وکیل چنیں، تاریخ اور وقت منتخب کریں، پھر کوڈ سے اپنا فون نمبر تصدیق کریں۔ ہو گیا۔",
   },
   {
     qEn: "How much does a consultation cost?",
@@ -17,10 +17,10 @@ const FAQS = [
     aUr: "ہر وکیل اپنی فیس خود طے کرتا ہے، اور وہ بکنگ سے پہلے پروفائل پر واضح لکھی ہوتی ہے۔ آپ فیس براہ راست وکیل کو ادا کرتے ہیں — جو نظر آئے اس سے زیادہ کبھی نہیں۔",
   },
   {
-    qEn: "How are lawyers verified?",
-    qUr: "وکیلوں کی تصدیق کیسے ہوتی ہے؟",
-    aEn: "Our team checks each lawyer's Bar Council enrolment before their profile goes public. Profiles you see in this demo are sample data for testing.",
-    aUr: "ہماری ٹیم پروفائل عوامی ہونے سے پہلے ہر وکیل کا بار کونسل اندراج چیک کرتی ہے۔ اس ڈیمو میں نظر آنے والی پروفائلز صرف جانچ کے لیے ہیں۔",
+    qEn: "How are lawyer profiles listed?",
+    qUr: "وکیلوں کی پروفائلز کیسے درج ہوتی ہیں؟",
+    aEn: "Every public profile is reviewed by our team before listing.",
+    aUr: "عوامی ہونے سے پہلے ہماری ٹیم ہر پروفائل کا جائزہ لیتی ہے۔",
   },
   {
     qEn: "Can I talk to the lawyer in Urdu?",
