@@ -8,11 +8,20 @@ import {
   ArrowIcon,
   BriefcaseIcon,
   CheckIcon,
+  DocIcon,
   ShieldIcon,
   UserIcon,
 } from "./icons";
 import { CITIES, PRACTICE_AREAS } from "@/lib/data";
-import { submitApplication, normalizePhone, ApiError } from "@/lib/api";
+import {
+  submitApplication,
+  uploadApplicationDocument,
+  deleteApplicationDocument,
+  normalizePhone,
+  ApiError,
+  type ApplicationDoc,
+  type ApplicationDocType,
+} from "@/lib/api";
 
 const inputCls =
   "min-h-[56px] w-full rounded-lg border border-ink-900/15 bg-white px-4 text-lg text-ink-950 outline-none transition placeholder:text-ink-400 focus:border-court-600 focus:ring-2 focus:ring-court-600/20";
@@ -32,6 +41,7 @@ function StepDots({ step }: { step: number }) {
     { en: "Personal", ur: "ذاتی", icon: <UserIcon className="h-5 w-5" /> },
     { en: "Professional", ur: "پیشہ ورانہ", icon: <BriefcaseIcon className="h-5 w-5" /> },
     { en: "Review", ur: "جائزہ", icon: <CheckIcon className="h-5 w-5" /> },
+    { en: "Documents", ur: "دستاویزات", icon: <DocIcon className="h-5 w-5" /> },
   ];
   return (
     <ol className="flex items-center justify-center gap-1 sm:gap-2" aria-label="Application progress">
@@ -47,7 +57,7 @@ function StepDots({ step }: { step: number }) {
               {done ? <CheckIcon className="h-5 w-5" /> : l.icon}
               <T en={l.en} ur={l.ur} />
             </span>
-            {n < 3 && <span className="h-0.5 w-4 bg-ink-200 sm:w-8" />}
+            {n < labels.length && <span className="h-0.5 w-4 bg-ink-200 sm:w-8" />}
           </li>
         );
       })}
@@ -73,6 +83,12 @@ export default function JoinForm() {
   const [areas, setAreas] = useState<string[]>([]);
   const [bio, setBio] = useState("");
   const [errors, setErrors] = useState<Errors>({});
+
+  // Step 4: document upload — credentials issued once by the application response.
+  const [appCreds, setAppCreds] = useState<{ applicationId: string; uploadToken: string } | null>(null);
+  const [docs, setDocs] = useState<ApplicationDoc[]>([]);
+  const [uploading, setUploading] = useState<Partial<Record<ApplicationDocType, boolean>>>({});
+  const [docError, setDocError] = useState<{ en: string; ur: string } | null>(null);
 
   const toggleArea = (slug: string) =>
     setAreas((a) => (a.includes(slug) ? a.filter((x) => x !== slug) : a.length < 6 ? [...a, slug] : a));
@@ -114,12 +130,67 @@ export default function JoinForm() {
     else if (step === 2 && validateStep2()) setStep(3);
   };
 
+  const DOC_SLOTS: { type: ApplicationDocType; en: string; ur: string; required: boolean }[] = [
+    { type: "CNIC_FRONT", en: "CNIC — front side", ur: "شناختی کارڈ — سامنے", required: true },
+    { type: "CNIC_BACK", en: "CNIC — back side", ur: "شناختی کارڈ — پیچھے", required: true },
+    { type: "BAR_COUNCIL_CERT", en: "Bar Council certificate / card", ur: "بار کونسل سرٹیفکیٹ / کارڈ", required: true },
+    { type: "DEGREE", en: "Law degree", ur: "قانون کی ڈگری", required: false },
+  ];
+
+  const docFor = (type: ApplicationDocType) => docs.find((d) => d.type === type);
+
+  const handleFile = async (type: ApplicationDocType, file: File | undefined) => {
+    if (!file || !appCreds) return;
+    setDocError(null);
+    if (file.size > 10 * 1024 * 1024) {
+      setDocError({
+        en: "That file is too large — please use a file under 10 MB.",
+        ur: "فائل بہت بڑی ہے — براہ کرم 10 MB سے کم فائل استعمال کریں۔",
+      });
+      return;
+    }
+    setUploading((u) => ({ ...u, [type]: true }));
+    try {
+      const { document } = await uploadApplicationDocument(appCreds.applicationId, appCreds.uploadToken, type, file);
+      setDocs((ds) => {
+        const rest = ds.filter((d) => d.type !== type);
+        return [...rest, document];
+      });
+    } catch (e) {
+      if (e instanceof ApiError && e.code === "FILE_TOO_LARGE") {
+        setDocError({ en: "That file is too large — please use a file under 10 MB.", ur: "فائل بہت بڑی ہے — براہ کرم 10 MB سے کم فائل استعمال کریں۔" });
+      } else if (e instanceof ApiError && e.code === "BAD_FILE_TYPE") {
+        setDocError({ en: "Only JPG, PNG, WEBP or PDF files are allowed.", ur: "صرف JPG، PNG، WEBP یا PDF فائل قابل قبول ہے۔" });
+      } else {
+        setDocError({ en: "Upload failed. Check your connection and try again.", ur: "اپ لوڈ ناکام۔ کنکشن چیک کر کے دوبارہ کوشش کریں۔" });
+      }
+    } finally {
+      setUploading((u) => ({ ...u, [type]: false }));
+    }
+  };
+
+  const removeDoc = async (doc: ApplicationDoc) => {
+    if (!appCreds || uploading[doc.type]) return;
+    setDocError(null);
+    setUploading((u) => ({ ...u, [doc.type]: true }));
+    try {
+      await deleteApplicationDocument(appCreds.applicationId, appCreds.uploadToken, doc.id);
+      setDocs((ds) => ds.filter((d) => d.id !== doc.id));
+    } catch {
+      setDocError({ en: "Couldn't remove that file. Try again.", ur: "فائل حذف نہ ہو سکی۔ دوبارہ کوشش کریں۔" });
+    } finally {
+      setUploading((u) => ({ ...u, [doc.type]: false }));
+    }
+  };
+
+  const missingRequired = DOC_SLOTS.filter((s) => s.required && !docFor(s.type));
+
   const submit = async () => {
     if (submitting) return;
     setSubmitting(true);
     setServerError(null);
     try {
-      await submitApplication({
+      const res = await submitApplication({
         fullName: fullName.trim(),
         phone: phone.trim(),
         citySlug,
@@ -130,7 +201,9 @@ export default function JoinForm() {
         practiceAreaSlugs: areas,
         bio: bio.trim() || undefined,
       });
-      setDone(true);
+      setAppCreds({ applicationId: res.application.id, uploadToken: res.uploadToken });
+      setDocs([]);
+      setStep(4);
       window.scrollTo({ top: 0, behavior: "smooth" });
     } catch (e) {
       if (e instanceof ApiError && (e.code === "RATE_LIMITED" || e.status === 429)) {
@@ -169,8 +242,8 @@ export default function JoinForm() {
         </h1>
         <p className="mx-auto mt-3 max-w-lg text-lg text-ink-600">
           <T
-            en="Our team will call you on your phone number to collect your CNIC and Bar Council documents for verification. This is a real review — usually done in 2–3 working days."
-            ur="ہماری ٹیم تصدیق کے لیے آپ کے شناختی کارڈ اور بار کونسل دستاویزات لینے آپ کے فون نمبر پر رابطہ کرے گی۔ یہ حقیقی جائزہ ہے — عام طور پر ۲ سے ۳ دن میں مکمل۔"
+            en="Your documents are with our review team. This is a real review — usually done in 2–3 working days. We'll call you on your mobile number if anything is missing."
+            ur="آپ کی دستاویزات ہماری جائزہ ٹیم کے پاس ہیں۔ یہ حقیقی جائزہ ہے — عام طور پر ۲ سے ۳ دن میں مکمل۔ کچھ کمی ہوئی تو آپ کے موبائل نمبر پر کال کریں گے۔"
           />
         </p>
         <div className="mt-8">
@@ -316,8 +389,93 @@ export default function JoinForm() {
             <p className="flex items-start gap-2 rounded-lg bg-court-50 p-4 text-base text-ink-900 ring-1 ring-court-200">
               <ShieldIcon className="h-6 w-6 shrink-0" />
               <T
-                en="After you submit, our team will call you to collect your CNIC and Bar Council documents. Documents stay private — they are never shown to clients."
-                ur="بھیجنے کے بعد ہماری ٹیم آپ کے شناختی کارڈ اور بار کونسل دستاویزات کے لیے کال کرے گی۔ دستاویزات نجی رہتی ہیں — کلائنٹس کو کبھی نہیں دکھائیں گے۔"
+                en="Next step: upload your CNIC and Bar Council documents right here on the portal. Documents stay private — they are never shown to clients."
+                ur="اگلا مرحلہ: اپنا شناختی کارڈ اور بار کونسل دستاویزات یہیں پورٹل پر اپ لوڈ کریں۔ دستاویزات نجی رہتی ہیں — کلائنٹس کو کبھی نہیں دکھائیں گے۔"
+              />
+            </p>
+          </div>
+        )}
+
+        {/* ===== STEP 4: documents ===== */}
+        {step === 4 && (
+          <div className="space-y-5">
+            <h2 className="font-display text-[1.65rem] font-semibold text-ink-950">
+              <T en="Upload your documents" ur="اپنی دستاویزات اپ لوڈ کریں" />
+            </h2>
+            <p className="text-base text-ink-600">
+              <T
+                en="Take a clear photo or choose a file (JPG, PNG, WEBP or PDF, under 10 MB). Uploading again replaces the previous file."
+                ur="واضح تصویر لیں یا فائل چنیں (JPG، PNG، WEBP یا PDF، 10 MB سے کم)۔ دوبارہ اپ لوڈ کرنے سے پرانی فائل بدل جائے گی۔"
+              />
+            </p>
+            {docError && (
+              <p className="rounded-lg bg-clay-50 p-4 text-base font-bold text-clay-700 ring-1 ring-clay-200">
+                <T en={docError.en} ur={docError.ur} />
+              </p>
+            )}
+            <div className="space-y-3">
+              {DOC_SLOTS.map((slot) => {
+                const existing = docFor(slot.type);
+                const busy = uploading[slot.type];
+                return (
+                  <div key={slot.type} className="flex items-center gap-4 rounded-lg border border-ink-900/10 bg-white p-4">
+                    <span className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-lg ring-1 ${
+                      existing ? "bg-court-50 text-court-700 ring-court-700/20" : "bg-ink-900/5 text-ink-500 ring-ink-900/10"
+                    }`}>
+                      {existing ? <CheckIcon className="h-6 w-6" /> : <DocIcon className="h-6 w-6" />}
+                    </span>
+                    <div className="min-w-0 flex-1">
+                      <p className="text-base font-extrabold text-ink-950">
+                        <T en={slot.en} ur={slot.ur} />
+                        {!slot.required && (
+                          <span className="ml-2 text-sm font-bold text-ink-400"><T en="(optional)" ur="(اختیاری)" /></span>
+                        )}
+                      </p>
+                      {existing ? (
+                        <p className="truncate text-sm font-bold text-court-700">
+                          <T en="Uploaded" ur="اپ لوڈ ہو گئی" /> · {(existing.sizeBytes / 1024).toFixed(0)} KB
+                        </p>
+                      ) : (
+                        <p className="text-sm font-bold text-ink-400">
+                          <T en={slot.required ? "Required" : "Optional"} ur={slot.required ? "لازمی" : "اختیاری"} />
+                        </p>
+                      )}
+                    </div>
+                    {existing ? (
+                      <button
+                        type="button"
+                        disabled={busy}
+                        onClick={() => removeDoc(existing)}
+                        className="min-h-[52px] shrink-0 rounded-lg border border-ink-900/15 px-4 text-base font-bold text-ink-600 hover:bg-ink-900/5 disabled:opacity-50"
+                      >
+                        {busy ? <T en="…" ur="…" /> : <T en="Remove" ur="ہٹائیں" />}
+                      </button>
+                    ) : (
+                      <label className={`inline-flex min-h-[52px] shrink-0 cursor-pointer items-center justify-center rounded-lg px-5 text-base font-bold text-white shadow-card transition ${
+                        busy ? "bg-court-400" : "bg-court-700 hover:bg-court-800"
+                      }`}>
+                        {busy ? <T en="Uploading…" ur="اپ لوڈ…" /> : <T en="Upload" ur="اپ لوڈ" />}
+                        <input
+                          type="file"
+                          accept="image/*,.pdf"
+                          className="hidden"
+                          disabled={busy}
+                          onChange={(e) => {
+                            void handleFile(slot.type, e.target.files?.[0]);
+                            e.target.value = "";
+                          }}
+                        />
+                      </label>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+            <p className="flex items-start gap-2 rounded-lg bg-court-50 p-4 text-base text-ink-900 ring-1 ring-court-200">
+              <ShieldIcon className="h-6 w-6 shrink-0" />
+              <T
+                en="Documents stay private — only our verification team sees them, never clients."
+                ur="دستاویزات نجی رہتی ہیں — صرف ہماری تصدیقی ٹیم دیکھتی ہے، کلائنٹس کبھی نہیں۔"
               />
             </p>
           </div>
@@ -325,7 +483,7 @@ export default function JoinForm() {
 
         {/* nav buttons */}
         <div className="mt-8 flex flex-col-reverse gap-3 sm:flex-row sm:justify-between">
-          {step > 1 ? (
+          {step > 1 && step < 4 ? (
             <SecondaryBtn icon={<ArrowIcon className="h-6 w-6 rotate-180" />} onClick={() => { setStep(step - 1); setServerError(null); }}>
               <T en="Back" ur="پیچھے" />
             </SecondaryBtn>
@@ -334,9 +492,28 @@ export default function JoinForm() {
             <PrimaryBtn icon={<ArrowIcon className="h-6 w-6" />} onClick={next}>
               <T en="Continue" ur="آگے بڑھیں" />
             </PrimaryBtn>
-          ) : (
+          ) : step === 3 ? (
             <PrimaryBtn icon={<CheckIcon className="h-6 w-6" />} onClick={submit} disabled={submitting}>
-              {submitting ? <T en="Submitting…" ur="بھیجا جا رہا ہے…" /> : <T en="Submit for verification" ur="تصدیق کے لیے بھیجیں" />}
+              {submitting ? <T en="Submitting…" ur="بھیجا جا رہا ہے…" /> : <T en="Submit & continue" ur="جمع کریں اور آگے بڑھیں" />}
+            </PrimaryBtn>
+          ) : (
+            <PrimaryBtn
+              icon={<CheckIcon className="h-6 w-6" />}
+              disabled={missingRequired.length > 0 || Object.values(uploading).some(Boolean)}
+              onClick={() => {
+                if (missingRequired.length > 0) {
+                  setDocError({
+                    en: `Please upload: ${missingRequired.map((s) => s.en).join(", ")}.`,
+                    ur: `براہ کرم اپ لوڈ کریں: ${missingRequired.map((s) => s.ur).join("، ")}۔`,
+                  });
+                  window.scrollTo({ top: 0, behavior: "smooth" });
+                  return;
+                }
+                setDone(true);
+                window.scrollTo({ top: 0, behavior: "smooth" });
+              }}
+            >
+              <T en="Finish" ur="مکمل کریں" />
             </PrimaryBtn>
           )}
         </div>

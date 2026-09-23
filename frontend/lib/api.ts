@@ -104,13 +104,15 @@ interface FetchOpts {
   method?: string;
   body?: unknown;
   auth?: boolean;
+  /** extra headers (e.g. x-upload-token for application documents) */
+  headers?: Record<string, string>;
   /** retry after refresh already attempted (internal) */
   _retried?: boolean;
 }
 
 async function apiFetch<T>(path: string, opts: FetchOpts = {}): Promise<T> {
-  const { method = "GET", body, auth = false, _retried = false } = opts;
-  const headers: Record<string, string> = {};
+  const { method = "GET", body, auth = false, headers: extraHeaders, _retried = false } = opts;
+  const headers: Record<string, string> = { ...(extraHeaders ?? {}) };
   if (body !== undefined && !(body instanceof FormData)) headers["Content-Type"] = "application/json";
   if (auth && authState.accessToken) headers["Authorization"] = `Bearer ${authState.accessToken}`;
 
@@ -167,6 +169,7 @@ export async function publicGet<T>(path: string): Promise<T> {
 /** Normalize PK phone: 0300… → +92300…, strip spaces/dashes. */
 export function normalizePhone(raw: string): string {
   let p = raw.replace(/[\s\-()]/g, "");
+  if (/^3\d{9}$/.test(p)) p = "0" + p; // "300 1234567" without the leading zero
   if (p.startsWith("0")) p = "+92" + p.slice(1);
   if (!p.startsWith("+")) p = "+" + p;
   return p;
@@ -436,10 +439,101 @@ export interface LawyerApplicationInput {
   bio?: string;
 }
 
-export async function submitApplication(input: LawyerApplicationInput): Promise<{ application: { id: string; status: string } }> {
+export async function submitApplication(input: LawyerApplicationInput): Promise<{
+  application: { id: string; status: string };
+  uploadToken: string;
+}> {
   return apiFetch("/applications", {
     method: "POST",
     body: { ...input, phone: normalizePhone(input.phone) },
+  });
+}
+
+// ---------------------------------------------------------------------------
+// Application verification documents (one-time upload token, no login)
+// ---------------------------------------------------------------------------
+
+export type ApplicationDocType = "CNIC_FRONT" | "CNIC_BACK" | "BAR_COUNCIL_CERT" | "DEGREE" | "PROFILE_PHOTO" | "OTHER";
+
+export interface ApplicationDoc {
+  id: string;
+  type: ApplicationDocType;
+  mimeType: string;
+  sizeBytes: number;
+  status: string;
+  uploadedAt: string;
+}
+
+export async function uploadApplicationDocument(
+  applicationId: string,
+  uploadToken: string,
+  type: ApplicationDocType,
+  file: File
+): Promise<{ document: ApplicationDoc }> {
+  const fd = new FormData();
+  fd.append("file", file);
+  return apiFetch(`/applications/${applicationId}/documents?type=${type}`, {
+    method: "POST",
+    body: fd,
+    headers: { "x-upload-token": uploadToken },
+  });
+}
+
+export async function listApplicationDocuments(
+  applicationId: string,
+  uploadToken: string
+): Promise<{ documents: ApplicationDoc[] }> {
+  return apiFetch(`/applications/${applicationId}/documents`, {
+    headers: { "x-upload-token": uploadToken },
+  });
+}
+
+export async function deleteApplicationDocument(
+  applicationId: string,
+  uploadToken: string,
+  docId: string
+): Promise<{ ok: true }> {
+  return apiFetch(`/applications/${applicationId}/documents/${docId}`, {
+    method: "DELETE",
+    headers: { "x-upload-token": uploadToken },
+  });
+}
+
+/** Admin-only download URL; fetch with the admin access token, then save the blob. */
+export function applicationDocumentDownloadUrl(applicationId: string, docId: string): string {
+  return apiUrl(`/admin/applications/${applicationId}/documents/${docId}/download`);
+}
+
+export interface AdminApplication {
+  id: string;
+  displayName: string;
+  slug: string;
+  verificationStatus: string;
+  yearsExperience: number;
+  barCouncil: string | null;
+  barCouncilNo: string | null;
+  bio: string | null;
+  createdAt: string;
+  city: { nameEn: string };
+  user: { phone: string; fullName: string };
+  practiceAreas: { practiceArea: { nameEn: string } }[];
+  documents: ApplicationDoc[];
+}
+
+export async function listAdminApplications(status?: string): Promise<{ applications: AdminApplication[] }> {
+  const q = status ? `?status=${encodeURIComponent(status)}` : "";
+  return apiFetch(`/admin/applications${q}`, { auth: true });
+}
+
+export async function decideApplication(
+  applicationId: string,
+  toStatus: "APPROVED" | "REJECTED" | "SUSPENDED",
+  note?: string
+): Promise<{ ok: true }> {
+  return apiFetch(`/admin/applications/${applicationId}/decision`, {
+    method: "POST",
+    auth: true,
+    body: { toStatus, note },
   });
 }
 
