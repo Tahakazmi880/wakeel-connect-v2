@@ -1,4 +1,6 @@
-import type { ReactNode } from "react";
+"use client";
+
+import { useState, type ReactNode } from "react";
 import { T } from "./LanguageContext";
 import { CheckBadgeIcon, StarIcon } from "./icons";
 import { isAvailableToday, type Lawyer } from "@/lib/data";
@@ -166,4 +168,35 @@ export function nextAvailableText(lawyer: Lawyer): { en: string; ur: string } {
   const fee = (lawyer.consultationFeePaisa / 100).toLocaleString("en-PK");
   if (open) return { en: `Today · Rs. ${fee}`, ur: `آج · ${fee} روپے` };
   return { en: `Mon–Fri · Rs. ${fee}`, ur: `پیر تا جمعہ · ${fee} روپے` };
+}
+
+/**
+ * Image that can never render broken: when `src` is missing or the load
+ * fails, `fallback` is rendered instead (illustrated placeholder, jali
+ * panel, company name — never a broken-image icon, never an empty hole).
+ */
+export function SafeImage({
+  src,
+  alt,
+  className = "",
+  fallback,
+  eager = false,
+}: {
+  src?: string | null;
+  alt: string;
+  className?: string;
+  fallback: ReactNode;
+  eager?: boolean;
+}) {
+  const [failed, setFailed] = useState(false);
+  if (!src || failed) return <>{fallback}</>;
+  return (
+    <img
+      src={src}
+      alt={alt}
+      loading={eager ? "eager" : "lazy"}
+      onError={() => setFailed(true)}
+      className={className}
+    />
+  );
 }

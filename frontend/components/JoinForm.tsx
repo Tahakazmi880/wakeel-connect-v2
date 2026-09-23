@@ -44,24 +44,26 @@ function StepDots({ step }: { step: number }) {
     { en: "Documents", ur: "دستاویزات", icon: <DocIcon className="h-5 w-5" /> },
   ];
   return (
-    <ol className="flex items-center justify-center gap-1 sm:gap-2" aria-label="Application progress">
-      {labels.map((l, i) => {
-        const n = i + 1;
-        const active = n === step;
-        const done = n < step;
-        return (
-          <li key={l.en} className="flex items-center gap-1 sm:gap-2">
-            <span className={`flex min-h-[48px] items-center gap-2 rounded-full px-3 sm:px-5 text-base font-extrabold transition ${
-              active ? "bg-court-700 text-white shadow-card" : done ? "bg-court-50 text-court-800 ring-1 ring-court-700/20" : "bg-ink-900/5 text-ink-500"
-            }`}>
-              {done ? <CheckIcon className="h-5 w-5" /> : l.icon}
-              <T en={l.en} ur={l.ur} />
-            </span>
-            {n < labels.length && <span className="h-0.5 w-4 bg-ink-200 sm:w-8" />}
-          </li>
-        );
-      })}
-    </ol>
+    <div className="wc-scroll-x -mx-1 px-1 pb-1">
+      <ol className="flex w-max min-w-full items-center justify-start gap-1 sm:justify-center sm:gap-2" aria-label="Application progress">
+        {labels.map((l, i) => {
+          const n = i + 1;
+          const active = n === step;
+          const done = n < step;
+          return (
+            <li key={l.en} className="flex items-center gap-1 sm:gap-2">
+              <span className={`flex min-h-[48px] items-center gap-2 whitespace-nowrap rounded-full px-3 py-2 text-base font-extrabold transition sm:px-5 ${
+                active ? "bg-court-700 text-white shadow-card" : done ? "bg-court-50 text-court-800 ring-1 ring-court-700/20" : "bg-ink-900/5 text-ink-500"
+              }`}>
+                {done ? <CheckIcon className="h-5 w-5" /> : l.icon}
+                <T en={l.en} ur={l.ur} />
+              </span>
+              {n < labels.length && <span className="h-0.5 w-4 shrink-0 bg-ink-200 sm:w-8" aria-hidden />}
+            </li>
+          );
+        })}
+      </ol>
+    </div>
   );
 }
 

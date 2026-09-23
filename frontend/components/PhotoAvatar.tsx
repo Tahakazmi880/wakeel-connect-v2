@@ -15,11 +15,15 @@ export function PhotoAvatar({
   photo,
   gender,
   size = "lg",
+  className = "",
 }: {
   name: string;
   photo?: string;
   gender?: string;
   size?: "sm" | "lg" | "xl" | "2xl" | "3xl";
+  /** Appended to the rendered box — lets callers override dims responsively,
+      e.g. className="sm:h-40 sm:w-40" (responsive variants never fight the base size). */
+  className?: string;
 }) {
   const [failed, setFailed] = useState(false);
   const dims =
@@ -36,7 +40,7 @@ export function PhotoAvatar({
 
   if (!photo || failed) {
     return (
-      <div className={`shrink-0 overflow-hidden rounded-lg ring-1 ring-ink-900/15 ${dims}`} aria-hidden>
+      <div className={`shrink-0 overflow-hidden rounded-lg ring-1 ring-ink-900/15 ${dims} ${className}`} aria-hidden>
         <PlaceholderAvatar gender={gender} />
       </div>
     );
@@ -48,7 +52,7 @@ export function PhotoAvatar({
       alt={`Photo of ${plainName}`}
       onError={() => setFailed(true)}
       loading="lazy"
-      className={`shrink-0 rounded-lg bg-paper-dark object-cover ring-1 ring-ink-900/15 ${dims}`}
+      className={`shrink-0 rounded-lg bg-paper-dark object-cover ring-1 ring-ink-900/15 ${dims} ${className}`}
     />
   );
 }

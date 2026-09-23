@@ -29,20 +29,20 @@ export default function LawyerCard({ lawyer }: { lawyer: LawyerCardData }) {
 
   return (
     <article className="flex flex-col gap-5 rounded-2xl border border-ink-900/10 bg-white p-5 shadow-card transition hover:shadow-lift sm:flex-row sm:gap-6">
-      {/* Photo + details */}
-      <div className="flex min-w-0 flex-1 items-start gap-4">
+      {/* Photo + details — compact avatar on phones, full size on sm+ */}
+      <div className="flex min-w-0 flex-1 items-start gap-3 sm:gap-4">
         <Link href={`/lawyer/${lawyer.slug}`} aria-label={lawyer.displayName} className="shrink-0">
-          <PhotoAvatar name={lawyer.displayName} photo={fileUrl(lawyer.photoUrl) ?? undefined} gender={lawyer.gender} size="2xl" />
+          <PhotoAvatar name={lawyer.displayName} photo={fileUrl(lawyer.photoUrl) ?? undefined} gender={lawyer.gender} size="lg" className="sm:h-40 sm:w-40" />
         </Link>
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
             <Link
               href={`/lawyer/${lawyer.slug}`}
-              className="font-display text-[1.4rem] font-semibold leading-snug text-court-800 transition hover:text-court-600 hover:underline hover:decoration-court-300 hover:underline-offset-4"
+              className="font-display text-[1.25rem] font-semibold leading-snug text-court-800 transition hover:text-court-600 hover:underline hover:decoration-court-300 hover:underline-offset-4 sm:text-[1.4rem]"
             >
               {lawyer.displayName}
             </Link>
-            <span className="inline-flex items-center gap-1 rounded-full bg-court-100 px-2.5 py-0.5 text-xs font-bold text-court-800">
+            <span className="inline-flex items-center gap-1 whitespace-nowrap rounded-full bg-court-100 px-2.5 py-0.5 text-xs font-bold text-court-800">
               <CheckBadgeIcon className="h-3.5 w-3.5" />
               <T en="Reviewed profile" ur="جائزہ شدہ پروفائل" />
             </span>
@@ -90,13 +90,15 @@ export default function LawyerCard({ lawyer }: { lawyer: LawyerCardData }) {
                 <VideoIcon className="h-5 w-5" />
                 <T en="Online" ur="آن لائن" />
               </span>
-              <span className="text-right font-semibold text-ink-700">
-                {nextLabel ? (
-                  <T en={`Next: ${nextLabel}`} ur={`اگلا: ${nextLabel}`} />
-                ) : (
-                  <T en="Timings on request" ur="اوقات معلوم کریں" />
-                )}
-                <span className="wc-fee ml-2 text-ink-950">
+              <span className="flex shrink-0 flex-col items-end leading-snug">
+                <span className="font-semibold text-ink-700">
+                  {nextLabel ? (
+                    <T en={`Next: ${nextLabel}`} ur={`اگلا: ${nextLabel}`} />
+                  ) : (
+                    <T en="Timings on request" ur="اوقات معلوم کریں" />
+                  )}
+                </span>
+                <span className="wc-fee whitespace-nowrap font-bold text-ink-950">
                   {onlineFee ?? <T en="Fee on request" ur="فیس معلوم کریں" />}
                 </span>
               </span>
@@ -108,13 +110,15 @@ export default function LawyerCard({ lawyer }: { lawyer: LawyerCardData }) {
                 <OfficeIcon className="h-5 w-5" />
                 <T en="Chamber" ur="چیمبر" />
               </span>
-              <span className="text-right font-semibold text-ink-700">
-                {nextLabel ? (
-                  <T en={`Next: ${nextLabel}`} ur={`اگلا: ${nextLabel}`} />
-                ) : (
-                  <T en="Timings on request" ur="اوقات معلوم کریں" />
-                )}
-                <span className="wc-fee ml-2 text-ink-950">
+              <span className="flex shrink-0 flex-col items-end leading-snug">
+                <span className="font-semibold text-ink-700">
+                  {nextLabel ? (
+                    <T en={`Next: ${nextLabel}`} ur={`اگلا: ${nextLabel}`} />
+                  ) : (
+                    <T en="Timings on request" ur="اوقات معلوم کریں" />
+                  )}
+                </span>
+                <span className="wc-fee whitespace-nowrap font-bold text-ink-950">
                   {chamberFee ?? <T en="Fee on request" ur="فیس معلوم کریں" />}
                 </span>
               </span>
