@@ -23,17 +23,17 @@ const GUIDES = [
 
 function ColHeading({ children }: { children: React.ReactNode }) {
   return (
-    <h3 className="mb-5 text-[0.8rem] font-bold uppercase tracking-[0.16em] text-ink-500">
+    <h3 className="mb-5 text-[0.8rem] font-bold uppercase tracking-[0.16em] text-brass-400">
       {children}
     </h3>
   );
 }
 
-const LINK_CLS = "text-ink-600 transition hover:text-court-800";
+const LINK_CLS = "text-ink-300 transition hover:text-white";
 
 export default function Footer() {
   return (
-    <footer className="border-t border-ink-900/10 bg-white text-ink-600">
+    <footer className="border-t-[3px] border-brass-500 bg-ink-950 text-ink-300">
       <div className="mx-auto max-w-7xl px-4 pb-10 pt-14">
         <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-6">
           {/* Brand block */}
@@ -44,10 +44,10 @@ export default function Footer() {
                 alt="wakeel.connect logo"
                 width={40}
                 height={40}
-                className="h-10 w-10 rounded-lg object-cover"
+                className="h-10 w-10 rounded-lg bg-white object-cover p-0.5"
               />
-              <span className="font-display text-[1.45rem] font-semibold tracking-tight text-ink-950">
-                wakeel<span className="text-brass-600">.connect</span>
+              <span className="font-display text-[1.45rem] font-semibold tracking-tight text-white">
+                wakeel<span className="text-brass-400">.connect</span>
               </span>
             </div>
             <p className="mt-5 max-w-sm text-[1.02rem] leading-relaxed">
@@ -56,8 +56,8 @@ export default function Footer() {
                 ur="پاکستان کی وکیل ڈائریکٹری۔ اپنے کیس کے لیے درست وکیل تلاش کریں — آن لائن یا ملاقات کے ذریعے۔"
               />
             </p>
-            <p className="mt-5 inline-flex items-center gap-2 rounded-lg bg-court-50 px-4 py-2.5 text-sm font-semibold text-court-800 ring-1 ring-court-100">
-              <ShieldIcon className="h-5 w-5 shrink-0 text-court-700" />
+            <p className="mt-5 inline-flex items-center gap-2 rounded-lg bg-white/10 px-4 py-2.5 text-sm font-semibold text-ink-100 ring-1 ring-white/15">
+              <ShieldIcon className="h-5 w-5 shrink-0 text-brass-400" />
               <T en="Every profile is reviewed by our team" ur="ہر پروفائل ہماری ٹیم کی نظر سے گزرتا ہے" />
             </p>
           </div>
@@ -119,13 +119,13 @@ export default function Footer() {
               {GUIDES.map((g) => (
                 <li key={g.slug}>
                   <Link className={`${LINK_CLS} inline-flex items-center gap-2`} href={g.slug}>
-                    <DocIcon className="h-4 w-4 shrink-0 text-court-600" />
+                    <DocIcon className="h-4 w-4 shrink-0 text-court-300" />
                     <T en={g.titleEn} ur={g.titleUr} />
                   </Link>
                 </li>
               ))}
               <li>
-                <Link className="font-bold text-court-700 transition hover:text-court-800" href="/guides">
+                <Link className="font-bold text-court-300 transition hover:text-white" href="/guides">
                   <T en="All guides →" ur="تمام گائیڈز ←" />
                 </Link>
               </li>
@@ -164,8 +164,8 @@ export default function Footer() {
         </div>
 
         {/* SEO link mesh: practice area x city */}
-        <div className="mt-12 rounded-2xl bg-ink-50/60 p-6 ring-1 ring-ink-900/5 sm:p-8">
-          <h3 className="mb-5 text-[0.8rem] font-bold uppercase tracking-[0.16em] text-ink-500">
+        <div className="mt-12 rounded-2xl bg-white/[0.04] p-6 ring-1 ring-white/10 sm:p-8">
+          <h3 className="mb-5 text-[0.8rem] font-bold uppercase tracking-[0.16em] text-ink-400">
             <T en="Find lawyers by city & practice area" ur="شہر اور شعبے کے حساب سے وکیل تلاش کریں" />
           </h3>
           <ul className="grid gap-x-6 gap-y-2.5 text-[0.95rem] sm:grid-cols-2 lg:grid-cols-4">
@@ -182,9 +182,9 @@ export default function Footer() {
         </div>
 
         {/* Bottom bar: © — helpline number goes here once the real one is provided */}
-        <div className="mt-12 flex flex-col items-center justify-between gap-3 border-t border-ink-900/10 pt-6 text-[0.95rem] text-ink-500 sm:flex-row">
+        <div className="mt-12 flex flex-col items-center justify-between gap-3 border-t border-white/10 pt-6 text-[0.95rem] text-ink-400 sm:flex-row">
           <p>© 2026 wakeel.connect — <T en="All rights reserved." ur="جملہ حقوق محفوظ ہیں۔" /></p>
-          <p className="font-display italic text-ink-500">
+          <p className="font-display italic text-ink-300">
             <T en="Insaaf, within everyone's reach." ur="انصاف، سب کی پہنچ میں۔" />
           </p>
         </div>

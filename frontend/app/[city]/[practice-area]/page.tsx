@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { T } from "@/components/LanguageContext";
-import { PrimaryBtn, SectionHead } from "@/components/ui";
+import { PrimaryBtn, SecondaryBtn, SectionHead } from "@/components/ui";
 import LawyerCard from "@/components/LawyerCard";
 import SeoArticle from "@/components/SeoArticle";
 import { ArrowIcon, CalendarIcon, CheckBadgeIcon, PhoneIcon, SearchIcon, ShieldIcon } from "@/components/icons";
@@ -79,7 +79,8 @@ export default async function CityAreaPage({ params }: { params: Promise<{ city:
   const a = getPracticeArea(areaSlug);
   if (!c || !a) notFound();
   const lawyers = await fetchCityAreaLawyers(c.slug, a.slug);
-  if (lawyers.length === 0) notFound();
+  // Never 404 on an empty category: the page stays live with real
+  // descriptive content and an honest empty state + callbacks.
 
   const areaSlugs = new Set<string>();
   const citySlugs = new Set<string>();
@@ -107,10 +108,17 @@ export default async function CityAreaPage({ params }: { params: Promise<{ city:
         />
       </h1>
       <p className="mt-4 max-w-3xl text-lg leading-relaxed text-ink-600">
-        <T
-          en={`${lawyers.length} ${a.nameEn.toLowerCase()} ${lawyers.length === 1 ? "lawyer" : "lawyers"} practising in ${c.nameEn}. ${a.description} Compare profiles below — experience, fees in PKR and client reviews — then book a video consultation or chamber visit in 3 easy steps.`}
-          ur={`${c.nameUr} میں ${a.nameUr} کے ${lawyers.length} وکیل۔ ${a.description} نیچے پروفائلز کا موازنہ کریں — تجربہ، فیس اور آراء — پھر ۳ آسان مراحل میں بک کریں۔`}
-        />
+        {lawyers.length > 0 ? (
+          <T
+            en={`${lawyers.length} ${a.nameEn.toLowerCase()} ${lawyers.length === 1 ? "lawyer" : "lawyers"} practising in ${c.nameEn}. ${a.description} Compare profiles below — experience, fees in PKR and client reviews — then book a video consultation or chamber visit in 3 easy steps.`}
+            ur={`${c.nameUr} میں ${a.nameUr} کے ${lawyers.length} وکیل۔ ${a.description} نیچے پروفائلز کا موازنہ کریں — تجربہ، فیس اور آراء — پھر ۳ آسان مراحل میں بک کریں۔`}
+          />
+        ) : (
+          <T
+            en={`No ${a.nameEn.toLowerCase()} lawyers listed in ${c.nameEn} yet. ${a.description} We're onboarding verified lawyers across Pakistan — request a callback below and our team will match you with the right wakeel.`}
+            ur={`${c.nameUr} میں ${a.nameUr} کے کوئی وکیل ابھی درج نہیں۔ ${a.description} ہم پاکستان بھر میں تصدیق شدہ وکیل شامل کر رہے ہیں — نیچے کال بیک کی درخواست کریں، ہماری ٹیم آپ کو درست وکیل سے ملائے گی۔`}
+          />
+        )}
       </p>
 
       {/* trust strip */}
@@ -127,9 +135,34 @@ export default async function CityAreaPage({ params }: { params: Promise<{ city:
         ))}
       </div>
 
-      <div className="mx-auto mt-8 max-w-4xl space-y-5">
-        {lawyers.map((l) => <LawyerCard key={l.slug} lawyer={l} />)}
-      </div>
+      {lawyers.length > 0 ? (
+        <div className="mx-auto mt-8 max-w-4xl space-y-5">
+          {lawyers.map((l) => <LawyerCard key={l.slug} lawyer={l} />)}
+        </div>
+      ) : (
+        <div className="mx-auto mt-8 max-w-2xl rounded-2xl border border-dashed border-ink-900/25 bg-ink-50/60 p-8 text-center sm:p-10">
+          <p className="font-display text-[1.45rem] font-semibold leading-snug text-ink-950">
+            <T
+              en={`No ${a.nameEn.toLowerCase()} lawyers listed in ${c.nameEn} yet`}
+              ur={`${c.nameUr} میں ${a.nameUr} کے کوئی وکیل ابھی درج نہیں`}
+            />
+          </p>
+          <p className="mx-auto mt-3 max-w-md text-[1.02rem] leading-relaxed text-ink-600">
+            <T
+              en="We're onboarding verified lawyers across Pakistan. Browse all lawyers, or request a callback and our team will match you with the right wakeel."
+              ur="ہم پاکستان بھر میں تصدیق شدہ وکیل شامل کر رہے ہیں۔ تمام وکیل دیکھیں، یا کال بیک کی درخواست کریں — ہماری ٹیم آپ کو درست وکیل سے ملائے گی۔"
+            />
+          </p>
+          <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
+            <PrimaryBtn href="/lawyers">
+              <T en="Browse all lawyers" ur="تمام وکیل دیکھیں" />
+            </PrimaryBtn>
+            <SecondaryBtn href="/callback">
+              <T en="Request a callback" ur="کال بیک کی درخواست" />
+            </SecondaryBtn>
+          </div>
+        </div>
+      )}
 
       <SeoArticle area={a} citySlug={c.slug} feeRange={feeRangeFor(lawyers)} />
 
