@@ -15,7 +15,7 @@ export default function LawyerCard({ lawyer }: { lawyer: LawyerSummary }) {
   const exp = formatExperience(lawyer.yearsExperience);
 
   return (
-    <article className="flex flex-col gap-5 rounded-lg border border-ink-900/10 bg-white p-5 shadow-card transition hover:shadow-lift sm:flex-row sm:gap-6">
+    <article className="flex flex-col gap-5 rounded-2xl border border-ink-900/10 bg-white p-5 shadow-card transition hover:shadow-lift sm:flex-row sm:gap-6">
       {/* Photo + details */}
       <div className="flex min-w-0 flex-1 items-start gap-4">
         <Link href={`/lawyer/${lawyer.slug}`} aria-label={lawyer.displayName} className="shrink-0">
@@ -24,7 +24,7 @@ export default function LawyerCard({ lawyer }: { lawyer: LawyerSummary }) {
         <div className="min-w-0 flex-1">
           <Link
             href={`/lawyer/${lawyer.slug}`}
-            className="font-display text-[1.4rem] font-semibold leading-snug text-ink-950 transition hover:text-court-800"
+            className="font-display text-[1.4rem] font-semibold leading-snug text-court-800 transition hover:text-court-600 hover:underline hover:decoration-court-300 hover:underline-offset-4"
           >
             {lawyer.displayName}
           </Link>

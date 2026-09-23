@@ -36,7 +36,7 @@ export default function Header() {
     { href: "/questions", en: "Q&A", ur: "سوال جواب", icon: <DocIcon className="h-5 w-5" /> },
   ];
   return (
-    <header className="sticky top-0 z-40 border-b border-ink-900/10 bg-paper/95 backdrop-blur">
+    <header className="sticky top-0 z-40 border-b border-ink-900/10 bg-white/95 backdrop-blur">
       <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-4 py-3">
         <Logo />
         <nav className="hidden items-center gap-0.5 lg:flex" aria-label="Main">
@@ -99,7 +99,7 @@ export default function Header() {
         </div>
       </div>
       {open && (
-        <nav className="border-t border-ink-900/10 bg-paper px-4 py-3 lg:hidden" aria-label="Mobile">
+        <nav className="border-t border-ink-900/10 bg-white px-4 py-3 lg:hidden" aria-label="Mobile">
           {[...links, { href: "/join", en: "Join as Lawyer", ur: "وکیل بنیں", icon: <BriefcaseIcon className="h-5 w-5" /> }].map(
             (l) => (
               <Link

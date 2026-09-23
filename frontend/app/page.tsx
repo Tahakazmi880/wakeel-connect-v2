@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { T } from "@/components/LanguageContext";
-import { PrimaryBtn, SectionHead, Stars } from "@/components/ui";
+import { PrimaryBtn } from "@/components/ui";
 import LawyerCard from "@/components/LawyerCard";
 import SearchHero from "@/components/SearchHero";
 import StatsBand from "@/components/StatsBand";
@@ -8,11 +8,15 @@ import FaqAccordion from "@/components/FaqAccordion";
 import {
   ArrowIcon,
   BriefcaseIcon,
+  CheckBadgeIcon,
+  ChatIcon,
+  DocIcon,
+  OfficeIcon,
   PinIcon,
-  ShieldIcon,
+  VideoIcon,
 } from "@/components/icons";
 import { CITIES, COURTS, PRACTICE_AREAS, getCity } from "@/lib/data";
-import { API_V1, type LawyerSummary } from "@/lib/api";
+import { API_V1, fileUrl, type LawyerSummary } from "@/lib/api";
 
 async function fetchFeatured(): Promise<{ lawyers: LawyerSummary[]; total: number }> {
   try {
@@ -26,18 +30,73 @@ async function fetchFeatured(): Promise<{ lawyers: LawyerSummary[]; total: numbe
   }
 }
 
-const SERVICES = [
-  { en: "Online Consultation", ur: "آن لائن مشاورت", enSub: "Video call with a wakeel, from anywhere in Pakistan.", urSub: "پاکستان میں کہیں سے بھی وکیل سے ویڈیو کال پر بات کریں۔" },
-  { en: "Chamber Meeting", ur: "چیمبر ملاقات", enSub: "Sit down with a lawyer at their office.", urSub: "وکیل کے دفتر میں بالمشافہ ملاقات کریں۔" },
-  { en: "Document Drafting", ur: "دستاویز تیاری", enSub: "Agreements, notices and deeds drafted properly.", urSub: "معاہدے، نوٹس اور دستاویزات درست طریقے سے تیار کروائیں۔" },
-  { en: "Case Filing", ur: "کیس دائر کرنا", enSub: "File your case in the right court, the right way.", urSub: "اپنا کیس درست عدالت میں درست طریقے سے دائر کریں۔" },
-  { en: "Legal Opinion", ur: "قانونی رائے", enSub: "A clear written opinion before you decide.", urSub: "فیصلہ کرنے سے پہلے واضح تحریری قانونی رائے حاصل کریں۔" },
+/** Two-letter initials for the specialty circles, e.g. "Family Law" → "FL". */
+function initials(nameEn: string): string {
+  const words = nameEn.split(/\s+/).filter((w) => /[A-Za-z]/.test(w[0] ?? ""));
+  return words.slice(0, 2).map((w) => w[0]!.toUpperCase()).join("");
+}
+
+const SERVICES: {
+  titleEn: string;
+  titleUr: string;
+  subEn: string;
+  subUr: string;
+  href: string;
+  image?: string;
+  urduWord?: string;
+  icon: React.ReactNode;
+}[] = [
+  {
+    titleEn: "Video Consultation",
+    titleUr: "ویڈیو مشاورت",
+    subEn: "Talk to a wakeel face-to-face, from anywhere in Pakistan.",
+    subUr: "پاکستان میں کہیں سے بھی وکیل سے بالمشافہ بات کریں۔",
+    href: "/lawyers",
+    image: fileUrl("/lawyers/fayazuddin-rajper.jpg") ?? undefined,
+    icon: <VideoIcon className="h-5 w-5" />,
+  },
+  {
+    titleEn: "Chamber Visit",
+    titleUr: "چیمبر ملاقات",
+    subEn: "Book an in-person visit to the lawyer's office.",
+    subUr: "وکیل کے دفتر میں بالمشافہ ملاقات بک کریں۔",
+    href: "/lawyers",
+    image: "/courts/city-courts-karachi.jpg",
+    icon: <OfficeIcon className="h-5 w-5" />,
+  },
+  {
+    titleEn: "Document Drafting",
+    titleUr: "دستاویز تیاری",
+    subEn: "Agreements, notices and deeds drafted properly.",
+    subUr: "معاہدے، نوٹس اور دستاویزات درست طریقے سے تیار کروائیں۔",
+    href: "/lawyers",
+    urduWord: "دستاویز",
+    icon: <DocIcon className="h-5 w-5" />,
+  },
+  {
+    titleEn: "Case Filing",
+    titleUr: "کیس دائر کرنا",
+    subEn: "File your case in the right court, the right way.",
+    subUr: "اپنا کیس درست عدالت میں درست طریقے سے دائر کریں۔",
+    href: "/lawyers",
+    image: "/courts/supreme-court-pakistan.jpg",
+    icon: <BriefcaseIcon className="h-5 w-5" />,
+  },
+  {
+    titleEn: "Free Legal Q&A",
+    titleUr: "مفت قانونی سوال جواب",
+    subEn: "Ask a legal question, get answers from lawyers.",
+    subUr: "قانونی سوال پوچھیں، وکیلوں سے جواب پائیں۔",
+    href: "/questions",
+    urduWord: "سوال جواب",
+    icon: <ChatIcon className="h-5 w-5" />,
+  },
 ];
 
 const STEPS = [
-  { n: "01", en: "Choose your wakeel", ur: "اپنا وکیل چنیں", enSub: "Browse verified profiles by city and legal problem.", urSub: "شہر اور قانونی مسئلے کے حساب سے تصدیق شدہ پروفائلز دیکھیں۔" },
-  { n: "02", en: "Pick a time", ur: "وقت منتخب کریں", enSub: "Choose a day and slot that suits you.", urSub: "اپنی سہولت کا دن اور وقت منتخب کریں۔" },
-  { n: "03", en: "Confirm by phone", ur: "فون سے تصدیق کریں", enSub: "Enter your number, verify the code — done.", urSub: "نمبر لکھیں، کوڈ سے تصدیق کریں — ہو گیا۔" },
+  { n: "1", en: "Choose your wakeel", ur: "اپنا وکیل چنیں", enSub: "Browse reviewed profiles by city and legal problem.", urSub: "شہر اور قانونی مسئلے کے حساب سے جانچی ہوئی پروفائلز دیکھیں۔" },
+  { n: "2", en: "Pick a time", ur: "وقت منتخب کریں", enSub: "Choose a day and slot that suits you.", urSub: "اپنی سہولت کا دن اور وقت منتخب کریں۔" },
+  { n: "3", en: "Confirm by phone", ur: "فون سے تصدیق کریں", enSub: "Enter your number, verify the code — done.", urSub: "نمبر لکھیں، کوڈ سے تصدیق کریں — ہو گیا۔" },
 ];
 
 const WHY_WAKEEL = [
@@ -95,13 +154,6 @@ const TESTIMONIALS = [
     quoteEn: "The video call saved me a two-hour trip across the city. Simple, respectful, and worth every rupee.",
     quoteUr: "ویڈیو کال نے میری شہر بھر کی دو گھنٹے کی آمدورفت بچا لی۔ آسان، با ادب، اور ہر روپے کے قابل۔",
   },
-  {
-    name: "Imran S.",
-    cityEn: "Multan",
-    cityUr: "ملتان",
-    quoteEn: "I needed to file an FIR and had no idea where to start. My wakeel guided me step by step, in my own language.",
-    quoteUr: "مجھے ایف آئی آر درج کرانی تھی اور سمجھ نہیں آ رہا تھا۔ میرے وکیل نے قدم بہ قدم رہنمائی کی، میری اپنی زبان میں۔",
-  },
 ];
 
 const GUIDES = [
@@ -128,109 +180,179 @@ const GUIDES = [
   },
 ];
 
-/** Small editorial text-link with a brass underline. */
-function TextLink({ href, children }: { href: string; children: React.ReactNode }) {
+/** oladoc-style section head: bold title left, "View All" link right. */
+function RowHead({ title, href, linkEn, linkUr }: { title: React.ReactNode; href: string; linkEn: string; linkUr: string }) {
   return (
-    <Link
-      href={href}
-      className="inline-flex min-h-[48px] items-center gap-2 border-b-2 border-brass-500 pb-0.5 text-[1.05rem] font-bold text-court-800 transition hover:gap-3 hover:text-court-700"
-    >
-      {children}
-      <ArrowIcon className="h-5 w-5" />
-    </Link>
+    <div className="mb-7 flex items-end justify-between gap-4">
+      <h2 className="font-display text-[1.7rem] font-semibold leading-tight text-ink-950 sm:text-[2rem]">
+        {title}
+      </h2>
+      <Link
+        href={href}
+        className="inline-flex min-h-[44px] shrink-0 items-center gap-1.5 text-[1.05rem] font-bold text-court-700 underline decoration-court-300 decoration-2 underline-offset-4 transition hover:text-court-800"
+      >
+        <T en={linkEn} ur={linkUr} />
+      </Link>
+    </div>
   );
 }
 
 export default async function Home() {
   const { lawyers: featured, total: lawyerCount } = await fetchFeatured();
+  const heroPortrait = fileUrl("/lawyers/shamsuddin-rajper.jpg");
+
   return (
     <>
-      {/* ============ HERO — editorial masthead ============ */}
-      <section>
-        <div className="mx-auto max-w-7xl px-4 pt-8 sm:pt-12">
-          <div className="border-y border-ink-900/15 py-2.5 text-center">
-            <p className="wc-kicker">
-              <T en="The lawyer directory of Pakistan" ur="پاکستان کی وکیل ڈائریکٹری" />
-            </p>
-          </div>
-          <h1 className="mx-auto mt-9 max-w-3xl text-center font-display text-[2.75rem] font-semibold leading-[1.08] text-ink-950 sm:text-6xl">
-            <T
-              en={<>Pakistan ke <em className="italic text-court-700">wakeel</em>, ab ek click par</>}
-              ur={<>پاکستان کے <em className="italic text-court-700">وکیل</em>، اب ایک کلک پر</>}
-            />
-          </h1>
-          <p className="mx-auto mt-5 max-w-2xl text-center text-[1.15rem] leading-relaxed text-ink-600">
-            <T
-              en="Video call or chamber visit — booked in 3 easy steps. Transparent fees, real reviews."
-              ur="ویڈیو کال یا چیمبر ملاقات — صرف ۳ آسان مراحل میں۔ واضح فیس، حقیقی آراء۔"
-            />
-          </p>
-          <SearchHero />
-          <dl className="mx-auto mt-9 flex max-w-2xl items-stretch justify-center divide-x divide-ink-900/10 text-center">
-            {[
-              { v: lawyerCount, en: "lawyers", ur: "وکیل" },
-              { v: CITIES.length, en: "cities", ur: "شہر" },
-              { v: PRACTICE_AREAS.length, en: "practice areas", ur: "قانونی شعبے" },
-            ].map((s) => (
-              <div key={s.en} className="flex-1 px-4">
-                <dt className="sr-only"><T en={s.en} ur={s.ur} /></dt>
-                <dd className="font-display text-3xl font-semibold text-ink-950 sm:text-4xl">{s.v}</dd>
-                <dd className="mt-1 text-[0.95rem] font-medium text-ink-600"><T en={s.en} ur={s.ur} /></dd>
+      {/* ============ HERO — oladoc-style banner ============ */}
+      <section className="mx-auto max-w-7xl px-4 pt-5 sm:pt-7">
+        <div className="relative overflow-hidden rounded-[1.75rem] bg-ink-950 shadow-lift sm:rounded-[2.25rem]">
+          <div className="absolute inset-0 bg-gradient-to-l from-court-800 via-court-900 to-ink-950" aria-hidden />
+          <div className="absolute -right-24 -top-24 h-[26rem] w-[26rem] rounded-full bg-brass-500/25 blur-3xl" aria-hidden />
+          <div className="absolute -bottom-32 -left-16 h-80 w-80 rounded-full bg-court-500/20 blur-3xl" aria-hidden />
+          <div className="relative grid items-center gap-10 p-7 sm:p-10 lg:grid-cols-[1.15fr_0.85fr] lg:p-14">
+            <div>
+              <p className="inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-2 text-[0.95rem] font-bold text-paper ring-1 ring-white/20">
+                <CheckBadgeIcon className="h-5 w-5 text-brass-300" />
+                <T
+                  en={`${lawyerCount} reviewed lawyer profiles`}
+                  ur={`${lawyerCount} جانچی ہوئی وکیل پروفائلز`}
+                />
+              </p>
+              <h1 className="mt-6 font-display text-[2.6rem] font-semibold leading-[1.1] text-white sm:text-[3.4rem]">
+                <T
+                  en={<>Find and Book the <span className="text-brass-300">Best Wakeel</span> near you</>}
+                  ur={<>اپنے قریب <span className="text-brass-300">بہترین وکیل</span> تلاش کریں اور بک کریں</>}
+                />
+              </h1>
+              <p className="mt-4 max-w-xl text-[1.12rem] leading-relaxed text-ink-200">
+                <T
+                  en="Video call or chamber visit — booked in 3 easy steps. Transparent fees, honest reviews."
+                  ur="ویڈیو کال یا چیمبر ملاقات — صرف ۳ آسان مراحل میں۔ واضح فیس، ایماندار آراء۔"
+                />
+              </p>
+              <div className="[&_form]:mx-0 [&_form]:mt-8">
+                <SearchHero />
               </div>
-            ))}
-          </dl>
-          <hr className="wc-hr mt-10" />
+            </div>
+            <div className="relative mx-auto hidden w-full max-w-sm lg:block">
+              {heroPortrait ? (
+                <img
+                  src={heroPortrait}
+                  alt="Experienced wakeel"
+                  className="aspect-[4/5] w-full rounded-[1.5rem] object-cover object-top shadow-lift ring-1 ring-white/25"
+                />
+              ) : (
+                <div className="aspect-[4/5] w-full rounded-[1.5rem] bg-court-800 ring-1 ring-white/25" aria-hidden />
+              )}
+              <div className="absolute -bottom-5 left-1/2 w-max -translate-x-1/2 rounded-full bg-white px-5 py-2.5 text-[0.95rem] font-bold text-ink-900 shadow-lift">
+                <T en="3-step booking · No account needed" ur="۳ مراحل میں بکنگ · اکاؤنٹ کی ضرورت نہیں" />
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
-      {/* ============ SERVICES — editorial index ============ */}
-      <section className="mx-auto max-w-7xl px-4 py-16 sm:py-20">
-        <SectionHead
-          eyebrowEn="Services"
-          eyebrowUr="خدمات"
-          title={<T en="What do you need help with?" ur="آپ کو کس میں مدد چاہیے؟" />}
-        />
-        <div className="max-w-3xl border-b border-ink-900/10">
-          {SERVICES.map((s, i) => (
+      {/* ============ SERVICES — oladoc-style cards ============ */}
+      <section className="mx-auto max-w-7xl px-4 pt-12 sm:pt-16">
+        <div className="grid grid-cols-2 gap-4 sm:gap-5 lg:grid-cols-5">
+          {SERVICES.map((s) => (
             <Link
-              key={s.en}
-              href="/lawyers"
-              className="group flex items-baseline gap-5 border-t border-ink-900/10 py-5"
+              key={s.titleEn}
+              href={s.href}
+              className="group overflow-hidden rounded-2xl bg-white shadow-card ring-1 ring-ink-900/10 transition hover:shadow-lift"
             >
-              <span className="font-display text-[1.05rem] font-semibold text-brass-600">
-                {String(i + 1).padStart(2, "0")}
-              </span>
-              <span className="flex-1">
-                <span className="font-display text-[1.35rem] font-semibold text-ink-950 transition group-hover:text-court-800">
-                  <T en={s.en} ur={s.ur} />
-                </span>
-                <span className="mt-0.5 block text-[0.98rem] text-ink-600">
-                  <T en={s.enSub} ur={s.urSub} />
-                </span>
-              </span>
-              <ArrowIcon className="h-5 w-5 shrink-0 self-center text-ink-400 transition group-hover:translate-x-1 group-hover:text-court-700" />
+              <div className="relative h-36 overflow-hidden bg-court-50 sm:h-40">
+                {s.image ? (
+                  <img
+                    src={s.image}
+                    alt=""
+                    loading="lazy"
+                    className="h-full w-full object-cover object-top transition duration-500 group-hover:scale-[1.04]"
+                  />
+                ) : (
+                  <div className="wc-jali-light flex h-full w-full items-center justify-center bg-court-900 p-4">
+                    <span className="text-center font-display text-[1.9rem] font-semibold leading-snug text-brass-300">
+                      {s.urduWord}
+                    </span>
+                  </div>
+                )}
+              </div>
+              <div className="p-4 sm:p-5">
+                <p className="flex items-center gap-2 text-[1.08rem] font-bold leading-snug text-ink-950 transition group-hover:text-court-800">
+                  <span className="text-court-700">{s.icon}</span>
+                  <T en={s.titleEn} ur={s.titleUr} />
+                </p>
+                <p className="mt-1.5 text-[0.92rem] leading-relaxed text-ink-600">
+                  <T en={s.subEn} ur={s.subUr} />
+                </p>
+              </div>
             </Link>
           ))}
         </div>
       </section>
 
+      {/* ============ SPECIALTIES — circular browse ============ */}
+      <section className="mx-auto max-w-7xl px-4 pt-14 sm:pt-20">
+        <RowHead
+          title={<T en="Find the best wakeel for your case" ur="اپنے کیس کے لیے بہترین وکیل تلاش کریں" />}
+          href="/practice-areas"
+          linkEn="View All"
+          linkUr="سب دیکھیں"
+        />
+        <div className="wc-rail -mx-4 flex gap-5 overflow-x-auto px-4 pb-3 sm:mx-0 sm:px-0">
+          {PRACTICE_AREAS.map((a) => (
+            <Link
+              key={a.slug}
+              href={`/practice-areas/${a.slug}`}
+              className="group flex w-24 shrink-0 flex-col items-center gap-2.5 sm:w-28"
+            >
+              <span className="flex h-20 w-20 items-center justify-center rounded-full bg-court-50 font-display text-[1.45rem] font-semibold text-court-800 ring-1 ring-court-100 transition group-hover:bg-court-100 group-hover:ring-court-300 sm:h-24 sm:w-24 sm:text-[1.7rem]">
+                {initials(a.nameEn)}
+              </span>
+              <span className="text-center text-[0.92rem] font-semibold leading-tight text-ink-800 transition group-hover:text-court-800">
+                <T en={a.nameEn} ur={a.nameUr} />
+              </span>
+            </Link>
+          ))}
+        </div>
+      </section>
+
+      {/* ============ FEATURED LAWYERS ============ */}
+      <section className="mx-auto max-w-7xl px-4 pt-14 sm:pt-20">
+        <RowHead
+          title={<T en="Featured lawyers" ur="نمایاں وکیل" />}
+          href="/lawyers"
+          linkEn="View All"
+          linkUr="سب دیکھیں"
+        />
+        <div className="mx-auto max-w-4xl space-y-5">
+          {featured.map((l) => (
+            <LawyerCard key={l.slug} lawyer={l} />
+          ))}
+        </div>
+      </section>
+
       {/* ============ HOW IT WORKS ============ */}
-      <section className="bg-paper-dark/50 py-16 sm:py-20">
+      <section className="mt-14 bg-[#f5f7fb] py-14 sm:mt-20 sm:py-20">
         <div className="mx-auto max-w-7xl px-4">
-          <SectionHead
-            eyebrowEn="How it works"
-            eyebrowUr="طریقہ کار"
-            title={<T en="Book in 3 easy steps" ur="صرف ۳ آسان مراحل میں بک کریں" />}
-            sub={<T en="So simple, anyone can do it — no account, no passwords." ur="اتنا آسان کہ کوئی بھی کر لے — نہ اکاؤنٹ، نہ پاس ورڈ۔" />}
-          />
-          <ol className="grid gap-10 md:grid-cols-3 md:gap-8">
+          <div className="mb-8 text-center">
+            <h2 className="font-display text-[1.7rem] font-semibold text-ink-950 sm:text-[2rem]">
+              <T en="Book in 3 easy steps" ur="صرف ۳ آسان مراحل میں بک کریں" />
+            </h2>
+            <p className="mt-2 text-[1.05rem] text-ink-600">
+              <T en="So simple, anyone can do it — no account, no passwords." ur="اتنا آسان کہ کوئی بھی کر لے — نہ اکاؤنٹ، نہ پاس ورڈ۔" />
+            </p>
+          </div>
+          <ol className="grid gap-5 md:grid-cols-3">
             {STEPS.map((s) => (
-              <li key={s.n} className="border-t-2 border-ink-900 pt-6">
-                <p className="font-display text-[2.75rem] font-semibold leading-none text-brass-500">{s.n}</p>
-                <p className="mt-4 font-display text-[1.4rem] font-semibold text-ink-950">
+              <li key={s.n} className="rounded-2xl bg-white p-7 shadow-card ring-1 ring-ink-900/10">
+                <p className="flex h-12 w-12 items-center justify-center rounded-full bg-court-700 font-display text-[1.4rem] font-semibold text-white">
+                  {s.n}
+                </p>
+                <p className="mt-5 text-[1.25rem] font-bold text-ink-950">
                   <T en={s.en} ur={s.ur} />
                 </p>
-                <p className="mt-2 text-[1.02rem] leading-relaxed text-ink-600">
+                <p className="mt-2 text-[1rem] leading-relaxed text-ink-600">
                   <T en={s.enSub} ur={s.urSub} />
                 </p>
               </li>
@@ -239,103 +361,23 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* ============ FEATURED LAWYERS ============ */}
-      <section className="mx-auto max-w-7xl px-4 py-16 sm:py-20">
-        <SectionHead
-          eyebrowEn="Featured"
-          eyebrowUr="نمایاں وکیل"
-          title={<T en="Featured lawyers" ur="نمایاں وکیل" />}
-        />
-        <div className="mx-auto max-w-4xl space-y-5">
-          {featured.map((l) => (
-            <LawyerCard key={l.slug} lawyer={l} />
-          ))}
-        </div>
-        <div className="mt-10 text-center">
-          <TextLink href="/lawyers">
-            <T en="See all lawyers" ur="تمام وکیل دیکھیں" />
-          </TextLink>
-        </div>
-      </section>
-
-      {/* ============ PRACTICE AREAS ============ */}
-      <section className="border-y border-ink-900/10 bg-white py-16 sm:py-20">
-        <div className="mx-auto max-w-7xl px-4">
-          <SectionHead
-            eyebrowEn="Practice areas"
-            eyebrowUr="قانونی شعبے"
-            title={<T en="Browse by legal problem" ur="اپنے مسئلے کے حساب سے دیکھیں" />}
-          />
-          <div className="grid gap-x-14 md:grid-cols-2">
-            <div className="border-b border-ink-900/10">
-              {PRACTICE_AREAS.slice(0, Math.ceil(PRACTICE_AREAS.length / 2)).map((a) => (
-                <Link
-                  key={a.slug}
-                  href={`/practice-areas/${a.slug}`}
-                  className="group flex items-baseline justify-between gap-4 border-t border-ink-900/10 py-4"
-                >
-                  <span className="font-display text-[1.25rem] font-semibold text-ink-950 transition group-hover:text-court-800">
-                    <T en={a.nameEn} ur={a.nameUr} />
-                  </span>
-                  <ArrowIcon className="h-5 w-5 shrink-0 self-center text-ink-400 transition group-hover:translate-x-1 group-hover:text-court-700" />
-                </Link>
-              ))}
-            </div>
-            <div className="border-b border-ink-900/10">
-              {PRACTICE_AREAS.slice(Math.ceil(PRACTICE_AREAS.length / 2)).map((a) => (
-                <Link
-                  key={a.slug}
-                  href={`/practice-areas/${a.slug}`}
-                  className="group flex items-baseline justify-between gap-4 border-t border-ink-900/10 py-4"
-                >
-                  <span className="font-display text-[1.25rem] font-semibold text-ink-950 transition group-hover:text-court-800">
-                    <T en={a.nameEn} ur={a.nameUr} />
-                  </span>
-                  <ArrowIcon className="h-5 w-5 shrink-0 self-center text-ink-400 transition group-hover:translate-x-1 group-hover:text-court-700" />
-                </Link>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ============ TOP CITIES ============ */}
-      <section className="mx-auto max-w-7xl px-4 py-16 sm:py-20">
-        <SectionHead
-          eyebrowEn="Cities"
-          eyebrowUr="شہر"
-          title={<T en="Find lawyers in your city" ur="اپنے شہر میں وکیل تلاش کریں" />}
-        />
-        <div className="flex flex-wrap gap-3">
-          {CITIES.map((c) => (
-            <Link
-              key={c.slug}
-              href={`/cities/${c.slug}`}
-              className="inline-flex min-h-[52px] items-center gap-2 rounded-full border border-ink-900/20 bg-white px-6 text-[1.05rem] font-semibold text-ink-800 shadow-sm transition hover:border-court-700 hover:text-court-800 hover:shadow-card"
-            >
-              <PinIcon className="h-5 w-5 text-brass-600" />
-              <T en={c.nameEn} ur={c.nameUr} />
-            </Link>
-          ))}
-        </div>
-      </section>
-
-      {/* ============ STATS BAND ============ */}
-      <StatsBand lawyerCount={lawyerCount} />
-
       {/* ============ WHY WAKEEL.CONNECT ============ */}
-      <section className="mx-auto max-w-7xl px-4 py-16 sm:py-20">
-        <SectionHead
-          eyebrowEn="Why us"
-          eyebrowUr="اعتماد"
-          title={<T en="Why wakeel.connect?" ur="wakeel.connect کیوں؟" />}
-          sub={<T en="Built for Pakistan — simple, honest, and in your language." ur="پاکستان کے لیے بنا — آسان، ایماندار، اور آپ کی زبان میں۔" />}
-        />
-        <div className="grid gap-x-10 gap-y-9 sm:grid-cols-2 lg:grid-cols-3">
-          {WHY_WAKEEL.map((w, i) => (
-            <div key={w.en} className="border-t-2 border-ink-900 pt-5">
-              <p className="font-display text-[1.1rem] font-semibold text-brass-600">{String(i + 1).padStart(2, "0")}</p>
-              <p className="mt-2 font-display text-[1.3rem] font-semibold text-ink-950">
+      <section className="mx-auto max-w-7xl px-4 py-14 sm:py-20">
+        <div className="mb-8 text-center">
+          <h2 className="font-display text-[1.7rem] font-semibold text-ink-950 sm:text-[2rem]">
+            <T en="Why wakeel.connect?" ur="wakeel.connect کیوں؟" />
+          </h2>
+          <p className="mt-2 text-[1.05rem] text-ink-600">
+            <T en="Built for Pakistan — simple, honest, and in your language." ur="پاکستان کے لیے بنا — آسان، ایماندار، اور آپ کی زبان میں۔" />
+          </p>
+        </div>
+        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          {WHY_WAKEEL.map((w) => (
+            <div key={w.en} className="rounded-2xl border border-ink-900/10 bg-white p-6 shadow-card">
+              <p className="flex h-11 w-11 items-center justify-center rounded-full bg-brass-100 text-brass-700">
+                <CheckBadgeIcon className="h-6 w-6" />
+              </p>
+              <p className="mt-4 text-[1.2rem] font-bold text-ink-950">
                 <T en={w.en} ur={w.ur} />
               </p>
               <p className="mt-2 text-[1rem] leading-relaxed text-ink-600">
@@ -345,18 +387,17 @@ export default async function Home() {
           ))}
           <Link
             href="/guides"
-            className="group flex flex-col justify-between border-t-2 border-brass-500 bg-ink-950 p-6 pt-5 transition hover:bg-ink-900"
+            className="group flex flex-col justify-between rounded-2xl bg-court-800 p-6 shadow-card transition hover:bg-court-900"
           >
             <div>
-              <p className="font-display text-[1.1rem] font-semibold text-brass-400">→</p>
-              <p className="mt-2 font-display text-[1.3rem] font-semibold text-paper">
+              <p className="text-[1.2rem] font-bold text-white">
                 <T en="Still unsure?" ur="ابھی بھی سوچ رہے ہیں؟" />
               </p>
-              <p className="mt-2 text-[1rem] leading-relaxed text-ink-300">
+              <p className="mt-2 text-[1rem] leading-relaxed text-court-100">
                 <T en="Read our free legal guides first — know your rights." ur="پہلے ہماری مفت قانونی رہنمائی پڑھیں — اپنے حقوق جانیں۔" />
               </p>
             </div>
-            <span className="mt-4 inline-flex items-center gap-2 text-[1.02rem] font-bold text-brass-300 transition group-hover:gap-3">
+            <span className="mt-5 inline-flex min-h-[44px] items-center gap-2 text-[1.02rem] font-bold text-brass-300 transition group-hover:gap-3">
               <T en="Browse guides" ur="گائیڈز دیکھیں" />
               <ArrowIcon className="h-5 w-5" />
             </span>
@@ -364,25 +405,51 @@ export default async function Home() {
         </div>
       </section>
 
+      {/* ============ TOP CITIES ============ */}
+      <section className="mx-auto max-w-7xl px-4 pb-14 sm:pb-20">
+        <RowHead
+          title={<T en="Find lawyers in your city" ur="اپنے شہر میں وکیل تلاش کریں" />}
+          href="/cities"
+          linkEn="View All"
+          linkUr="سب دیکھیں"
+        />
+        <div className="flex flex-wrap gap-3">
+          {CITIES.map((c) => (
+            <Link
+              key={c.slug}
+              href={`/cities/${c.slug}`}
+              className="inline-flex min-h-[52px] items-center gap-2 rounded-full border border-ink-900/15 bg-white px-6 text-[1.05rem] font-semibold text-ink-800 shadow-sm transition hover:border-court-700 hover:text-court-800"
+            >
+              <PinIcon className="h-5 w-5 text-court-700" />
+              <T en={c.nameEn} ur={c.nameUr} />
+            </Link>
+          ))}
+        </div>
+      </section>
+
+      {/* ============ STATS BAND ============ */}
+      <StatsBand lawyerCount={lawyerCount} />
+
       {/* ============ TOP COURTS ============ */}
-      <section className="bg-paper-dark/50 py-16 sm:py-20">
+      <section className="bg-[#f5f7fb] py-14 sm:py-20">
         <div className="mx-auto max-w-7xl px-4">
-          <SectionHead
-            eyebrowEn="Courts"
-            eyebrowUr="عدالتیں"
+          <RowHead
             title={<T en="Lawyers by court" ur="عدالت کے حساب سے وکیل" />}
+            href="/lawyers"
+            linkEn="View All"
+            linkUr="سب دیکھیں"
           />
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
             {COURTS.map((c) => {
               const city = getCity(c.citySlug);
               return (
                 <Link
                   key={c.slug}
                   href={city ? `/cities/${city.slug}` : "/lawyers"}
-                  className="group overflow-hidden rounded-lg bg-white shadow-card ring-1 ring-ink-900/10 transition hover:shadow-lift"
+                  className="group overflow-hidden rounded-2xl bg-white shadow-card ring-1 ring-ink-900/10 transition hover:shadow-lift"
                 >
                   {c.image ? (
-                    <div className="relative h-44 overflow-hidden">
+                    <div className="relative h-40 overflow-hidden">
                       <img
                         src={c.image}
                         alt={c.nameEn}
@@ -391,16 +458,16 @@ export default async function Home() {
                       />
                     </div>
                   ) : (
-                    <div className="flex h-44 flex-col items-center justify-center gap-2 bg-ink-900 text-paper">
-                      <BriefcaseIcon className="h-10 w-10 text-brass-400" />
+                    <div className="flex h-40 flex-col items-center justify-center gap-2 bg-court-900 text-white">
+                      <BriefcaseIcon className="h-10 w-10 text-brass-300" />
                     </div>
                   )}
                   <div className="p-5">
-                    <p className="font-display text-[1.2rem] font-semibold leading-snug text-ink-950 transition group-hover:text-court-800">
+                    <p className="text-[1.12rem] font-bold leading-snug text-ink-950 transition group-hover:text-court-800">
                       <T en={c.nameEn} ur={c.nameUr} />
                     </p>
                     {city && (
-                      <p className="mt-1.5 text-[0.95rem] font-medium text-ink-600">
+                      <p className="mt-1 text-[0.95rem] font-medium text-ink-600">
                         <T en={city.nameEn} ur={city.nameUr} />
                       </p>
                     )}
@@ -415,35 +482,33 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* ============ TESTIMONIALS — pull quotes ============ */}
-      <section className="mx-auto max-w-7xl px-4 py-16 sm:py-20">
-        <SectionHead
-          eyebrowEn="Testimonials"
-          eyebrowUr="آراء"
+      {/* ============ TESTIMONIALS ============ */}
+      <section className="mx-auto max-w-7xl px-4 py-14 sm:py-20">
+        <RowHead
           title={<T en="What clients say" ur="کلائنٹ کیا کہتے ہیں" />}
+          href="/lawyers"
+          linkEn="Find a lawyer"
+          linkUr="وکیل تلاش کریں"
         />
-        <div className="grid gap-x-10 gap-y-10 sm:grid-cols-2">
+        <div className="grid gap-5 md:grid-cols-3">
           {TESTIMONIALS.map((t) => (
-            <figure key={t.name} className="border-t-2 border-ink-900 pt-6">
-              <span className="font-display text-[3rem] font-semibold leading-none text-brass-500" aria-hidden>
+            <figure key={t.name} className="flex flex-col rounded-2xl border border-ink-900/10 bg-white p-6 shadow-card">
+              <span className="font-display text-[2.6rem] font-semibold leading-none text-brass-400" aria-hidden>
                 &ldquo;
               </span>
-              <blockquote className="-mt-3 font-display text-[1.3rem] font-medium italic leading-snug text-ink-900">
+              <blockquote className="-mt-2 flex-1 text-[1.05rem] italic leading-relaxed text-ink-800">
                 <T en={t.quoteEn} ur={t.quoteUr} />
               </blockquote>
-              <figcaption className="mt-4 flex items-center gap-3">
-                <span className="h-px w-8 bg-brass-500" aria-hidden />
-                <span>
-                  <span className="block text-[1.02rem] font-bold text-ink-950">{t.name}</span>
-                  <span className="block text-[0.95rem] font-medium text-ink-600">
-                    <T en={t.cityEn} ur={t.cityUr} /> · <T en="Sample" ur="نمونہ" />
-                  </span>
-                </span>
+              <figcaption className="mt-5 border-t border-ink-900/10 pt-4">
+                <p className="text-[1rem] font-bold text-ink-950">{t.name}</p>
+                <p className="text-[0.92rem] font-medium text-ink-600">
+                  <T en={t.cityEn} ur={t.cityUr} /> · <T en="Sample" ur="نمونہ" />
+                </p>
               </figcaption>
             </figure>
           ))}
         </div>
-        <p className="mx-auto mt-10 max-w-2xl text-center text-[0.95rem] text-ink-500">
+        <p className="mx-auto mt-8 max-w-2xl text-center text-[0.95rem] text-ink-500">
           <T
             en="Sample testimonials — real client reviews will appear here."
             ur="یہ نمونے کی آراء ہیں — حقیقی کلائنٹ کی آراء یہاں آئیں گی۔"
@@ -452,25 +517,25 @@ export default async function Home() {
       </section>
 
       {/* ============ LEGAL GUIDES ============ */}
-      <section className="border-y border-ink-900/10 bg-white py-16 sm:py-20">
+      <section className="border-y border-ink-900/10 bg-[#f5f7fb] py-14 sm:py-20">
         <div className="mx-auto max-w-7xl px-4">
-          <SectionHead
-            eyebrowEn="Guides"
-            eyebrowUr="رہنمائی"
+          <RowHead
             title={<T en="Free legal guides" ur="مفت قانونی رہنمائی" />}
-            sub={<T en="Know your rights before you need a wakeel." ur="وکیل کی ضرورت سے پہلے اپنے حقوق جانیں۔" />}
+            href="/guides"
+            linkEn="View All"
+            linkUr="سب دیکھیں"
           />
-          <div className="max-w-3xl border-b border-ink-900/10">
+          <div className="grid gap-5 md:grid-cols-3">
             {GUIDES.map((g) => (
-              <Link key={g.slug} href={g.slug} className="group block border-t border-ink-900/10 py-6">
+              <Link key={g.slug} href={g.slug} className="group rounded-2xl bg-white p-6 shadow-card ring-1 ring-ink-900/10 transition hover:shadow-lift">
                 <p className="wc-kicker"><T en="Guide" ur="رہنمائی" /></p>
-                <p className="mt-2 font-display text-[1.5rem] font-semibold text-ink-950 transition group-hover:text-court-800">
+                <p className="mt-2 text-[1.3rem] font-bold leading-snug text-ink-950 transition group-hover:text-court-800">
                   <T en={g.titleEn} ur={g.titleUr} />
                 </p>
-                <p className="mt-1.5 max-w-2xl text-[1.02rem] leading-relaxed text-ink-600">
+                <p className="mt-2 text-[1rem] leading-relaxed text-ink-600">
                   <T en={g.excerptEn} ur={g.excerptUr} />
                 </p>
-                <span className="mt-3 inline-flex min-h-[44px] items-center gap-2 text-[1.02rem] font-bold text-court-800 transition group-hover:gap-3">
+                <span className="mt-4 inline-flex min-h-[44px] items-center gap-2 text-[1rem] font-bold text-court-700 transition group-hover:gap-3">
                   <T en="Read guide" ur="گائیڈ پڑھیں" />
                   <ArrowIcon className="h-5 w-5" />
                 </span>
@@ -481,40 +546,37 @@ export default async function Home() {
       </section>
 
       {/* ============ FAQ ============ */}
-      <section className="mx-auto max-w-7xl px-4 py-16 sm:py-20">
+      <section className="mx-auto max-w-7xl px-4 py-14 sm:py-20">
         <div className="mx-auto max-w-3xl">
-          <SectionHead
-            eyebrowEn="FAQ"
-            eyebrowUr="سوالات"
-            title={<T en="Questions? Answers." ur="سوالات؟ جوابات۔" />}
-          />
+          <div className="mb-8 text-center">
+            <h2 className="font-display text-[1.7rem] font-semibold text-ink-950 sm:text-[2rem]">
+              <T en="Questions? Answers." ur="سوالات؟ جوابات۔" />
+            </h2>
+          </div>
           <FaqAccordion />
         </div>
       </section>
 
       {/* ============ JOIN CTA ============ */}
       <section className="mx-auto max-w-7xl px-4 pb-20">
-        <div className="wc-jali-light relative overflow-hidden rounded-xl bg-ink-950 px-6 py-14 text-center shadow-lift sm:px-14 sm:py-16">
+        <div className="relative overflow-hidden rounded-[2rem] bg-court-900 px-6 py-14 text-center shadow-lift sm:px-14 sm:py-16">
+          <div className="absolute -right-20 -top-20 h-72 w-72 rounded-full bg-brass-500/20 blur-3xl" aria-hidden />
           <p className="wc-kicker !text-brass-300">
             <T en="For lawyers" ur="وکیلوں کے لیے" />
           </p>
-          <h2 className="mx-auto mt-4 max-w-2xl font-display text-3xl font-semibold leading-tight text-paper sm:text-4xl">
+          <h2 className="mx-auto mt-4 max-w-2xl font-display text-3xl font-semibold leading-tight text-white sm:text-4xl">
             <T en="Are you a lawyer? Get verified clients." ur="کیا آپ وکیل ہیں؟ تصدیق شدہ کلائنٹ حاصل کریں۔" />
           </h2>
-          <p className="mx-auto mt-4 max-w-xl text-[1.08rem] leading-relaxed text-ink-300">
+          <p className="mx-auto mt-4 max-w-xl text-[1.08rem] leading-relaxed text-court-100">
             <T
-              en="Join wakeel.connect — our team verifies every profile before it goes public."
-              ur="wakeel.connect سے جڑیں — ہماری ٹیم ہر پروفائل کی تصدیق کرتی ہے۔"
+              en="Join wakeel.connect — our team reviews every profile before it goes public."
+              ur="wakeel.connect سے جڑیں — ہماری ٹیم ہر پروفائل کا عوامی ہونے سے پہلے جائزہ لیتی ہے۔"
             />
           </p>
           <div className="mt-9">
-            <Link
-              href="/join"
-              className="inline-flex min-h-[56px] items-center gap-2 rounded-lg bg-brass-400 px-8 text-[1.08rem] font-bold text-ink-950 shadow-lift transition hover:bg-brass-300 active:translate-y-px"
-            >
-              <BriefcaseIcon className="h-6 w-6" />
+            <PrimaryBtn href="/join" icon={<BriefcaseIcon className="h-6 w-6" />}>
               <T en="Join as Lawyer — it's free" ur="وکیل بنیں — بالکل مفت" />
-            </Link>
+            </PrimaryBtn>
           </div>
         </div>
       </section>

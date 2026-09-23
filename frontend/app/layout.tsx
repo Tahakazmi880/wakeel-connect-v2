@@ -41,7 +41,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className={`${fraunces.variable} ${publicSans.variable} ${nastaliq.variable}`}>
-      <body className="bg-paper font-sans text-ink-950 antialiased">
+      <body className="bg-white font-sans text-ink-950 antialiased">
         <LanguageProvider>
           <AuthBootstrap />
           <Header />
