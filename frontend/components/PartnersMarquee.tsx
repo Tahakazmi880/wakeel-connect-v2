@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
 import { T } from "./LanguageContext";
 
 const PARTNERS: { src: string; alt: string }[] = [
@@ -39,38 +38,28 @@ function LogoRow({ hidden }: { hidden?: boolean }) {
 }
 
 /**
- * "Trusted by leading institutions" — the founding chamber's real
- * institutional retainers & corporate clients (confirmed 2026-09-23),
- * in a slow marquee. Sits right before the partnership CTA as proof.
+ * "Trusted Across Sindh" — institutional retainers & corporate clients of the
+ * founding chamber, in a slow marquee like the chamber's own site.
  */
 export default function PartnersMarquee() {
   const [paused, setPaused] = useState(false);
   return (
-    <section className="mx-auto max-w-7xl px-4 pt-14 sm:pt-20" aria-label="Institutional clients">
-      <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
-        <div className="max-w-2xl">
-          <p className="wc-kicker text-brass-700">
-            <T en="Corporate & institutional clients" ur="کارپوریٹ و ادارہ جاتی کلائنٹس" />
-          </p>
-          <h2 className="mt-2 font-display text-[1.7rem] font-semibold leading-tight text-ink-950 sm:text-[2rem]">
-            <T en="Trusted by leading institutions" ur="معروف اداروں کا اعتماد" />
-          </h2>
-          <p className="mt-2 text-[0.98rem] leading-relaxed text-ink-600">
-            <T
-              en="Banks, telecom operators, security groups and public institutions across Sindh retain our lawyers."
-              ur="سندھ بھر کے بینک، ٹیلی کام آپریٹرز، سیکیورٹی گروپس اور سرکاری ادارے ہمارے وکیلوں کی خدمات حاصل کرتے ہیں۔"
-            />
-          </p>
-        </div>
-        <Link
-          href="/callback"
-          className="group inline-flex shrink-0 items-center gap-2 text-[1.02rem] font-bold text-court-700 underline underline-offset-4 transition hover:text-court-900"
-        >
-          <T en="Partner with us" ur="ہمارے ساتھ شراکت کریں" />
-          <span aria-hidden className="transition group-hover:translate-x-1 rtl:rotate-180">→</span>
-        </Link>
+    <section className="mt-12 bg-paper-dark/60 py-12 sm:mt-16 sm:py-16" aria-label="Institutional clients">
+      <div className="mx-auto max-w-7xl px-4">
+        <p className="wc-kicker text-brass-700">
+          <T en="Institutional retainers & corporate clients" ur="ادارہ جاتی موکلین و کارپوریٹ کلائنٹس" />
+        </p>
+        <h2 className="mt-2 font-display text-[1.7rem] font-semibold leading-tight text-ink-950 sm:text-[2rem]">
+          <T en="Trusted Across Sindh" ur="سندھ بھر میں قابلِ اعتماد" />
+        </h2>
+        <p className="mt-2 max-w-2xl text-[0.98rem] leading-relaxed text-ink-600">
+          <T
+            en="Leading banks, telecom operators, security groups and public institutions retain our lawyers."
+            ur="معروف بینک، ٹیلی کام آپریٹرز، سیکیورٹی ادارے اور سرکاری ادارے ہمارے وکیلوں کی خدمات حاصل کرتے ہیں۔"
+          />
+        </p>
       </div>
-      <div className="group relative overflow-hidden">
+      <div className="group relative mt-8 overflow-hidden">
         <div
           className="wc-partners-track flex w-max"
           style={{ animationPlayState: paused ? "paused" : "running" }}
@@ -78,10 +67,10 @@ export default function PartnersMarquee() {
           <LogoRow />
           <LogoRow hidden />
         </div>
-        <div className="pointer-events-none absolute inset-y-0 left-0 w-16 bg-gradient-to-r from-white to-transparent" aria-hidden />
-        <div className="pointer-events-none absolute inset-y-0 right-0 w-16 bg-gradient-to-l from-white to-transparent" aria-hidden />
+        <div className="pointer-events-none absolute inset-y-0 left-0 w-16 bg-gradient-to-r from-paper-dark to-transparent" aria-hidden />
+        <div className="pointer-events-none absolute inset-y-0 right-0 w-16 bg-gradient-to-l from-paper-dark to-transparent" aria-hidden />
       </div>
-      <div className="mt-4 flex justify-end">
+      <div className="mx-auto mt-4 flex max-w-7xl justify-end px-4">
         <button
           type="button"
           onClick={() => setPaused((p) => !p)}
