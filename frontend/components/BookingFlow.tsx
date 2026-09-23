@@ -24,7 +24,9 @@ import {
   formatFee,
   getLawyer,
   getLawyerSlots,
+  requestOtp,
   restoreSession,
+  verifyOtp,
   type Booking,
   type BookingMode,
   type LawyerSummary,
@@ -71,6 +73,229 @@ function StepDots({ step }: { step: number }) {
   );
 }
 
+/**
+ * Phone-capture modal (oladoc pattern): clicking a slot while logged out opens
+ * this instead of a login page redirect. Same OTP flow as /login —
+ * +92 number → 6-digit code → verified → booking continues.
+ */
+function PhoneModal({
+  lawyerName,
+  slotLabel,
+  onClose,
+  onVerified,
+}: {
+  lawyerName: string;
+  slotLabel: string;
+  onClose: () => void;
+  onVerified: () => void;
+}) {
+  const [step, setStep] = useState<"phone" | "code">("phone");
+  const [phone, setPhone] = useState("");
+  const [code, setCode] = useState("");
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState("");
+  const [ttl, setTtl] = useState(0);
+
+  useEffect(() => {
+    if (ttl <= 0) return;
+    const t = setTimeout(() => setTtl((s) => s - 1), 1000);
+    return () => clearTimeout(t);
+  }, [ttl]);
+
+  // Close on Escape.
+  useEffect(() => {
+    const h = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+    };
+    window.addEventListener("keydown", h);
+    return () => window.removeEventListener("keydown", h);
+  }, [onClose]);
+
+  const phoneValid = phone.length === 10 && phone.startsWith("3");
+
+  async function doSend() {
+    if (!phoneValid || busy) return;
+    setBusy(true);
+    setError("");
+    try {
+      const { expiresInSec } = await requestOtp(phone);
+      setTtl(expiresInSec);
+      setCode("");
+      setStep("code");
+    } catch (e) {
+      setError(e instanceof ApiError ? e.code : "generic");
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function doVerify() {
+    if (code.length !== 6 || busy) return;
+    setBusy(true);
+    setError("");
+    try {
+      await verifyOtp(phone, code);
+      onVerified();
+    } catch (e) {
+      setError(e instanceof ApiError ? e.code : "generic");
+      setCode("");
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  return (
+    <div
+      className="fixed inset-0 z-50 flex items-end justify-center bg-ink-950/60 p-4 sm:items-center"
+      role="dialog"
+      aria-modal="true"
+      aria-label="Login with phone"
+      onClick={onClose}
+    >
+      <div
+        className="w-full max-w-md rounded-2xl bg-white p-6 shadow-lift sm:p-8"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="flex items-start justify-between gap-4">
+          <div>
+            <h2 className="font-display text-[1.5rem] font-semibold text-ink-950">
+              <T en="Almost done" ur="بس تھوڑا سا باقی" />
+            </h2>
+            <p className="mt-1 text-base font-semibold text-ink-600">
+              {lawyerName} · {slotLabel}
+            </p>
+          </div>
+          <button
+            type="button"
+            onClick={onClose}
+            aria-label="Close"
+            className="flex min-h-[48px] min-w-[48px] items-center justify-center rounded-full text-2xl font-bold text-ink-500 transition hover:bg-paper-dark/60"
+          >
+            ×
+          </button>
+        </div>
+
+        {step === "phone" ? (
+          <>
+            <p className="mt-4 text-base text-ink-600">
+              <T
+                en="Enter your mobile number — we'll send a verification code. No password needed."
+                ur="اپنا موبائل نمبر لکھیں — تصدیقی کوڈ آئے گا۔ پاس ورڈ کی ضرورت نہیں۔"
+              />
+            </p>
+            <label className="mt-4 block">
+              <span className="mb-1 block text-base font-bold text-ink-700">
+                <T en="Mobile number" ur="موبائل نمبر" />
+              </span>
+              <span className="flex overflow-hidden rounded-lg border border-ink-900/15 transition focus-within:border-court-600 focus-within:ring-2 focus-within:ring-court-600/20">
+                <span className="flex min-h-[60px] items-center border-r border-ink-900/15 bg-paper-dark/40 px-4 text-lg font-bold text-ink-700">
+                  +92
+                </span>
+                <input
+                  value={phone}
+                  onChange={(e) => {
+                    setPhone(e.target.value.replace(/\D/g, "").slice(0, 10));
+                    setError("");
+                  }}
+                  inputMode="numeric"
+                  placeholder="300 1234567"
+                  autoFocus
+                  aria-label="Mobile number"
+                  className="min-h-[60px] w-full px-4 text-xl font-bold tracking-wider text-ink-950 outline-none"
+                />
+              </span>
+            </label>
+            {error && (
+              <p className="mt-3 rounded-lg bg-clay-50 px-4 py-3 text-center text-base font-bold text-clay-700 ring-1 ring-clay-200">
+                <T en="Couldn't send the code — try again." ur="کوڈ نہ بھیجا جا سکا — دوبارہ کوشش کریں۔" />
+              </p>
+            )}
+            <div className="mt-5">
+              <PrimaryBtn
+                className="w-full"
+                icon={<PhoneIcon className="h-6 w-6" />}
+                disabled={!phoneValid || busy}
+                onClick={doSend}
+              >
+                <T en={busy ? "Sending…" : "Continue"} ur={busy ? "بھیجا جا رہا ہے…" : "آگے بڑھیں"} />
+              </PrimaryBtn>
+            </div>
+          </>
+        ) : (
+          <>
+            <p className="mt-4 text-center text-base font-bold text-ink-700">
+              <T en={`Code sent to +92 ${phone}`} ur={`+92 ${phone} پر کوڈ بھیجا گیا`} />
+            </p>
+            <label className="mt-4 block">
+              <span className="mb-1 block text-base font-bold text-ink-700">
+                <T en="6-digit code" ur="۶ ہندسوں کا کوڈ" />
+              </span>
+              <input
+                value={code}
+                onChange={(e) => {
+                  setCode(e.target.value.replace(/\D/g, "").slice(0, 6));
+                  setError("");
+                }}
+                inputMode="numeric"
+                autoComplete="one-time-code"
+                placeholder="••••••"
+                autoFocus
+                aria-label="Verification code"
+                dir="ltr"
+                className="min-h-[60px] w-full rounded-lg border border-ink-900/15 px-4 text-center font-display text-2xl font-semibold tracking-[0.4em] text-ink-950 outline-none transition placeholder:text-ink-300 focus:border-court-600 focus:ring-2 focus:ring-court-600/20"
+              />
+            </label>
+            {error && (
+              <p className="mt-3 rounded-lg bg-clay-50 px-4 py-3 text-center text-base font-bold text-clay-700 ring-1 ring-clay-200">
+                <T en="Wrong or expired code — try again." ur="غلط یا پرانا کوڈ — دوبارہ کوشش کریں۔" />
+              </p>
+            )}
+            <div className="mt-5">
+              <PrimaryBtn
+                className="w-full"
+                icon={<CheckIcon className="h-6 w-6" />}
+                disabled={code.length !== 6 || busy}
+                onClick={doVerify}
+              >
+                <T en={busy ? "Checking…" : "Verify & continue"} ur={busy ? "چیک ہو رہا ہے…" : "تصدیق کریں"} />
+              </PrimaryBtn>
+            </div>
+            <div className="mt-3 text-center">
+              {ttl > 0 ? (
+                <p className="text-base font-bold text-ink-500">
+                  <T en={`Resend in ${Math.floor(ttl / 60)}:${String(ttl % 60).padStart(2, "0")}`} ur={`${Math.floor(ttl / 60)}:${String(ttl % 60).padStart(2, "0")} میں دوبارہ بھیجیں`} />
+                </p>
+              ) : (
+                <SecondaryBtn icon={<PhoneIcon className="h-5 w-5" />} onClick={doSend}>
+                  <T en="Resend code" ur="کوڈ دوبارہ بھیجیں" />
+                </SecondaryBtn>
+              )}
+            </div>
+            <div className="mt-2 text-center">
+              <SecondaryBtn
+                onClick={() => {
+                  setStep("phone");
+                  setCode("");
+                  setError("");
+                }}
+              >
+                <T en="Wrong number? Go back" ur="نمبر غلط؟ واپس جائیں" />
+              </SecondaryBtn>
+            </div>
+          </>
+        )}
+
+        <p className="mt-5 text-center text-sm font-semibold text-ink-500">
+          <T
+            en="This number becomes your account — bookings are linked to it."
+            ur="یہی نمبر آپ کا اکاؤنٹ ہے — بکنگز اسی سے جڑیں گی۔"
+          />
+        </p>
+      </div>
+    </div>
+  );
+}
+
 export default function BookingFlow({ lawyerSlug }: { lawyerSlug: string }) {
   const searchParams = useSearchParams();
   const { user } = useAuth();
@@ -82,8 +307,12 @@ export default function BookingFlow({ lawyerSlug }: { lawyerSlug: string }) {
   const [slotsLoading, setSlotsLoading] = useState(true);
 
   const [mode, setMode] = useState<BookingMode>(() => {
-    const m = searchParams.get("mode")?.toUpperCase();
-    return m === "IN_CHAMBER" || m === "PHONE" ? (m as BookingMode) : "ONLINE_VIDEO";
+    const m = (searchParams.get("mode") ?? "").toUpperCase();
+    // Accept both enum values (ONLINE_VIDEO/IN_CHAMBER/PHONE) and the
+    // friendly aliases used by card/profile CTAs: ?mode=online / ?mode=chamber.
+    if (m === "IN_CHAMBER" || m === "CHAMBER") return "IN_CHAMBER";
+    if (m === "PHONE") return "PHONE";
+    return "ONLINE_VIDEO";
   });
   const [step, setStep] = useState(1);
   const [pick, setPick] = useState<SlotPick | null>(null);
@@ -91,6 +320,7 @@ export default function BookingFlow({ lawyerSlug }: { lawyerSlug: string }) {
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
   const [booking, setBooking] = useState<Booking | null>(null);
+  const [showPhoneModal, setShowPhoneModal] = useState(false);
 
   // Session restore + lawyer + slots
   useEffect(() => {
@@ -142,28 +372,14 @@ export default function BookingFlow({ lawyerSlug }: { lawyerSlug: string }) {
     );
   }
 
-  // ---- auth gate ----
-  if (!user) {
-    const next = `/book/${lawyerSlug}${searchParams.toString() ? `?${searchParams.toString()}` : ""}`;
-    return (
-      <div className="mx-auto max-w-xl px-4 py-16 text-center">
-        <span className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-court-50 ring-1 ring-court-700/20">
-          <PhoneIcon className="h-10 w-10 text-court-700" />
-        </span>
-        <h1 className="mt-6 font-display text-[2rem] font-semibold text-ink-950">
-          <T en="Login to book" ur="بکنگ کے لیے لاگ اِن کریں" />
-        </h1>
-        <p className="mt-2 text-lg text-ink-600">
-          <T en="Enter your mobile number — we'll send a code. No password needed." ur="اپنا موبائل نمبر لکھیں — کوڈ آئے گا۔ پاس ورڈ کی ضرورت نہیں۔" />
-        </p>
-        <div className="mt-8">
-          <PrimaryBtn href={`/login?next=${encodeURIComponent(next)}`} icon={<PhoneIcon className="h-6 w-6" />}>
-            <T en="Login with phone" ur="فون سے لاگ اِن" />
-          </PrimaryBtn>
-        </div>
-      </div>
-    );
-  }
+  // ---- auth: low-friction phone modal (oladoc pattern) ----
+  // If the user isn't logged in, clicking Continue opens the phone-capture
+  // modal; after OTP verification the booking continues to confirmation.
+  const goNext = () => {
+    if (!pick) return;
+    if (!user) setShowPhoneModal(true);
+    else setStep(2);
+  };
 
   const fee = formatFee(lawyer.consultationFeePaisa);
   const modeInfo = MODES.find((m) => m.id === mode)!;
@@ -269,7 +485,7 @@ export default function BookingFlow({ lawyerSlug }: { lawyerSlug: string }) {
               className="w-full"
               icon={<CalendarIcon className="h-6 w-6" />}
               disabled={!pick}
-              onClick={() => pick && setStep(2)}
+              onClick={goNext}
             >
               <T en={pick ? "Continue" : "First pick a time above"} ur={pick ? "آگے بڑھیں" : "پہلے اوپر وقت چنیں"} />
             </PrimaryBtn>
@@ -373,6 +589,19 @@ export default function BookingFlow({ lawyerSlug }: { lawyerSlug: string }) {
             <T en="Pay the fee directly to the lawyer" ur="فیس وکیل کو براہِ راست ادا کریں" />
           </p>
         </section>
+      )}
+
+      {showPhoneModal && pick && (
+        <PhoneModal
+          lawyerName={lawyer.displayName}
+          slotLabel={`${pickedDay?.label ?? pick.date} · ${pick.start}`}
+          onClose={() => setShowPhoneModal(false)}
+          onVerified={() => {
+            setShowPhoneModal(false);
+            setStep(2);
+            window.scrollTo({ top: 0, behavior: "smooth" });
+          }}
+        />
       )}
     </div>
   );
