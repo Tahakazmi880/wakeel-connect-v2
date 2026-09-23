@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { T } from "@/components/LanguageContext";
-import { PrimaryBtn } from "@/components/ui";
+import { PrimaryBtn, SafeImage } from "@/components/ui";
 import LawyerCard from "@/components/LawyerCard";
 import SearchHero from "@/components/SearchHero";
 import SpecialtyCircles from "@/components/SpecialtyCircles";
@@ -245,15 +245,13 @@ export default async function Home() {
               </div>
             </div>
             <div className="relative mx-auto hidden w-full max-w-sm lg:block">
-              {heroPortrait ? (
-                <img
-                  src={heroPortrait}
-                  alt="Experienced wakeel"
-                  className="aspect-[4/5] w-full rounded-[1.5rem] object-cover object-top shadow-lift ring-1 ring-white/25"
-                />
-              ) : (
-                <div className="aspect-[4/5] w-full rounded-[1.5rem] bg-court-800 ring-1 ring-white/25" aria-hidden />
-              )}
+              <SafeImage
+                src={heroPortrait}
+                alt="Experienced wakeel"
+                eager
+                className="aspect-[4/5] w-full rounded-[1.5rem] object-cover object-top shadow-lift ring-1 ring-white/25"
+                fallback={<div className="aspect-[4/5] w-full rounded-[1.5rem] bg-court-800 ring-1 ring-white/25" aria-hidden />}
+              />
               <div className="absolute -bottom-5 left-1/2 w-max -translate-x-1/2 rounded-full bg-white px-5 py-2.5 text-[0.95rem] font-bold text-ink-900 shadow-lift">
                 <T en="3-step booking · No account needed" ur="۳ مراحل میں بکنگ · اکاؤنٹ کی ضرورت نہیں" />
               </div>
@@ -272,24 +270,22 @@ export default async function Home() {
               className="group overflow-hidden rounded-2xl bg-white shadow-card ring-1 ring-ink-900/10 transition hover:shadow-lift"
             >
               <div className="relative h-44 overflow-hidden bg-court-50 sm:h-52">
-                {s.image ? (
-                  <img
-                    src={s.image}
-                    alt=""
-                    loading="lazy"
-                    className="h-full w-full object-cover object-top transition duration-500 group-hover:scale-[1.04]"
-                  />
-                ) : (
-                  <div className="wc-jali-light flex h-full w-full items-center justify-center bg-court-900 p-4">
-                    <span className="text-center font-display text-[1.9rem] font-semibold leading-snug text-brass-300">
-                      {s.urduWord}
-                    </span>
-                  </div>
-                )}
+                <SafeImage
+                  src={s.image}
+                  alt=""
+                  className="h-full w-full object-cover object-top transition duration-500 group-hover:scale-[1.04]"
+                  fallback={
+                    <div className="wc-jali-light flex h-full w-full items-center justify-center bg-court-900 p-4">
+                      <span className="text-center font-display text-[1.9rem] font-semibold leading-snug text-brass-300">
+                        {s.urduWord}
+                      </span>
+                    </div>
+                  }
+                />
                 {i === 0 && onlineCount > 0 && (
                   <span className="absolute inset-x-0 bottom-0 flex items-center justify-center gap-1.5 bg-court-800/95 px-2 py-1.5 text-[0.8rem] font-bold text-white">
-                    <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-400" aria-hidden />
-                    <T en={`${onlineCount} Lawyers Online Now`} ur={`${onlineCount} وکیل ابھی آن لائن`} />
+                    <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-moss-600" aria-hidden />
+                    <T en={`${onlineCount} lawyers available for online consultation`} ur={`${onlineCount} وکیل آن لائن مشاورت کے لیے دستیاب`} />
                   </span>
                 )}
               </div>
@@ -323,14 +319,14 @@ export default async function Home() {
               </p>
               <h2 className="mt-3 font-display text-[1.7rem] font-semibold leading-snug text-white sm:text-[2.1rem]">
                 <T
-                  en="Avail exclusive partnership benefits for your brand, clients and employees."
-                  ur="اپنے برانڈ، کلائنٹس اور ملازمین کے لیے خصوصی پارٹنرشپ فوائد حاصل کریں۔"
+                  en="Bring trusted legal support to your brand, clients and employees."
+                  ur="اپنے برانڈ، کلائنٹس اور ملازمین کے لیے قابلِ اعتماد قانونی سہولت لائیں۔"
                 />
               </h2>
               <p className="mt-3 text-[1.05rem] leading-relaxed text-court-100">
                 <T
-                  en="Partner with wakeel.connect — panel rates, priority bookings and a dedicated legal desk for your team."
-                  ur="wakeel.connect کے ساتھ شراکت کریں — آپ کی ٹیم کے لیے خصوصی رعایتی فیس، ترجیحی بکنگ اور مخصوص لیگل ڈیسک۔"
+                  en="Talk to us about partnering with wakeel.connect — a trusted legal resource for your team and clients."
+                  ur="اپنی ٹیم اور کلائنٹس کے لیے قابلِ اعتماد قانونی وسیلہ — wakeel.connect کے ساتھ شراکت کے بارے میں ہم سے بات کریں۔"
                 />
               </p>
             </div>
@@ -346,22 +342,24 @@ export default async function Home() {
       </section>
 
       {/* ============ FEATURED LAWYERS ============ */}
-      <section className="mx-auto max-w-7xl px-4 pt-14 sm:pt-20">
-        <RowHead
-          title={<T en="Featured lawyers" ur="نمایاں وکیل" />}
-          href="/lawyers"
-          linkEn="View All"
-          linkUr="سب دیکھیں"
-        />
-        <div className="mx-auto max-w-4xl space-y-5">
-          {featured.map((l) => (
-            <LawyerCard key={l.slug} lawyer={l} />
-          ))}
-        </div>
-      </section>
+      {featured.length > 0 && (
+        <section className="mx-auto max-w-7xl px-4 pt-14 sm:pt-20">
+          <RowHead
+            title={<T en="Featured lawyers" ur="نمایاں وکیل" />}
+            href="/lawyers"
+            linkEn="View All"
+            linkUr="سب دیکھیں"
+          />
+          <div className="mx-auto max-w-4xl space-y-5">
+            {featured.map((l) => (
+              <LawyerCard key={l.slug} lawyer={l} />
+            ))}
+          </div>
+        </section>
+      )}
 
       {/* ============ HOW IT WORKS ============ */}
-      <section className="mt-14 bg-[#f5f7fb] py-14 sm:mt-20 sm:py-20">
+      <section className="mt-14 bg-paper-dark/60 py-14 sm:mt-20 sm:py-20">
         <div className="mx-auto max-w-7xl px-4">
           <div className="mb-8 text-center">
             <h2 className="font-display text-[1.7rem] font-semibold text-ink-950 sm:text-[2rem]">
@@ -459,7 +457,7 @@ export default async function Home() {
       <StatsBand lawyerCount={lawyerCount} />
 
       {/* ============ TOP COURTS ============ */}
-      <section className="bg-[#f5f7fb] py-14 sm:py-20">
+      <section className="bg-paper-dark/60 py-14 sm:py-20">
         <div className="mx-auto max-w-7xl px-4">
           <RowHead
             title={<T en="Lawyers by court" ur="عدالت کے حساب سے وکیل" />}
@@ -476,20 +474,18 @@ export default async function Home() {
                   href={city ? `/cities/${city.slug}` : "/lawyers"}
                   className="group overflow-hidden rounded-2xl bg-white shadow-card ring-1 ring-ink-900/10 transition hover:shadow-lift"
                 >
-                  {c.image ? (
-                    <div className="relative h-40 overflow-hidden">
-                      <img
-                        src={c.image}
-                        alt={c.nameEn}
-                        loading="lazy"
-                        className="h-full w-full object-cover transition duration-500 group-hover:scale-[1.03]"
-                      />
-                    </div>
-                  ) : (
-                    <div className="flex h-40 flex-col items-center justify-center gap-2 bg-court-900 text-white">
-                      <BriefcaseIcon className="h-10 w-10 text-brass-300" />
-                    </div>
-                  )}
+                  <div className="relative h-40 overflow-hidden">
+                    <SafeImage
+                      src={c.image}
+                      alt={c.nameEn}
+                      className="h-full w-full object-cover transition duration-500 group-hover:scale-[1.03]"
+                      fallback={
+                        <div className="flex h-full w-full flex-col items-center justify-center gap-2 bg-court-900 text-white">
+                          <BriefcaseIcon className="h-10 w-10 text-brass-300" />
+                        </div>
+                      }
+                    />
+                  </div>
                   <div className="p-5">
                     <p className="text-[1.12rem] font-bold leading-snug text-ink-950 transition group-hover:text-court-800">
                       <T en={c.nameEn} ur={c.nameUr} />
@@ -545,7 +541,7 @@ export default async function Home() {
       </section>
 
       {/* ============ LEGAL GUIDES ============ */}
-      <section className="border-y border-ink-900/10 bg-[#f5f7fb] py-14 sm:py-20">
+      <section className="border-y border-ink-900/10 bg-paper-dark/60 py-14 sm:py-20">
         <div className="mx-auto max-w-7xl px-4">
           <RowHead
             title={<T en="Free legal guides" ur="مفت قانونی رہنمائی" />}

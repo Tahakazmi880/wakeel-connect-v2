@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { T } from "./LanguageContext";
 import { PRACTICE_AREAS } from "@/lib/data";
@@ -126,7 +126,7 @@ function ViewAllModal({ open, onClose }: { open: boolean; onClose: () => void })
   );
 }
 
-function SectionHead({ titleEn, titleUr, onViewAll }: { titleEn: string; titleUr: string; onViewAll?: () => void }) {
+function SectionHead({ titleEn, titleUr, onViewAll, viewAllRef }: { titleEn: string; titleUr: string; onViewAll?: () => void; viewAllRef?: React.RefObject<HTMLButtonElement | null> }) {
   return (
     <div className="mb-6 flex items-end justify-between gap-4">
       <h2 className="font-display text-[1.45rem] font-semibold text-ink-950 sm:text-[1.7rem]">
@@ -134,6 +134,7 @@ function SectionHead({ titleEn, titleUr, onViewAll }: { titleEn: string; titleUr
       </h2>
       {onViewAll ? (
         <button
+          ref={viewAllRef}
           onClick={onViewAll}
           className="shrink-0 text-[1.02rem] font-bold text-court-700 underline underline-offset-4 transition hover:text-court-900"
         >
@@ -153,6 +154,12 @@ function SectionHead({ titleEn, titleUr, onViewAll }: { titleEn: string; titleUr
 
 export default function SpecialtyCircles() {
   const [modalOpen, setModalOpen] = useState(false);
+  const viewAllRef = useRef<HTMLButtonElement>(null);
+  const closeModal = () => {
+    setModalOpen(false);
+    // Return focus to the "View All" trigger when the modal closes.
+    requestAnimationFrame(() => viewAllRef.current?.focus());
+  };
   return (
     <>
       {/* ============ CONSULT BEST WAKEELS ONLINE ============ */}
@@ -161,6 +168,7 @@ export default function SpecialtyCircles() {
           titleEn="Consult best wakeels online"
           titleUr="بہترین وکیلوں سے آن لائن مشورہ کریں"
           onViewAll={() => setModalOpen(true)}
+          viewAllRef={viewAllRef}
         />
         <div className="wc-rail -mx-4 flex gap-5 overflow-x-auto px-4 pb-3 sm:mx-0 sm:flex-wrap sm:overflow-visible sm:px-0">
           {PRACTICE_AREAS.map((a) => (
@@ -188,7 +196,7 @@ export default function SpecialtyCircles() {
         </div>
       </section>
 
-      <ViewAllModal open={modalOpen} onClose={() => setModalOpen(false)} />
+      <ViewAllModal open={modalOpen} onClose={closeModal} />
     </>
   );
 }

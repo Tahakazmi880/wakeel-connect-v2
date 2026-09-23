@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { T } from "./LanguageContext";
+import { SafeImage } from "./ui";
 
 const PARTNERS: { src: string; alt: string }[] = [
   { src: "/partners/amreli-steels.png", alt: "Amreli Steels Limited" },
@@ -30,7 +31,16 @@ function LogoRow({ hidden }: { hidden?: boolean }) {
           key={p.src}
           className="flex h-20 w-40 shrink-0 items-center justify-center rounded-xl bg-white px-4 shadow-card ring-1 ring-ink-900/5 sm:h-24 sm:w-48"
         >
-          <img src={p.src} alt={p.alt} loading="lazy" className="max-h-12 max-w-full object-contain sm:max-h-14" />
+          <SafeImage
+            src={p.src}
+            alt={p.alt}
+            className="max-h-12 max-w-full object-contain sm:max-h-14"
+            fallback={
+              <span className="text-center font-display text-sm font-semibold leading-snug text-court-800">
+                {p.alt}
+              </span>
+            }
+          />
         </div>
       ))}
     </div>
