@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { T } from "./LanguageContext";
-import { BriefcaseIcon, DocIcon, ShieldIcon } from "./icons";
+import { DocIcon, ShieldIcon } from "./icons";
 import { CITIES, COURTS, PRACTICE_AREAS, getCity } from "@/lib/data";
 
 const GUIDES = [
@@ -39,9 +39,13 @@ export default function Footer() {
           {/* Brand block */}
           <div className="lg:col-span-2">
             <div className="flex items-center gap-2.5">
-              <span className="flex h-10 w-10 items-center justify-center rounded-lg bg-court-700 text-white">
-                <BriefcaseIcon className="h-5 w-5" />
-              </span>
+              <img
+                src="/logo-mark.png"
+                alt="wakeel.connect logo"
+                width={40}
+                height={40}
+                className="h-10 w-10 rounded-lg object-cover"
+              />
               <span className="font-display text-[1.45rem] font-semibold tracking-tight text-ink-950">
                 wakeel<span className="text-brass-600">.connect</span>
               </span>

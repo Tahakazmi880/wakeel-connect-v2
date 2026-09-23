@@ -52,13 +52,13 @@ export function ChevronIcon({ className }: { className?: string }) {
 export function Logo({ compact = false }: { compact?: boolean }) {
   return (
     <Link href="/" className="flex shrink-0 items-center gap-2.5" aria-label="wakeel.connect home">
-      <span
-        className={`flex items-center justify-center rounded-lg bg-court-700 text-white shadow-card ${
-          compact ? "h-9 w-9" : "h-10 w-10"
-        }`}
-      >
-        <BriefcaseIcon className={compact ? "h-4 w-4" : "h-5 w-5"} />
-      </span>
+      <img
+        src="/logo-mark.png"
+        alt="wakeel.connect logo"
+        width={compact ? 36 : 40}
+        height={compact ? 36 : 40}
+        className={`${compact ? "h-9 w-9" : "h-10 w-10"} rounded-lg object-cover shadow-card`}
+      />
       <span
         className={`font-display font-semibold tracking-tight text-ink-950 ${
           compact ? "text-[1.2rem]" : "text-[1.45rem]"
