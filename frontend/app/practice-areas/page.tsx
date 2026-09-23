@@ -23,7 +23,7 @@ export default function AreasHub() {
           const n = LAWYERS.filter((l) => l.practiceAreaSlugs.includes(a.slug)).length;
           return (
             <Link key={a.slug} href={`/practice-areas/${a.slug}`}
-              className="group rounded-lg border border-ink-900/10 bg-white p-6 shadow-card transition hover:-translate-y-1 hover:border-court-300 hover:shadow-xl">
+              className="group rounded-lg border border-ink-900/10 bg-white p-6 shadow-card transition hover:border-court-700/40 hover:shadow-lift">
               <p className="font-display text-[1.3rem] font-semibold text-ink-950 transition group-hover:text-court-800"><T en={a.nameEn} ur={a.nameUr} /></p>
               <p className="mt-2 text-base text-ink-500">{a.description}</p>
               <span className="mt-4 inline-flex items-center gap-1 text-base font-bold text-court-700">

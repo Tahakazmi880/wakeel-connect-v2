@@ -23,7 +23,7 @@ export default function CitiesHub() {
           const n = LAWYERS.filter((l) => l.citySlug === c.slug).length;
           return (
             <Link key={c.slug} href={`/cities/${c.slug}`}
-              className="group rounded-lg border border-ink-900/10 bg-white p-6 text-center shadow-sm transition hover:-translate-y-1 hover:border-court-300 hover:shadow-xl">
+              className="group rounded-lg border border-ink-900/10 bg-white p-6 text-center shadow-card transition hover:border-court-700/40 hover:shadow-lift">
               <p className="font-display text-[1.3rem] font-semibold text-ink-950 transition group-hover:text-court-800"><T en={c.nameEn} ur={c.nameUr} /></p>
               <p className="mt-1 text-sm font-semibold text-ink-500"><T en={`${n} lawyers`} ur={`${n} وکیل`} /></p>
               <span className="mt-3 inline-flex items-center gap-1 text-base font-bold text-court-700">

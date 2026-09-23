@@ -135,7 +135,6 @@ export default function VideoRoom({ bookingId }: { bookingId: string }) {
                 </div>
               </div>
               <div className="flex items-center gap-3">
-                <span aria-hidden className="text-2xl">📌</span>
                 <div>
                   <dt className="sr-only"><T en="Status" ur="حیثیت" /></dt>
                   <dd className="font-bold text-ink-800">{booking.status}</dd>

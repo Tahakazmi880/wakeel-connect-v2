@@ -41,7 +41,7 @@ export default function AdminQueue() {
           {pending.map((p) => (
             <article key={p.id} className="rounded-lg border border-ink-900/10 bg-white p-5 shadow-sm">
               <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
-                <span className="flex h-14 w-14 shrink-0 items-center justify-center rounded-lg bg-court-100 text-court-700">
+                <span className="flex h-14 w-14 shrink-0 items-center justify-center rounded-lg bg-court-50 text-court-700 ring-1 ring-court-700/20">
                   <UserIcon className="h-7 w-7" />
                 </span>
                 <div className="min-w-0 flex-1">

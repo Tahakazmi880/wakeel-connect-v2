@@ -72,10 +72,10 @@ export default function GuidesList() {
             <Link
               key={g.slug}
               href={`/guides/${g.slug}`}
-              className="group flex flex-col rounded-lg border border-ink-900/10 bg-white p-6 shadow-card transition hover:-translate-y-1 hover:border-court-300 hover:shadow-xl"
+              className="group flex flex-col rounded-lg border border-ink-900/10 bg-white p-6 shadow-card transition hover:border-court-700/40 hover:shadow-lift"
             >
               <div className="mb-4 flex items-center justify-between">
-                <span className="flex h-12 w-12 items-center justify-center rounded-lg bg-court-100">
+                <span className="flex h-12 w-12 items-center justify-center rounded-lg bg-court-50 ring-1 ring-court-700/20">
                   <DocIcon className="h-6 w-6 text-court-700" />
                 </span>
                 <span
