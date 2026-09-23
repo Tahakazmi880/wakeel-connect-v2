@@ -1,13 +1,18 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import { T } from "./LanguageContext";
 import { Stars } from "./ui";
 import { CheckBadgeIcon } from "./icons";
 import type { LawyerReview } from "@/lib/api";
 
+const PAGE_SIZE = 5;
+
 /**
  * Reviews section for a lawyer profile — real API reviews only.
+ * Satisfaction % is computed from real reviews (4–5 stars); with zero
+ * reviews we show the honest empty state, never a fabricated score.
  * Reviews can only be written after a completed booking, so the form
  * lives on the dashboard; here we link there.
  */
@@ -22,10 +27,14 @@ export default function ReviewSection({
   ratingCount: number;
   lawyerName: string;
 }) {
+  const [visible, setVisible] = useState(PAGE_SIZE);
+
   const dist = [5, 4, 3, 2, 1].map((s) => {
     const n = reviews.filter((r) => r.rating === s).length;
     return { star: s, pct: ratingCount === 0 ? 0 : Math.round((n / ratingCount) * 100) };
   });
+  const satisfied = ratingCount === 0 ? 0 : Math.round((reviews.filter((r) => r.rating >= 4).length / ratingCount) * 100);
+  const shown = reviews.slice(0, visible);
 
   return (
     <section id="reviews" className="mt-6 scroll-mt-24 rounded-lg border border-ink-900/10 bg-white p-6 shadow-card sm:p-8">
@@ -42,8 +51,16 @@ export default function ReviewSection({
           />
         </p>
       ) : (
-        <div className="mt-4 flex items-center gap-4">
-          <p className="font-display text-5xl font-semibold text-ink-950">{ratingAvg.toFixed(1)}</p>
+        <div className="mt-4 flex flex-col gap-5 sm:flex-row sm:items-center sm:gap-8">
+          <div className="text-center sm:text-left">
+            <p className="font-display text-5xl font-semibold text-ink-950">{ratingAvg.toFixed(1)}</p>
+            <div className="mt-2 h-2.5 w-40 overflow-hidden rounded-full bg-ink-100">
+              <div className="h-full rounded-full bg-court-600" style={{ width: `${satisfied}%` }} />
+            </div>
+            <p className="mt-1.5 text-sm font-bold text-ink-600">
+              <T en={`${satisfied}% satisfied`} ur={`${satisfied}% مطمئن`} />
+            </p>
+          </div>
           <div className="flex-1 space-y-1.5">
             {dist.map((d) => (
               <div key={d.star} className="flex items-center gap-2 text-sm">
@@ -70,7 +87,7 @@ export default function ReviewSection({
       </div>
 
       <div className="mt-6 space-y-4">
-        {reviews.map((r) => (
+        {shown.map((r) => (
           <div key={r.id} className="rounded-lg bg-paper-dark/40 p-5 ring-1 ring-ink-900/10">
             <div className="flex items-center justify-between gap-3">
               <p className="text-lg font-bold text-ink-950">{r.client.fullName ?? <T en="Client" ur="کلائنٹ" />}</p>
@@ -85,6 +102,16 @@ export default function ReviewSection({
           </div>
         ))}
       </div>
+
+      {visible < reviews.length && (
+        <button
+          type="button"
+          onClick={() => setVisible((v) => v + PAGE_SIZE)}
+          className="mt-5 inline-flex min-h-[52px] w-full items-center justify-center rounded-lg border border-court-700/40 px-6 text-[1.02rem] font-bold text-court-800 transition hover:border-court-700 hover:bg-court-50"
+        >
+          <T en={`Load more reviews (${reviews.length - visible})`} ur={`مزید آراء دیکھیں (${reviews.length - visible})`} />
+        </button>
+      )}
     </section>
   );
 }

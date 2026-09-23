@@ -19,7 +19,13 @@ import {
 } from "@/components/icons";
 import { API_V1, fileUrl, formatExperience, formatFee, type LawyerReview, type LawyerSummary } from "@/lib/api";
 
-type FullLawyer = LawyerSummary & { reviews: LawyerReview[] };
+type FullLawyer = LawyerSummary & {
+  reviews: LawyerReview[];
+  memberships?: string[];
+  offersOnline?: boolean;
+  onlineFeePaisa?: number;
+  nextAvailable?: { date: string; label: string } | null;
+};
 
 async function fetchLawyer(slug: string): Promise<FullLawyer | null> {
   try {
@@ -48,7 +54,7 @@ async function fetchSimilar(lawyer: FullLawyer): Promise<LawyerSummary[]> {
       }))
       .filter((x) => x.score > 0)
       .sort((a, b) => b.score - a.score)
-      .slice(0, 3)
+      .slice(0, 4)
       .map((x) => x.l);
   } catch {
     return [];
@@ -96,10 +102,13 @@ export default async function LawyerProfile({ params }: { params: Promise<{ slug
 
   const similar = await fetchSimilar(lawyer);
   const fee = formatFee(lawyer.consultationFeePaisa);
+  const onlineFee = formatFee(lawyer.onlineFeePaisa ?? 0);
+  const offersOnline = lawyer.offersOnline === true;
   const exp = formatExperience(lawyer.yearsExperience);
   const langs = lawyer.languages.map((x) => x.language);
   const langNames = langs.map((x) => x.nameEn).join(", ");
   const primaryChamber = lawyer.chambers.find((c) => c.isPrimary) ?? lawyer.chambers[0];
+  const nextAvailable = lawyer.nextAvailable ?? null;
 
   const profileFaqs = [
     {
@@ -113,10 +122,14 @@ export default async function LawyerProfile({ params }: { params: Promise<{ slug
         : `فیس معلوم کریں — بکنگ سے پہلے وکیل سے فیس ضرور طے کریں۔ آپ فیس براہ راست وکیل کو ادا کرتے ہیں۔`,
     },
     {
-      qEn: `Does ${lawyer.displayName} offer video consultations?`,
-      qUr: `کیا ${lawyer.displayName} ویڈیو مشاورت دیتے ہیں؟`,
-      aEn: `Yes — you can book a video consultation from anywhere in Pakistan, or visit the chamber${primaryChamber ? ` at ${primaryChamber.name}, ${primaryChamber.address}` : ""}. Call details are shared after booking.`,
-      aUr: `جی ہاں — پاکستان میں کہیں سے بھی ویڈیو مشاورت بک کریں، یا چیمبر تشریف لائیں۔ بکنگ کے بعد کال کی تفصیل شیئر کی جاتی ہے۔`,
+      qEn: `Does ${lawyer.displayName} offer online consultations?`,
+      qUr: `کیا ${lawyer.displayName} آن لائن مشاورت دیتے ہیں؟`,
+      aEn: offersOnline
+        ? `Yes — you can book an online consultation from anywhere in Pakistan, or visit the chamber${primaryChamber ? ` at ${primaryChamber.name}, ${primaryChamber.address}` : ""}. Call details are shared after booking.`
+        : `This lawyer currently takes chamber visits${primaryChamber ? ` at ${primaryChamber.name}, ${primaryChamber.address}` : ""}. Online consultations are not listed for this profile.`,
+      aUr: offersOnline
+        ? `جی ہاں — پاکستان میں کہیں سے بھی آن لائن مشاورت بک کریں، یا چیمبر تشریف لائیں۔ بکنگ کے بعد کال کی تفصیل شیئر کی جاتی ہے۔`
+        : `یہ وکیل فی الحال چیمبر ملاقاتیں کرتے ہیں۔ اس پروفائل پر آن لائن مشاورت درج نہیں ہے۔`,
     },
     {
       qEn: `Which languages does ${lawyer.displayName} speak?`,
@@ -181,8 +194,8 @@ export default async function LawyerProfile({ params }: { params: Promise<{ slug
               </div>
             </div>
             <div className="mt-7 grid gap-3 sm:grid-cols-2">
-              <PrimaryBtn href={`/book/${lawyer.slug}?mode=video`} icon={<VideoIcon className="h-6 w-6" />}>
-                <T en={fee ? `Video Call — ${fee}` : "Video Call"} ur={fee ? `ویڈیو کال — ${fee}` : "ویڈیو کال"} />
+              <PrimaryBtn href={`/book/${lawyer.slug}?mode=online`} icon={<VideoIcon className="h-6 w-6" />}>
+                <T en={onlineFee ? `Online Consultation — ${onlineFee}` : "Online Consultation"} ur={onlineFee ? `آن لائن مشاورت — ${onlineFee}` : "آن لائن مشاورت"} />
               </PrimaryBtn>
               <SecondaryBtn href={`/book/${lawyer.slug}?mode=chamber`} icon={<OfficeIcon className="h-6 w-6" />}>
                 <T en="Visit Office" ur="دفتر میں ملاقات" />
@@ -199,6 +212,39 @@ export default async function LawyerProfile({ params }: { params: Promise<{ slug
               </span>
             </ProfileSectionTitle>
             <LawyerAvailability lawyerSlug={lawyer.slug} />
+          </section>
+
+          {/* Fees & timings */}
+          <section className="mt-6 rounded-lg border border-ink-900/10 bg-white p-6 shadow-card sm:p-8">
+            <ProfileSectionTitle><T en="Fees & timings" ur="فیس اور اوقات" /></ProfileSectionTitle>
+            <dl className="divide-y divide-ink-900/10 overflow-hidden rounded-lg border border-ink-900/10">
+              {offersOnline && (
+                <div className="flex items-center justify-between gap-4 px-5 py-4">
+                  <dt className="inline-flex items-center gap-2.5 text-[1.02rem] font-bold text-ink-800">
+                    <VideoIcon className="h-5 w-5 text-court-700" />
+                    <T en="Online consultation" ur="آن لائن مشاورت" />
+                  </dt>
+                  <dd className="wc-fee text-[1.15rem] font-semibold text-ink-950">
+                    {onlineFee ?? <T en="Fee on request" ur="فیس معلوم کریں" />}
+                  </dd>
+                </div>
+              )}
+              <div className="flex items-center justify-between gap-4 px-5 py-4">
+                <dt className="inline-flex items-center gap-2.5 text-[1.02rem] font-bold text-ink-800">
+                  <OfficeIcon className="h-5 w-5 text-court-700" />
+                  <T en="Chamber visit" ur="چیمبر ملاقات" />
+                </dt>
+                <dd className="wc-fee text-[1.15rem] font-semibold text-ink-950">
+                  {fee ?? <T en="Fee on request" ur="فیس معلوم کریں" />}
+                </dd>
+              </div>
+            </dl>
+            <p className="mt-3.5 text-[0.98rem] font-medium text-ink-500">
+              <T
+                en="The fee is shown upfront and confirmed before you book. You pay the fee directly to the lawyer."
+                ur="فیس پہلے سے واضح ہوتی ہے اور بکنگ سے پہلے تصدیق ہوتی ہے۔ آپ فیس براہِ راست وکیل کو ادا کرتے ہیں۔"
+              />
+            </p>
           </section>
 
           {/* About */}
@@ -232,6 +278,14 @@ export default async function LawyerProfile({ params }: { params: Promise<{ slug
                 </ul>
               </div>
             </div>
+            {(lawyer.memberships?.length ?? 0) > 0 && (
+              <div className="mt-4 rounded-lg bg-paper-dark/50 p-5 ring-1 ring-ink-900/10">
+                <p className="text-[1rem] font-bold text-ink-950"><T en="Professional memberships" ur="پیشہ ورانہ رکنیتیں" /></p>
+                <ul className="mt-2.5 list-disc space-y-1.5 pl-5 text-[1rem] text-ink-700">
+                  {lawyer.memberships!.map((m) => <li key={m}>{m}</li>)}
+                </ul>
+              </div>
+            )}
             <div className="mt-4 rounded-lg bg-paper-dark/50 p-5 ring-1 ring-ink-900/10">
               {langs.length > 0 && (
                 <>
@@ -271,10 +325,25 @@ export default async function LawyerProfile({ params }: { params: Promise<{ slug
           </section>
         </div>
 
-        {/* ===== Side column: booking card ===== */}
-        <aside className="lg:sticky lg:top-24 lg:self-start">
+        {/* ===== Side column: booking card (desktop only) ===== */}
+        <aside className="hidden lg:sticky lg:top-24 lg:block lg:self-start">
           <div className="rounded-lg border border-ink-900/10 bg-white p-6 shadow-lift">
-            <div className="border-b-2 border-brass-500 pb-4 text-center">
+            <div className="flex items-center gap-4 border-b-2 border-brass-500 pb-4">
+              <PhotoAvatar name={lawyer.displayName} photo={fileUrl(lawyer.photoUrl) ?? undefined} size="lg" />
+              <div className="min-w-0">
+                <p className="truncate font-display text-[1.25rem] font-semibold text-ink-950">{lawyer.displayName}</p>
+                {nextAvailable ? (
+                  <p className="mt-0.5 text-[0.95rem] font-bold text-court-700">
+                    <T en={`Next available: ${nextAvailable.label}`} ur={`اگلا دستیاب: ${nextAvailable.label}`} />
+                  </p>
+                ) : (
+                  <p className="mt-0.5 text-[0.95rem] font-semibold text-ink-500">
+                    <T en="Timings on request" ur="اوقات معلوم کریں" />
+                  </p>
+                )}
+              </div>
+            </div>
+            <div className="border-b border-ink-900/10 py-4 text-center">
               <p className="text-[0.78rem] font-bold uppercase tracking-[0.14em] text-ink-500">
                 <T en="Consultation fee" ur="مشاورت کی فیس" />
               </p>
@@ -283,8 +352,8 @@ export default async function LawyerProfile({ params }: { params: Promise<{ slug
               </p>
             </div>
             <div className="mt-5 space-y-3">
-              <PrimaryBtn href={`/book/${lawyer.slug}?mode=video`} icon={<VideoIcon className="h-6 w-6" />} className="w-full">
-                <T en="Book Video Call" ur="ویڈیو کال بک کریں" />
+              <PrimaryBtn href={`/book/${lawyer.slug}?mode=online`} icon={<VideoIcon className="h-6 w-6" />} className="w-full">
+                <T en="Book Online Consultation" ur="آن لائن مشاورت بک کریں" />
               </PrimaryBtn>
               <SecondaryBtn href={`/book/${lawyer.slug}?mode=chamber`} icon={<OfficeIcon className="h-6 w-6" />} className="w-full">
                 <T en="Book Office Visit" ur="دفتر کی ملاقات بک کریں" />
@@ -327,7 +396,7 @@ export default async function LawyerProfile({ params }: { params: Promise<{ slug
 
       {/* Sticky mobile CTA — one primary action */}
       <div className="fixed inset-x-0 bottom-0 z-30 border-t border-ink-900/10 bg-paper/95 p-3 backdrop-blur lg:hidden">
-        <PrimaryBtn href={`/book/${lawyer.slug}?mode=video`} icon={<VideoIcon className="h-6 w-6" />} className="w-full">
+        <PrimaryBtn href={`/book/${lawyer.slug}?mode=online`} icon={<VideoIcon className="h-6 w-6" />} className="w-full">
           <T en={fee ? `Book Now — ${fee}` : "Book Now"} ur={fee ? `ابھی بک کریں — ${fee}` : "ابھی بک کریں"} />
         </PrimaryBtn>
       </div>
