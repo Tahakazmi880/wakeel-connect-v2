@@ -1,12 +1,9 @@
 import type { FastifyInstance, FastifyRequest } from "fastify";
 import { z } from "zod";
-import fs from "node:fs/promises";
-import { createWriteStream, createReadStream } from "node:fs";
-import path from "node:path";
 import crypto from "node:crypto";
-import { pipeline } from "node:stream/promises";
 import { prisma } from "../lib/prisma.js";
 import { env } from "../lib/env.js";
+import { storeDocument, deleteDocument, openDocument } from "../lib/storage.js";
 import { badRequest, notFound, forbidden, conflict } from "../lib/errors.js";
 import { requireAuth, requireRole } from "../middleware/auth.js";
 
@@ -182,8 +179,9 @@ export async function bookingRoutes(app: FastifyInstance) {
   });
 
   /**
-   * Attach a case document to a booking. Files are stored on private disk
-   * (UPLOAD_DIR); only metadata + a random storage key touch the database.
+   * Attach a case document to a booking. Files go to Supabase Storage in
+   * production (local disk in development); only metadata + a random
+   * storage key touch the database.
    */
   app.post("/bookings/:id/documents", { preHandler: [requireAuth] }, async (req, reply) => {
     const { id } = req.params as { id: string };
@@ -200,22 +198,18 @@ export async function bookingRoutes(app: FastifyInstance) {
     }
 
     const storageKey = crypto.randomBytes(24).toString("hex");
-    const dir = path.resolve(env.UPLOAD_DIR, "booking-docs");
-    await fs.mkdir(dir, { recursive: true });
-    const dest = path.join(dir, storageKey);
+    let sizeBytes: number;
     try {
+      sizeBytes = await storeDocument(storageKey, file.file, file.mimetype);
       // The multipart plugin enforces the fileSize limit; a truncated
       // stream means the client exceeded it.
-      await pipeline(file.file, createWriteStream(dest));
       if (file.file.truncated) {
         throw badRequest("FILE_TOO_LARGE", `File must be under ${env.MAX_UPLOAD_MB} MB.`);
       }
     } catch (err) {
-      await fs.rm(dest, { force: true });
+      await deleteDocument(storageKey);
       throw err;
     }
-    const { size } = await fs.stat(dest);
-    const sizeBytes = size;
 
     const doc = await prisma.bookingDocument.create({
       data: {
@@ -238,16 +232,12 @@ export async function bookingRoutes(app: FastifyInstance) {
     const doc = await prisma.bookingDocument.findFirst({ where: { id: docId, bookingId: id } });
     if (!doc) throw notFound("Document not found.");
 
-    const filePath = path.join(path.resolve(env.UPLOAD_DIR, "booking-docs"), path.basename(doc.storageKey));
-    try {
-      await fs.access(filePath);
-    } catch {
-      throw notFound("Document file is missing.");
-    }
+    const stream = await openDocument(doc.storageKey);
+    if (!stream) throw notFound("Document file is missing.");
     return reply
       .header("Content-Type", doc.mimeType)
       .header("Content-Disposition", `attachment; filename="${doc.fileName}"`)
-      .send(createReadStream(filePath));
+      .send(stream);
   });
 
   /** Lawyer marks an appointment completed (enables the client review). */

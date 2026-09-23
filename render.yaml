@@ -1,0 +1,36 @@
+# Render blueprint for the wakeel.connect API.
+# In the Render dashboard: New -> Blueprint -> connect this repo.
+# Fill the `sync: false` values in the dashboard (never commit secrets).
+services:
+  - type: web
+    name: wakeel-connect-api
+    runtime: node
+    plan: free
+    branch: main
+    rootDir: backend
+    buildCommand: npm ci && npx prisma generate && npm run build && npx prisma migrate deploy
+    startCommand: npm start
+    healthCheckPath: /api/v1/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: NODE_VERSION
+        value: "20"
+      - key: COOKIE_SECURE
+        value: "true"
+      # Generated once by Render; shown only in the dashboard.
+      - key: JWT_SECRET
+        generateValue: true
+      - key: OTP_PEPPER
+        generateValue: true
+      # Set these in the dashboard after creating the services:
+      - key: FRONTEND_URL
+        sync: false # e.g. https://wakeel-connect.vercel.app
+      - key: DATABASE_URL
+        sync: false # Supabase pooler connection string (port 6543)
+      - key: SUPABASE_URL
+        sync: false # e.g. https://xyzcompany.supabase.co
+      - key: SUPABASE_SERVICE_KEY
+        sync: false # Supabase service_role key (storage uploads)
+      - key: SUPABASE_BUCKET
+        value: booking-docs

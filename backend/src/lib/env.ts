@@ -39,6 +39,12 @@ const envSchema = z.object({
 
   UPLOAD_DIR: z.string().default("./uploads"),
   MAX_UPLOAD_MB: z.coerce.number().int().positive().default(10),
+
+  // Supabase Storage for uploads in production (Render's disk is ephemeral).
+  // When unset, documents stay on local disk (development default).
+  SUPABASE_URL: z.string().url().optional(),
+  SUPABASE_SERVICE_KEY: z.string().optional(),
+  SUPABASE_BUCKET: z.string().default("booking-docs"),
 });
 
 const parsed = envSchema.safeParse(process.env);
