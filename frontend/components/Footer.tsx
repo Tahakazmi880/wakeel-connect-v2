@@ -140,6 +140,11 @@ export default function Footer() {
                   </Link>
                 </li>
                 <li>
+                  <Link className={LINK_CLS} href="/contact">
+                    <T en="Contact Us" ur="ہم سے رابطہ کریں" />
+                  </Link>
+                </li>
+                <li>
                   <Link className={LINK_CLS} href="/callback">
                     <T en="Request a Callback" ur="کال بیک کی درخواست" />
                   </Link>
