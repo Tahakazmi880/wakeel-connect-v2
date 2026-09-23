@@ -34,6 +34,16 @@ export async function buildApp() {
     decorateReply: false,
   });
 
+  // Lawyer portraits are embedded by the frontend, which lives on a
+  // different origin (local dev ports; Vercel vs Render in production).
+  // Helmet's default `Cross-Origin-Resource-Policy: same-origin` would make
+  // browsers refuse to load them — portraits must be cross-origin embeddable.
+  app.addHook("onSend", async (req, reply) => {
+    if (req.url.startsWith("/lawyers/")) {
+      reply.header("Cross-Origin-Resource-Policy", "cross-origin");
+    }
+  });
+
   // ---- Global error handler: AppError → clean JSON, everything else → 500
   // ---- without leaking stack traces in production.
   app.setErrorHandler((err, req, reply) => {
