@@ -114,8 +114,10 @@ export default function LoginModal({ open, onClose, onSuccess, initialRole = "CL
   const phoneRef = useRef<HTMLInputElement>(null);
 
   // Reset every time the modal opens; lock body scroll; close on Escape.
+  // Remember the element that opened the modal and give it focus back on close.
   useEffect(() => {
     if (!open) return;
+    const opener = document.activeElement as HTMLElement | null;
     setRole(initialRole);
     setStep("phone");
     setNational("");
@@ -132,6 +134,7 @@ export default function LoginModal({ open, onClose, onSuccess, initialRole = "CL
       clearTimeout(t);
       window.removeEventListener("keydown", onKey);
       document.body.style.overflow = prev;
+      if (opener && document.contains(opener)) opener.focus({ preventScroll: true });
     };
   }, [open, initialRole, onClose]);
 

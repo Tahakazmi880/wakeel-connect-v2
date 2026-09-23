@@ -134,13 +134,16 @@ export default function Header() {
   }, [openMenu]);
 
   // Clicking outside the nav closes open menus.
+  // NOTE: uses "click" (not "mousedown") on purpose — with mousedown the
+  // menu would unmount under the user's cursor before their click lands,
+  // swallowing clicks on menu items (e.g. "Login as Client" never opened).
   useEffect(() => {
     if (!openMenu) return;
     const onDown = (e: MouseEvent) => {
       if (navRef.current && !navRef.current.contains(e.target as Node)) closeMenus();
     };
-    document.addEventListener("mousedown", onDown);
-    return () => document.removeEventListener("mousedown", onDown);
+    document.addEventListener("click", onDown);
+    return () => document.removeEventListener("click", onDown);
   }, [openMenu]);
 
   const toggleMenu = (id: MenuId) =>
@@ -166,6 +169,7 @@ export default function Header() {
   );
 
   return (
+    <>
     <header
       className={`sticky top-0 z-40 border-b border-ink-900/10 bg-white/95 backdrop-blur transition-shadow ${
         scrolled ? "shadow-[0_2px_16px_rgba(16,28,58,0.10)]" : ""
@@ -473,7 +477,16 @@ export default function Header() {
           </button>
         </div>
       </div>
-      <MobileDrawer open={drawerOpen} onClose={() => setDrawerOpen(false)} />
     </header>
+    {/* Portals-out: MobileDrawer and LoginModal must live OUTSIDE <header>.
+        The header's backdrop-blur creates a containing block that traps
+        fixed-position descendants to the 64px header box. */}
+    <MobileDrawer open={drawerOpen} onClose={() => setDrawerOpen(false)} />
+    <LoginModal
+      open={loginOpen}
+      onClose={() => setLoginOpen(false)}
+      initialRole={loginRole}
+    />
+  </>
   );
 }
