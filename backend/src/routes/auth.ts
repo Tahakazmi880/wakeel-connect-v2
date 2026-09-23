@@ -106,7 +106,11 @@ export async function authRoutes(app: FastifyInstance) {
       throw tooMany("Too many wrong attempts. Please request a new code.");
     }
 
-    if (!safeEqual(hashOtpCode(parsed.data.code), otp.codeHash)) {
+    // TEMPORARY soft-launch bypass: accept any 6-digit code while no SMS
+    // provider is configured (OTP_ACCEPT_ANY=true). Remove when Twilio is live.
+    if (env.OTP_ACCEPT_ANY) {
+      app.log.warn(`[security] OTP bypass accepted for ${phone.slice(0, 7)}••• — disable OTP_ACCEPT_ANY once real SMS is live`);
+    } else if (!safeEqual(hashOtpCode(parsed.data.code), otp.codeHash)) {
       await prisma.otpCode.update({ where: { id: otp.id }, data: { attempts: otp.attempts + 1 } });
       throw badRequest("WRONG_CODE", "Wrong code. Please check and try again.");
     }

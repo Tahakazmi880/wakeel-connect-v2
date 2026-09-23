@@ -37,6 +37,12 @@ const envSchema = z.object({
   TWILIO_AUTH_TOKEN: z.string().optional(),
   TWILIO_FROM: z.string().optional(),
 
+  // TEMPORARY soft-launch bypass (user-approved 2026-09-24): when true, the
+  // verify endpoint accepts ANY 6-digit code so bookings work before a real
+  // SMS provider is wired. Rate limiting + OTP record checks still apply.
+  // MUST be set back to false once SMS_PROVIDER=twilio is live.
+  OTP_ACCEPT_ANY: envBool.default(false),
+
   UPLOAD_DIR: z.string().default("./uploads"),
   MAX_UPLOAD_MB: z.coerce.number().int().positive().default(10),
 

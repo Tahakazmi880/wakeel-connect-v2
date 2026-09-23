@@ -114,6 +114,10 @@ async function main() {
     });
   }
   await app.listen({ port: PORT, host: "0.0.0.0" });
+  if (env.OTP_ACCEPT_ANY) {
+    // eslint-disable-next-line no-console
+    console.warn("⚠️  [security] OTP_ACCEPT_ANY=true — ANY 6-digit code is accepted as valid. This is a temporary soft-launch bypass. Set OTP_ACCEPT_ANY=false once SMS_PROVIDER=twilio is live.");
+  }
 }
 
 // Works both under tsx (src/server.ts) and compiled node (dist/server.js).
