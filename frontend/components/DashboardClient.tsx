@@ -46,7 +46,7 @@ const STATUS_LABEL: Record<BookingStatus, { en: string; ur: string }> = {
 };
 
 const MODE_LABEL: Record<BookingMode, { en: string; ur: string }> = {
-  ONLINE_VIDEO: { en: "Video Call", ur: "ویڈیو کال" },
+  ONLINE_VIDEO: { en: "Online consultation", ur: "آن لائن مشاورت" },
   IN_CHAMBER: { en: "Office Visit", ur: "دفتر کی ملاقات" },
   PHONE: { en: "Phone Call", ur: "فون کال" },
 };
@@ -380,7 +380,7 @@ function BookingCard({
               href={`/video/${booking.id}`}
               className="inline-flex min-h-[48px] items-center justify-center gap-2 rounded-lg bg-court-700 px-5 text-base font-bold text-white hover:bg-court-800"
             >
-              <VideoIcon className="h-5 w-5" /><T en="Join video call" ur="ویڈیو کال" />
+              <VideoIcon className="h-5 w-5" /><T en="Consultation details" ur="مشاورت کی تفصیل" />
             </a>
           )}
           {active && mode === "idle" && (

@@ -141,30 +141,6 @@ const WHY_WAKEEL = [
   },
 ];
 
-const TESTIMONIALS = [
-  {
-    name: "Ayesha K.",
-    cityEn: "Lahore",
-    cityUr: "لاہور",
-    quoteEn: "I was scared to go to court for my khula case. The wakeel explained everything in Urdu, and the fee was clear from day one.",
-    quoteUr: "خلع کے کیس میں عدالت جانے سے ڈرتی تھی۔ وکیل نے سب کچھ اردو میں سمجھایا، اور فیس پہلے دن سے واضح تھی۔",
-  },
-  {
-    name: "Rashid M.",
-    cityEn: "Karachi",
-    cityUr: "کراچی",
-    quoteEn: "A property dispute was eating my savings. I booked a chamber visit in three minutes and walked out with a real plan.",
-    quoteUr: "جائیداد کا جھگڑا میری بچت کھا رہا تھا۔ تین منٹ میں چیمبر ملاقات بک کی، اور واضح پلان لے کر نکلا۔",
-  },
-  {
-    name: "Fatima N.",
-    cityEn: "Islamabad",
-    cityUr: "اسلام آباد",
-    quoteEn: "The video call saved me a two-hour trip across the city. Simple, respectful, and worth every rupee.",
-    quoteUr: "ویڈیو کال نے میری شہر بھر کی دو گھنٹے کی آمدورفت بچا لی۔ آسان، با ادب، اور ہر روپے کے قابل۔",
-  },
-];
-
 const GUIDES = [
   {
     slug: "/guides/khula-process-pakistan",
@@ -236,8 +212,8 @@ export default async function Home() {
               </h1>
               <p className="mt-4 max-w-xl text-[1.12rem] leading-relaxed text-ink-200">
                 <T
-                  en="Video call or chamber visit — booked in 3 easy steps. Transparent fees, honest reviews."
-                  ur="ویڈیو کال یا چیمبر ملاقات — صرف ۳ آسان مراحل میں۔ واضح فیس، ایماندار آراء۔"
+                  en="Online consultation or chamber visit — booked in 3 easy steps. Transparent fees, honest reviews."
+                  ur="آن لائن مشاورت یا چیمبر ملاقات — صرف ۳ آسان مراحل میں۔ واضح فیس، ایماندار آراء۔"
                 />
               </p>
               <div className="[&_form]:mx-0 [&_form]:mt-8">
@@ -504,40 +480,6 @@ export default async function Home() {
             <T en="Court photos: Wikimedia Commons contributors (CC BY-SA)" ur="عدالتوں کی تصاویر: ویکیمیڈیا کامنز (CC BY-SA)" />
           </p>
         </div>
-      </section>
-
-      {/* ============ TESTIMONIALS ============ */}
-      <section className="mx-auto max-w-7xl px-4 py-14 sm:py-20">
-        <RowHead
-          title={<T en="What clients say" ur="کلائنٹ کیا کہتے ہیں" />}
-          href="/lawyers"
-          linkEn="Find a lawyer"
-          linkUr="وکیل تلاش کریں"
-        />
-        <div className="grid gap-5 md:grid-cols-3">
-          {TESTIMONIALS.map((t) => (
-            <figure key={t.name} className="flex flex-col rounded-2xl border border-ink-900/10 bg-white p-6 shadow-card">
-              <span className="font-display text-[2.6rem] font-semibold leading-none text-brass-400" aria-hidden>
-                &ldquo;
-              </span>
-              <blockquote className="-mt-2 flex-1 text-[1.05rem] italic leading-relaxed text-ink-800">
-                <T en={t.quoteEn} ur={t.quoteUr} />
-              </blockquote>
-              <figcaption className="mt-5 border-t border-ink-900/10 pt-4">
-                <p className="text-[1rem] font-bold text-ink-950">{t.name}</p>
-                <p className="text-[0.92rem] font-medium text-ink-600">
-                  <T en={t.cityEn} ur={t.cityUr} /> · <T en="Sample" ur="نمونہ" />
-                </p>
-              </figcaption>
-            </figure>
-          ))}
-        </div>
-        <p className="mx-auto mt-8 max-w-2xl text-center text-[0.95rem] text-ink-500">
-          <T
-            en="Sample testimonials — real client reviews will appear here."
-            ur="یہ نمونے کی آراء ہیں — حقیقی کلائنٹ کی آراء یہاں آئیں گی۔"
-          />
-        </p>
       </section>
 
       {/* ============ LEGAL GUIDES ============ */}

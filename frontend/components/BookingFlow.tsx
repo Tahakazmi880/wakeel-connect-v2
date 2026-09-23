@@ -35,7 +35,7 @@ import {
 import { useAuth } from "@/lib/useAuth";
 
 const MODES: { id: BookingMode; en: string; ur: string; icon: (c: string) => React.ReactNode }[] = [
-  { id: "ONLINE_VIDEO", en: "Video Call", ur: "ویڈیو کال", icon: (c) => <VideoIcon className={c} /> },
+  { id: "ONLINE_VIDEO", en: "Online consultation", ur: "آن لائن مشاورت", icon: (c) => <VideoIcon className={c} /> },
   { id: "IN_CHAMBER", en: "Office Visit", ur: "دفتر کی ملاقات", icon: (c) => <OfficeIcon className={c} /> },
   { id: "PHONE", en: "Phone Call", ur: "فون کال", icon: (c) => <PhoneIcon className={c} /> },
 ];
@@ -589,7 +589,7 @@ export default function BookingFlow({ lawyerSlug }: { lawyerSlug: string }) {
           <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
             {mode === "ONLINE_VIDEO" && (
               <PrimaryBtn href={`/video/${booking.id}`} icon={<VideoIcon className="h-6 w-6" />}>
-                <T en="Join video call" ur="ویڈیو کال جوائن کریں" />
+                <T en="Consultation details" ur="مشاورت کی تفصیل" />
               </PrimaryBtn>
             )}
             <PrimaryBtn href="/dashboard" icon={<CalendarIcon className="h-6 w-6" />}>

@@ -25,7 +25,7 @@ function fmtDateTime(iso: string): string {
 function modeLabel(mode: Booking["mode"]): { en: string; ur: string } {
   switch (mode) {
     case "ONLINE_VIDEO":
-      return { en: "Video consultation", ur: "ویڈیو مشاورت" };
+      return { en: "Online consultation", ur: "آن لائن مشاورت" };
     case "IN_CHAMBER":
       return { en: "In-chamber visit", ur: "چیمبر ملاقات" };
     case "PHONE":
@@ -66,12 +66,12 @@ export default function VideoRoom({ bookingId }: { bookingId: string }) {
           📞
         </span>
         <h1 className="mt-4 font-display text-[1.75rem] font-semibold text-brass-900 sm:text-3xl">
-          <T en="Video calls aren't live in the app yet" ur="ویڈیو کال ابھی ایپ میں فعال نہیں" />
+          <T en="Your online consultation" ur="آپ کی آن لائن مشاورت" />
         </h1>
         <p className="mx-auto mt-3 max-w-lg text-lg text-brass-800">
           <T
-            en="For your online consultation, the lawyer will call you directly on your phone at the booked time. Please keep your phone nearby."
-            ur="آپ کی آن لائن مشاورت کے لیے وکیل بک کیے گئے وقت پر آپ کو براہِ راست فون کرے گا۔ براہ کرم اپنا فون پاس رکھیں۔"
+            en="The lawyer will phone you directly at the booked time — no app download or link needed. Please keep your phone nearby."
+            ur="وکیل بک کیے گئے وقت پر آپ کو براہِ راست فون کرے گا — کسی ایپ یا لنک کی ضرورت نہیں۔ براہ کرم اپنا فون پاس رکھیں۔"
           />
         </p>
       </div>

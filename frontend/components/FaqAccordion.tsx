@@ -68,10 +68,10 @@ const FAQS: FaqItem[] = [
     aUr: "جی ہاں۔ ہر وکیل کی پروفائل بتاتی ہے کہ وہ کون سی زبانیں بولتا ہے — اردو کا آپشن دیکھ کر بے فکر ہو کر بک کریں۔",
   },
   {
-    q: "Video call or chamber visit — which one should I choose?",
-    qUr: "ویڈیو کال یا چیمبر ملاقات — کون سی منتخب کروں؟",
-    a: "It's your choice. A video call is best for quick advice from anywhere; a chamber visit is better when you need to show documents in person. Both are booked the same simple way.",
-    aUr: "یہ آپ کی مرضی۔ فوری مشورے کے لیے ویڈیو کال بہترین ہے، اور دستاویزات دکھانے ہوں تو چیمبر ملاقات بہتر۔ دونوں ایک ہی آسان طریقے سے بک ہوتی ہیں۔",
+    q: "Online consultation or chamber visit — which one should I choose?",
+    qUr: "آن لائن مشاورت یا چیمبر ملاقات — کون سی منتخب کروں؟",
+    a: "It's your choice. An online consultation is best for quick advice from anywhere; a chamber visit is better when you need to show documents in person. Both are booked the same simple way.",
+    aUr: "یہ آپ کی مرضی۔ فوری مشورے کے لیے آن لائن مشاورت بہترین ہے، اور دستاویزات دکھانے ہوں تو چیمبر ملاقات بہتر۔ دونوں ایک ہی آسان طریقے سے بک ہوتی ہیں۔",
   },
   {
     q: "Will my phone number stay private?",

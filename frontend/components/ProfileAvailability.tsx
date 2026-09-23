@@ -55,8 +55,8 @@ export default function ProfileAvailability({
             mode: "online" as const,
             titleEn: "Online consultation",
             titleUr: "آن لائن مشاورت",
-            subEn: "Video call from anywhere in Pakistan",
-            subUr: "پاکستان میں کہیں سے بھی ویڈیو کال",
+            subEn: "Online consultation from anywhere in Pakistan",
+            subUr: "پاکستان میں کہیں سے بھی آن لائن مشاورت",
             fee: onlineFee,
           },
         ]

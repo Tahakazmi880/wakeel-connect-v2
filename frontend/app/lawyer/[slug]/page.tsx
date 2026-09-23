@@ -116,10 +116,10 @@ export default async function LawyerProfile({ params }: { params: Promise<{ slug
       qEn: `What is ${lawyer.displayName}'s consultation fee?`,
       qUr: `${lawyer.displayName} کی مشاورت کی فیس کیا ہے؟`,
       aEn: fee
-        ? `${fee} for a consultation — video call or chamber visit. The fee is shown upfront and confirmed before you book; you pay the lawyer directly.`
+        ? `${fee} for an online consultation or chamber visit. The fee is shown upfront and confirmed before you book; you pay the lawyer directly.`
         : `Fee on request — please confirm the fee with the lawyer before booking. You pay the lawyer directly.`,
       aUr: fee
-        ? `مشاورت کے لیے ${fee} — ویڈیو کال یا چیمبر ملاقات۔ فیس پہلے سے واضح ہوتی ہے اور بکنگ سے پہلے تصدیق ہوتی ہے؛ آپ فیس براہ راست وکیل کو ادا کرتے ہیں۔`
+        ? `مشاورت کے لیے ${fee} — آن لائن مشاورت یا چیمبر ملاقات۔ فیس پہلے سے واضح ہوتی ہے اور بکنگ سے پہلے تصدیق ہوتی ہے؛ آپ فیس براہ راست وکیل کو ادا کرتے ہیں۔`
         : `فیس معلوم کریں — بکنگ سے پہلے وکیل سے فیس ضرور طے کریں۔ آپ فیس براہ راست وکیل کو ادا کرتے ہیں۔`,
     },
     {
@@ -147,8 +147,8 @@ export default async function LawyerProfile({ params }: { params: Promise<{ slug
     {
       qEn: "How do I book an appointment?",
       qUr: "ملاقات کیسے بک کروں؟",
-      aEn: "Three steps: pick video call or chamber visit, choose a day and time, then verify your phone number with a code. Done.",
-      aUr: "تین مراحل: ویڈیو کال یا چیمبر ملاقات چنیں، دن اور وقت منتخب کریں، پھر کوڈ سے اپنا فون نمبر تصدیق کریں۔ ہو گیا۔",
+      aEn: "Three steps: pick online consultation or chamber visit, choose a day and time, then verify your phone number with a code. Done.",
+      aUr: "تین مراحل: آن لائن مشاورت یا چیمبر ملاقات چنیں، دن اور وقت منتخب کریں، پھر کوڈ سے اپنا فون نمبر تصدیق کریں۔ ہو گیا۔",
     },
   ];
 
@@ -241,7 +241,7 @@ export default async function LawyerProfile({ params }: { params: Promise<{ slug
                       <T en="Online consultation" ur="آن لائن مشاورت" />
                     </span>
                     <span className="mt-0.5 block pl-[2.125rem] text-[0.92rem] font-medium text-ink-500">
-                      <T en="Video call from anywhere in Pakistan" ur="پاکستان میں کہیں سے بھی ویڈیو کال" />
+                      <T en="Online consultation from anywhere in Pakistan" ur="پاکستان میں کہیں سے بھی آن لائن مشاورت" />
                     </span>
                   </dt>
                   <dd className="wc-fee shrink-0 text-[1.15rem] font-semibold text-ink-950">
