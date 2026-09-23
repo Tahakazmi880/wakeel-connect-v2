@@ -42,7 +42,17 @@ export async function authRoutes(app: FastifyInstance) {
     "/auth/otp/request",
     {
       config: {
-        rateLimit: { max: 5, timeWindow: "1 hour", keyGenerator: (req) => req.ip + ":" + ((req.body as { phone?: string })?.phone ?? "") },
+        // Hook the rate limiter at preHandler (after body parsing) so the
+        // bucket keys on the normalized phone number, not just the IP.
+        // The old onRequest default saw req.body as undefined, which made
+        // this a shared 5/hour-per-IP bucket regardless of phone number.
+        rateLimit: {
+          max: 5,
+          timeWindow: "1 hour",
+          hook: "preHandler",
+          keyGenerator: (req) =>
+            req.ip + ":" + (normalizePhone((req.body as { phone?: string })?.phone ?? "") ?? ""),
+        },
       },
     },
     async (req, reply) => {

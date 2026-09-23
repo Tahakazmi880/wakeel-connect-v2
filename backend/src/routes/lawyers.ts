@@ -11,6 +11,7 @@ const listQuery = z.object({
   today: z.enum(["1"]).optional(),
   gender: z.enum(["female", "male"]).optional(),
   sort: z.enum(["most-experienced", "lowest-fee", "highest-rated"]).optional(),
+  court: z.string().max(64).optional(),
   page: z.coerce.number().int().min(1).default(1),
   limit: z.coerce.number().int().min(1).max(50).default(20),
 });
@@ -113,18 +114,25 @@ export async function lawyerRoutes(app: FastifyInstance) {
   app.get("/lawyers", async (req) => {
     const parsed = listQuery.safeParse(req.query);
     if (!parsed.success) throw badRequest("INVALID_QUERY", "Invalid search parameters.");
-    const { city, area, q, online, today, gender, sort, page, limit } = parsed.data;
+    const { city, area, q, online, today, gender, sort, court, page, limit } = parsed.data;
 
     const where: Record<string, unknown> = { ...listedWhere };
     if (city) where.city = { slug: city };
     if (area) where.practiceAreas = { some: { practiceArea: { slug: area } } };
     if (online) where.offersOnline = true;
     if (gender) where.gender = gender.toUpperCase(); // "female" -> "FEMALE"
+
+    // Courts are stored as a free-text string[]; expand `q` and `court` matches
+    // against the distinct court values actually present in the DB.
+    const needsCourts = Boolean(q) || Boolean(court);
+    const allCourts = needsCourts
+      ? (
+          await prisma.$queryRaw<{ courts: string }[]>`SELECT DISTINCT unnest(courts) AS courts FROM "Lawyer"`
+        ).map((r) => r.courts)
+      : [];
+
     if (q) {
-      // Courts are stored as a string[]; match partial court names by expanding
-      // against the distinct court values actually in the DB.
-      const rows = await prisma.$queryRaw<{ courts: string }[]>`SELECT DISTINCT unnest(courts) AS courts FROM "Lawyer"`;
-      const matchedCourts = rows.map((r) => r.courts).filter((c) => c.toLowerCase().includes(q.toLowerCase()));
+      const matchedCourts = allCourts.filter((c) => c.toLowerCase().includes(q.toLowerCase()));
       const or: Record<string, unknown>[] = [
         { displayName: { contains: q, mode: "insensitive" } },
         { headline: { contains: q, mode: "insensitive" } },
@@ -133,6 +141,23 @@ export async function lawyerRoutes(app: FastifyInstance) {
       ];
       if (matchedCourts.length > 0) or.push({ courts: { hasSome: matchedCourts } });
       where.OR = or;
+    }
+
+    /**
+     * `court` takes a court slug (e.g. "sindh-high-court" from the footer links).
+     * Every slug word must appear in the stored court name, so
+     * "supreme-court-pakistan" matches "Supreme Court of Pakistan" and
+     * "lahore-high-court" also matches "Lahore High Court Rawalpindi Bench".
+     * A slug with no match honestly returns zero lawyers.
+     */
+    if (court) {
+      const words = court.toLowerCase().split("-").filter(Boolean);
+      const matched = allCourts.filter((name) => {
+        const nameWords = new Set(name.toLowerCase().split(/[^a-z0-9]+/).filter(Boolean));
+        return words.every((w) => nameWords.has(w));
+      });
+      if (matched.length === 0) where.id = { in: [] };
+      else where.courts = { hasSome: matched };
     }
 
     // "Available today" — pre-filter to lawyers with availability windows today (PKT).
