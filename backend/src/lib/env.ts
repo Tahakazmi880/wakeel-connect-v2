@@ -4,6 +4,17 @@ import { z } from "zod";
  * Validated environment. The server refuses to boot when a required
  * secret is missing or weak — fail fast instead of running insecure.
  */
+/**
+ * Explicit string -> boolean parsing. z.coerce.boolean() uses Boolean(v),
+ * so the string "false" would coerce to TRUE and wrongly mark auth cookies
+ * as Secure on plain-HTTP dev servers. Only explicit truthy strings count.
+ */
+const envBool = z
+  .union([z.boolean(), z.string()])
+  .transform((v) =>
+    typeof v === "boolean" ? v : ["1", "true", "yes", "on"].includes(v.trim().toLowerCase()),
+  );
+
 const envSchema = z.object({
   NODE_ENV: z.enum(["development", "production", "test"]).default("development"),
   PORT: z.coerce.number().int().positive().default(4000),
@@ -15,7 +26,7 @@ const envSchema = z.object({
   REFRESH_TOKEN_TTL_DAYS: z.coerce.number().int().positive().default(7),
 
   FRONTEND_URL: z.string().url().default("http://localhost:3100"),
-  COOKIE_SECURE: z.coerce.boolean().default(false), // true in production (HTTPS)
+  COOKIE_SECURE: envBool.default(false), // true in production (HTTPS)
 
   OTP_PEPPER: z.string().min(16, "OTP_PEPPER must be at least 16 characters"),
   OTP_TTL_MIN: z.coerce.number().int().positive().default(5),
