@@ -87,6 +87,7 @@ export async function importRealLawyers(prisma: PrismaClient): Promise<void> {
       cityId,
       yearsExperience: CONFIRMED_EXPERIENCE[l.slug] ?? 0,
       consultationFeePaisa: CONFIRMED_FEES_PAISA[l.slug] ?? 0,
+      offersOnline: true, // online consultation offered; onlineFeePaisa stays 0 = on request (no invented fees)
       courts: l.courts,
       barCouncil: l.barCouncil,
       photoUrl: REAL_PHOTOS.has(l.slug) ? `/lawyers/${l.slug}.jpg` : null,

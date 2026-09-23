@@ -243,6 +243,9 @@ model Lawyer {
   city                 City               @relation(fields: [cityId], references: [id])
   yearsExperience      Int                @default(0)
   consultationFeePaisa Int                @default(0)
+  offersOnline         Boolean            @default(false) // online consultation offered
+  onlineFeePaisa       Int                @default(0) // online consultation fee; 0 = on request
+  memberships          String[]           @default([]) // professional memberships / bar associations
   courts               String[]           @default([]) // courts of appearance
   barCouncil           String? // e.g. "Punjab Bar Council"
   barCouncilNo         String? // enrolment / license number
@@ -503,4 +506,21 @@ model AuditLog {
 
   @@index([entityType, entityId])
   @@index([actorId, createdAt])
+}
+
+// ---------------- Leads ----------------
+
+// Callback-request leads ("Request a callback" form for high-value matters).
+model Lead {
+  id        String   @id @default(cuid())
+  fullName  String
+  phone     String // E.164 normalized
+  citySlug  String
+  matter    String // practice-area slug or free text
+  notes     String?  @db.Text
+  status    String   @default("NEW")
+  createdAt DateTime @default(now())
+
+  @@index([createdAt])
+  @@index([status])
 }

@@ -14,6 +14,7 @@ import { bookingRoutes } from "./routes/bookings.js";
 import { reviewRoutes } from "./routes/reviews.js";
 import { questionRoutes } from "./routes/questions.js";
 import { applicationRoutes } from "./routes/applications.js";
+import { leadRoutes } from "./routes/leads.js";
 
 const PORT = env.PORT;
 
@@ -75,6 +76,7 @@ export async function buildApp() {
       await api.register(reviewRoutes);
       await api.register(questionRoutes);
       await api.register(applicationRoutes);
+      await api.register(leadRoutes);
     },
     { prefix: "/api/v1" }
   );
