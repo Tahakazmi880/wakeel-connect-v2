@@ -49,7 +49,7 @@ export function PhotoAvatar({
   if (!photo || failed) {
     return (
       <div
-        className={`flex shrink-0 items-center justify-center rounded-2xl bg-linear-to-br from-emerald-600 to-emerald-900 font-extrabold text-white shadow-inner ${dims} ${text}`}
+        className={`flex shrink-0 items-center justify-center rounded-lg bg-ink-800 font-display font-semibold text-paper ring-1 ring-ink-900/10 ${dims} ${text}`}
         aria-hidden
       >
         {initials}
@@ -63,7 +63,7 @@ export function PhotoAvatar({
       alt={`Photo of ${plainName}`}
       onError={() => setFailed(true)}
       loading="lazy"
-      className={`shrink-0 rounded-2xl object-cover shadow-inner ring-1 ring-slate-200 ${dims}`}
+      className={`shrink-0 rounded-lg bg-paper-dark object-cover ring-1 ring-ink-900/15 ${dims}`}
     />
   );
 }

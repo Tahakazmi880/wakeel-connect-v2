@@ -44,7 +44,7 @@ export function LangToggle() {
   const { lang, setLang } = useLang();
   return (
     <div
-      className="flex items-center rounded-full border border-emerald-200 bg-white p-1 text-sm font-bold"
+      className="flex items-center rounded-full border border-ink-900/15 bg-white p-1 text-sm font-bold shadow-sm"
       role="group"
       aria-label="Language / زبان"
     >
@@ -53,7 +53,7 @@ export function LangToggle() {
         onClick={() => setLang("en")}
         aria-pressed={lang === "en"}
         className={`min-h-[40px] rounded-full px-4 transition ${
-          lang === "en" ? "bg-emerald-700 text-white shadow" : "text-emerald-800 hover:bg-emerald-50"
+          lang === "en" ? "bg-ink-900 text-paper shadow" : "text-ink-700 hover:bg-ink-900/5"
         }`}
       >
         EN
@@ -63,7 +63,7 @@ export function LangToggle() {
         onClick={() => setLang("ur")}
         aria-pressed={lang === "ur"}
         className={`min-h-[40px] rounded-full px-4 text-lg transition ${
-          lang === "ur" ? "bg-emerald-700 text-white shadow" : "text-emerald-800 hover:bg-emerald-50"
+          lang === "ur" ? "bg-ink-900 text-paper shadow" : "text-ink-700 hover:bg-ink-900/5"
         }`}
       >
         اردو

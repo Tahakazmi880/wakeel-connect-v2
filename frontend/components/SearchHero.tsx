@@ -25,15 +25,15 @@ export default function SearchHero() {
       onSubmit={submit}
       role="search"
       aria-label="Find a lawyer"
-      className="mx-auto mt-8 flex max-w-3xl flex-col gap-3 rounded-3xl bg-white p-3 shadow-2xl sm:flex-row sm:items-stretch"
+      className="mx-auto mt-9 flex max-w-3xl flex-col gap-2 rounded-xl border border-ink-900/15 bg-white p-2 shadow-lift sm:flex-row sm:items-stretch sm:gap-0 sm:divide-x sm:divide-ink-900/10"
     >
-      <label className="flex min-h-[56px] flex-1 items-center gap-3 rounded-2xl bg-slate-50 px-4 ring-emerald-600 focus-within:ring-2">
-        <PinIcon className="h-6 w-6 shrink-0 text-emerald-700" />
+      <label className="flex min-h-[58px] flex-1 items-center gap-3 px-4">
+        <PinIcon className="h-6 w-6 shrink-0 text-court-700" />
         <span className="sr-only"><T en="City" ur="شہر" /></span>
         <select
           value={city}
           onChange={(e) => setCity(e.target.value)}
-          className="w-full bg-transparent text-lg font-semibold text-slate-800 outline-none"
+          className="w-full cursor-pointer bg-transparent text-[1.05rem] font-semibold text-ink-900 outline-none"
           aria-label="City"
         >
           <option value=""><T en="All Cities" ur="تمام شہر" /></option>
@@ -44,24 +44,26 @@ export default function SearchHero() {
           ))}
         </select>
       </label>
-      <label className="flex min-h-[56px] flex-[1.4] items-center gap-3 rounded-2xl bg-slate-50 px-4 ring-emerald-600 focus-within:ring-2">
-        <SearchIcon className="h-6 w-6 shrink-0 text-emerald-700" />
+      <label className="flex min-h-[58px] flex-[1.5] items-center gap-3 border-t border-ink-900/10 px-4 sm:border-t-0">
+        <SearchIcon className="h-6 w-6 shrink-0 text-court-700" />
         <span className="sr-only"><T en="Legal problem or lawyer name" ur="قانونی مسئلہ یا وکیل کا نام" /></span>
         <input
           value={q}
           onChange={(e) => setQ(e.target.value)}
           placeholder="طلاق، جائیداد، ضمانت…"
-          className="w-full bg-transparent text-lg text-slate-800 outline-none placeholder:text-slate-400"
+          className="w-full bg-transparent text-[1.05rem] text-ink-900 outline-none placeholder:text-ink-400"
           aria-label="Legal problem or lawyer name"
         />
       </label>
-      <button
-        type="submit"
-        className="inline-flex min-h-[56px] items-center justify-center gap-2 rounded-2xl bg-emerald-700 px-8 text-lg font-extrabold text-white shadow transition hover:bg-emerald-800 active:scale-[0.98]"
-      >
-        <SearchIcon className="h-6 w-6" />
-        <T en="Find Lawyer" ur="وکیل ڈھونڈیں" />
-      </button>
+      <div className="p-1 sm:pl-2">
+        <button
+          type="submit"
+          className="inline-flex min-h-[56px] w-full items-center justify-center gap-2 rounded-lg bg-court-700 px-8 text-[1.05rem] font-bold text-white transition hover:bg-court-800 active:translate-y-px sm:w-auto"
+        >
+          <SearchIcon className="h-6 w-6" />
+          <T en="Find Lawyer" ur="وکیل ڈھونڈیں" />
+        </button>
+      </div>
     </form>
   );
 }
