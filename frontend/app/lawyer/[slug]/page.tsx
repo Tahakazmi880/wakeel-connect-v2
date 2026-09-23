@@ -168,7 +168,7 @@ export default async function LawyerProfile({ params }: { params: Promise<{ slug
           {/* Header card */}
           <section className="rounded-lg border border-ink-900/10 bg-white p-6 shadow-card sm:p-8">
             <div className="flex flex-col gap-5 sm:flex-row">
-              <PhotoAvatar name={lawyer.displayName} photo={fileUrl(lawyer.photoUrl) ?? undefined} size="3xl" />
+              <PhotoAvatar name={lawyer.displayName} photo={fileUrl(lawyer.photoUrl) ?? undefined} gender={lawyer.gender} size="3xl" />
               <div className="min-w-0 flex-1">
                 <h1 className="font-display text-[2.1rem] font-semibold leading-tight text-ink-950">{lawyer.displayName}</h1>
                 {lawyer.headline && <p className="mt-2 text-[1.08rem] text-ink-600">{lawyer.headline}</p>}
@@ -329,7 +329,7 @@ export default async function LawyerProfile({ params }: { params: Promise<{ slug
         <aside className="hidden lg:sticky lg:top-24 lg:block lg:self-start">
           <div className="rounded-lg border border-ink-900/10 bg-white p-6 shadow-lift">
             <div className="flex items-center gap-4 border-b-2 border-brass-500 pb-4">
-              <PhotoAvatar name={lawyer.displayName} photo={fileUrl(lawyer.photoUrl) ?? undefined} size="lg" />
+              <PhotoAvatar name={lawyer.displayName} photo={fileUrl(lawyer.photoUrl) ?? undefined} gender={lawyer.gender} size="lg" />
               <div className="min-w-0">
                 <p className="truncate font-display text-[1.25rem] font-semibold text-ink-950">{lawyer.displayName}</p>
                 {nextAvailable ? (

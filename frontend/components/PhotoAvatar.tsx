@@ -1,20 +1,24 @@
 "use client";
 
 import { useState } from "react";
+import { PlaceholderAvatar } from "./LawyerAvatars";
 
 /**
- * Lawyer photo with graceful fallback to initials.
- * `photo` points at /lawyers/<slug>.jpg (demo portraits today, real
- * client-supplied photos later). If the image is missing or fails to
- * load, the initials avatar is shown instead — never a broken image.
+ * Lawyer photo with graceful fallback to an illustrated avatar.
+ * `photo` points at /lawyers/<slug>.jpg (real client-supplied photos).
+ * If the image is missing or fails to load, a professional illustrated
+ * placeholder is shown (gender-aware) — never a broken image, never a
+ * fake person's face, never bare initials.
  */
 export function PhotoAvatar({
   name,
   photo,
+  gender,
   size = "lg",
 }: {
   name: string;
   photo?: string;
+  gender?: string;
   size?: "sm" | "lg" | "xl" | "2xl" | "3xl";
 }) {
   const [failed, setFailed] = useState(false);
@@ -28,31 +32,12 @@ export function PhotoAvatar({
         : size === "sm"
           ? "h-12 w-12"
           : "h-20 w-20";
-  const text =
-    size === "3xl"
-      ? "text-7xl"
-      : size === "2xl"
-      ? "text-6xl"
-      : size === "xl"
-        ? "text-4xl"
-        : size === "sm"
-          ? "text-lg"
-          : "text-2xl";
   const plainName = name.replace(" (Demo)", "");
-  const initials = plainName
-    .split(" ")
-    .slice(0, 2)
-    .map((w) => w[0])
-    .join("")
-    .toUpperCase();
 
   if (!photo || failed) {
     return (
-      <div
-        className={`flex shrink-0 items-center justify-center rounded-lg bg-ink-800 font-display font-semibold text-paper ring-1 ring-ink-900/10 ${dims} ${text}`}
-        aria-hidden
-      >
-        {initials}
+      <div className={`shrink-0 overflow-hidden rounded-lg ring-1 ring-ink-900/15 ${dims}`} aria-hidden>
+        <PlaceholderAvatar gender={gender} />
       </div>
     );
   }

@@ -32,7 +32,7 @@ export default function LawyerCard({ lawyer }: { lawyer: LawyerCardData }) {
       {/* Photo + details */}
       <div className="flex min-w-0 flex-1 items-start gap-4">
         <Link href={`/lawyer/${lawyer.slug}`} aria-label={lawyer.displayName} className="shrink-0">
-          <PhotoAvatar name={lawyer.displayName} photo={fileUrl(lawyer.photoUrl) ?? undefined} size="2xl" />
+          <PhotoAvatar name={lawyer.displayName} photo={fileUrl(lawyer.photoUrl) ?? undefined} gender={lawyer.gender} size="2xl" />
         </Link>
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-center gap-x-2 gap-y-1">

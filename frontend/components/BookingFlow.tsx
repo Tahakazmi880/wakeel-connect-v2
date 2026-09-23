@@ -419,7 +419,7 @@ export default function BookingFlow({ lawyerSlug }: { lawyerSlug: string }) {
     <div className="mx-auto max-w-3xl px-4 py-10">
       {/* lawyer summary */}
       <div className="flex items-center gap-4 rounded-lg border border-ink-900/10 bg-white p-5 shadow-card">
-        <PhotoAvatar name={lawyer.displayName} photo={fileUrl(lawyer.photoUrl) ?? undefined} size="sm" />
+        <PhotoAvatar name={lawyer.displayName} photo={fileUrl(lawyer.photoUrl) ?? undefined} gender={lawyer.gender} size="sm" />
         <div className="min-w-0 flex-1">
           <p className="font-display text-[1.25rem] font-semibold text-ink-950">{lawyer.displayName}</p>
           <Rating rating={lawyer.ratingAvg} count={lawyer.ratingCount} />
