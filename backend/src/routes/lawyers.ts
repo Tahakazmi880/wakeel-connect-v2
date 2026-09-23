@@ -19,6 +19,7 @@ const publicSelect = {
   bio: true,
   bioUrdu: true,
   gender: true,
+  photoUrl: true,
   yearsExperience: true,
   consultationFeePaisa: true,
   courts: true,

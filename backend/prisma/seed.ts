@@ -25,6 +25,7 @@ const CITIES = [
   { slug: "peshawar", nameEn: "Peshawar", nameUr: "پشاور", province: "Khyber Pakhtunkhwa" },
   { slug: "quetta", nameEn: "Quetta", nameUr: "کوئٹہ", province: "Balochistan" },
   { slug: "hyderabad", nameEn: "Hyderabad", nameUr: "حیدرآباد", province: "Sindh" },
+  { slug: "sukkur", nameEn: "Sukkur", nameUr: "سکھر", province: "Sindh" },
   { slug: "sialkot", nameEn: "Sialkot", nameUr: "سیالکوٹ", province: "Punjab" },
   { slug: "gujranwala", nameEn: "Gujranwala", nameUr: "گوجرانوالہ", province: "Punjab" },
   { slug: "bahawalpur", nameEn: "Bahawalpur", nameUr: "بہاولپور", province: "Punjab" },
@@ -40,9 +41,10 @@ const PRACTICE_AREAS = [
   { slug: "labour-law", nameEn: "Labour & Employment", nameUr: "محنت کشوں کا قانون", description: "Wrongful termination, wages, and workplace disputes.", sortOrder: 7 },
   { slug: "banking-finance", nameEn: "Banking & Finance", nameUr: "بینکاری و مالیات", description: "Loan defaults, banking court cases and recovery suits.", sortOrder: 8 },
   { slug: "constitutional-law", nameEn: "Constitutional Law", nameUr: "آئینی قانون", description: "Writ petitions, fundamental rights and public interest litigation.", sortOrder: 9 },
-  { slug: "cybercrime-law", nameEn: "Cybercrime Law", nameUr: "سائبر کرائم قانون", description: "Online harassment, fraud and PECA cases.", sortOrder: 10 },
-  { slug: "consumer-law", nameEn: "Consumer Protection", nameUr: "صارفین کے حقوق", description: "Faulty goods and services, consumer court claims.", sortOrder: 11 },
-  { slug: "arbitration", nameEn: "Arbitration & Mediation", nameUr: "ثالثی و مصالحت", description: "Out-of-court dispute resolution and settlements.", sortOrder: 12 },
+  { slug: "civil-law", nameEn: "Civil Litigation", nameUr: "دیوانی مقدمات", description: "Civil suits, injunctions, damages and appeals.", sortOrder: 10 },
+  { slug: "cybercrime-law", nameEn: "Cybercrime Law", nameUr: "سائبر کرائم قانون", description: "Online harassment, fraud and PECA cases.", sortOrder: 11 },
+  { slug: "consumer-law", nameEn: "Consumer Protection", nameUr: "صارفین کے حقوق", description: "Faulty goods and services, consumer court claims.", sortOrder: 12 },
+  { slug: "arbitration", nameEn: "Arbitration & Mediation", nameUr: "ثالثی و مصالحت", description: "Out-of-court dispute resolution and settlements.", sortOrder: 13 },
 ];
 
 const LANGUAGES = [

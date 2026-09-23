@@ -238,6 +238,7 @@ model Lawyer {
   bio                  String?            @db.Text
   bioUrdu              String?            @db.Text
   gender               Gender?
+  photoUrl             String? // public path e.g. /lawyers/<slug>.jpg — served by the API; null = initials avatar
   cityId               String
   city                 City               @relation(fields: [cityId], references: [id])
   yearsExperience      Int                @default(0)

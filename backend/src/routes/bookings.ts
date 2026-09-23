@@ -142,6 +142,45 @@ export async function bookingRoutes(app: FastifyInstance) {
     return { ok: true, booking: updated };
   });
 
+  /** Client reschedules an upcoming booking to a new slot. The booking keeps
+   *  its id (and attached documents) — only the time moves. The new slot
+   *  gets the same server-side future + overlap validation as a new booking. */
+  app.post("/bookings/:id/reschedule", { preHandler: [requireAuth] }, async (req) => {
+    const { id } = req.params as { id: string };
+    const parsed = z.object({ startAt: z.string().datetime({ message: "startAt must be an ISO datetime." }) }).safeParse(req.body);
+    if (!parsed.success) throw badRequest("INVALID_INPUT", parsed.error.issues[0]?.message ?? "Invalid input.");
+    const { booking, isClient } = await assertBookingAccess(req, id);
+    if (!isClient && req.user.role !== "ADMIN") throw forbidden("Only the client can reschedule here.");
+    if (booking.status !== "PENDING" && booking.status !== "CONFIRMED") {
+      throw conflict("CANNOT_RESCHEDULE", "This booking can no longer be rescheduled.");
+    }
+
+    const startAt = new Date(parsed.data.startAt);
+    if (Number.isNaN(startAt.getTime()) || startAt.getTime() < Date.now() + 15 * 60_000) {
+      throw badRequest("INVALID_SLOT", "Please choose a time at least 15 minutes in the future.");
+    }
+    const endAt = new Date(startAt.getTime() + 30 * 60_000);
+
+    const overlap = await prisma.booking.findFirst({
+      where: {
+        lawyerId: booking.lawyerId,
+        id: { not: id },
+        status: { in: ["PENDING", "CONFIRMED"] },
+        startAt: { lt: endAt },
+        endAt: { gt: startAt },
+      },
+      select: { id: true },
+    });
+    if (overlap) throw conflict("SLOT_TAKEN", "This time slot was just taken. Please pick another.");
+
+    const updated = await prisma.booking.update({
+      where: { id },
+      data: { startAt, endAt },
+      select: { id: true, startAt: true, endAt: true, status: true, mode: true, feePaisa: true },
+    });
+    return { ok: true, booking: updated };
+  });
+
   /**
    * Attach a case document to a booking. Files are stored on private disk
    * (UPLOAD_DIR); only metadata + a random storage key touch the database.

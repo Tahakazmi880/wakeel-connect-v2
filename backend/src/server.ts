@@ -1,5 +1,7 @@
 import "dotenv/config";
 import Fastify from "fastify";
+import fastifyStatic from "@fastify/static";
+import path from "node:path";
 import { ZodError } from "zod";
 import { env, isProd } from "./lib/env.js";
 import { prisma } from "./lib/prisma.js";
@@ -21,6 +23,14 @@ export async function buildApp() {
   });
 
   await registerSecurity(app);
+
+  // Public assets: real lawyer portrait photos (backend/public/lawyers/).
+  // Served as plain static files; photoUrl on the Lawyer record points here.
+  await app.register(fastifyStatic, {
+    root: path.join(process.cwd(), "public"),
+    prefix: "/",
+    decorateReply: false,
+  });
 
   // ---- Global error handler: AppError → clean JSON, everything else → 500
   // ---- without leaking stack traces in production.
