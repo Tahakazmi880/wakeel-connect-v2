@@ -80,7 +80,7 @@ const SERVICES: {
     subEn: "Agreements, notices and deeds drafted properly.",
     subUr: "معاہدے، نوٹس اور دستاویزات درست طریقے سے تیار کروائیں۔",
     href: "/lawyers",
-    urduWord: "دستاویز",
+    image: "/services/document-drafting.jpg",
     icon: <DocIcon className="h-5 w-5" />,
   },
   {
@@ -98,7 +98,7 @@ const SERVICES: {
     subEn: "Ask a legal question, get answers from lawyers.",
     subUr: "قانونی سوال پوچھیں، وکیلوں سے جواب پائیں۔",
     href: "/questions",
-    urduWord: "سوال جواب",
+    image: "/services/legal-qa.jpg",
     icon: <ChatIcon className="h-5 w-5" />,
   },
 ];
