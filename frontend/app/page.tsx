@@ -61,17 +61,17 @@ const SERVICES: {
   icon: React.ReactNode;
 }[] = [
   {
-    titleEn: "Video Consultation",
-    titleUr: "ویڈیو مشاورت",
+    titleEn: "Consult Online Now",
+    titleUr: "ابھی آن لائن مشورہ کریں",
     subEn: "Talk to a wakeel face-to-face, from anywhere in Pakistan.",
     subUr: "پاکستان میں کہیں سے بھی وکیل سے بالمشافہ بات کریں۔",
-    href: "/lawyers",
+    href: "/lawyers?online=1",
     image: fileUrl("/lawyers/fayazuddin-rajper.jpg") ?? undefined,
     icon: <VideoIcon className="h-5 w-5" />,
   },
   {
-    titleEn: "Chamber Visit",
-    titleUr: "چیمبر ملاقات",
+    titleEn: "Chamber Appointments",
+    titleUr: "چیمبر ملاقاتیں",
     subEn: "Book an in-person visit to the lawyer's office.",
     subUr: "وکیل کے دفتر میں بالمشافہ ملاقات بک کریں۔",
     href: "/lawyers",
@@ -267,65 +267,16 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* ============ CONVERSION CARDS — online vs chamber ============ */}
+      {/* ============ SERVICES — 5 image cards, oladoc-style row ============ */}
       <section className="mx-auto max-w-7xl px-4 pt-8 sm:pt-10">
-        <div className="grid gap-5 sm:grid-cols-2">
-          <Link
-            href="/lawyers?online=1"
-            className="group flex items-center gap-5 rounded-2xl bg-court-700 p-6 text-white shadow-lift transition hover:bg-court-800 sm:p-7"
-          >
-            <span className="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-white/15 ring-1 ring-white/25">
-              <VideoIcon className="h-7 w-7" />
-            </span>
-            <span className="min-w-0 flex-1">
-              <span className="block font-display text-[1.35rem] font-semibold">
-                <T en="Consult Online Now" ur="ابھی آن لائن مشورہ کریں" />
-              </span>
-              <span className="mt-1 block text-[1.02rem] text-court-100">
-                <T
-                  en={`${onlineCount} lawyers available for video consultation`}
-                  ur={`ویڈیو مشورے کے لیے ${onlineCount} وکیل دستیاب`}
-                />
-              </span>
-            </span>
-            <ArrowIcon className="h-6 w-6 shrink-0 transition group-hover:translate-x-1 rtl:rotate-180" />
-          </Link>
-          <Link
-            href="/lawyers"
-            className="group flex items-center gap-5 rounded-2xl bg-white p-6 text-ink-950 shadow-lift ring-1 ring-ink-900/10 transition hover:ring-court-300 sm:p-7"
-          >
-            <span className="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-brass-100 text-brass-700 ring-1 ring-brass-200">
-              <OfficeIcon className="h-7 w-7" />
-            </span>
-            <span className="min-w-0 flex-1">
-              <span className="block font-display text-[1.35rem] font-semibold">
-                <T en="Visit a Chamber" ur="چیمبر تشریف لائیں" />
-              </span>
-              <span className="mt-1 block text-[1.02rem] text-ink-600">
-                <T
-                  en="Meet your wakeel in person — Karachi, Hyderabad, Sukkur & more"
-                  ur="اپنے وکیل سے بالمشافہ ملیں — کراچی، حیدرآباد، سکھر اور مزید"
-                />
-              </span>
-            </span>
-            <ArrowIcon className="h-6 w-6 shrink-0 text-court-700 transition group-hover:translate-x-1 rtl:rotate-180" />
-          </Link>
-        </div>
-      </section>
-
-      {/* ============ TRUSTED ACROSS SINDH — institutional partners ============ */}
-      <PartnersMarquee />
-
-      {/* ============ SERVICES — oladoc-style cards ============ */}
-      <section className="mx-auto max-w-7xl px-4 pt-12 sm:pt-16">
         <div className="grid grid-cols-2 gap-4 sm:gap-5 lg:grid-cols-5">
-          {SERVICES.map((s) => (
+          {SERVICES.map((s, i) => (
             <Link
               key={s.titleEn}
               href={s.href}
               className="group overflow-hidden rounded-2xl bg-white shadow-card ring-1 ring-ink-900/10 transition hover:shadow-lift"
             >
-              <div className="relative h-36 overflow-hidden bg-court-50 sm:h-40">
+              <div className="relative h-44 overflow-hidden bg-court-50 sm:h-52">
                 {s.image ? (
                   <img
                     src={s.image}
@@ -340,10 +291,15 @@ export default async function Home() {
                     </span>
                   </div>
                 )}
+                {i === 0 && onlineCount > 0 && (
+                  <span className="absolute inset-x-0 bottom-0 flex items-center justify-center gap-1.5 bg-court-800/95 px-2 py-1.5 text-[0.8rem] font-bold text-white">
+                    <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-400" aria-hidden />
+                    <T en={`${onlineCount} Lawyers Online Now`} ur={`${onlineCount} وکیل ابھی آن لائن`} />
+                  </span>
+                )}
               </div>
               <div className="p-4 sm:p-5">
-                <p className="flex items-center gap-2 text-[1.08rem] font-bold leading-snug text-ink-950 transition group-hover:text-court-800">
-                  <span className="text-court-700">{s.icon}</span>
+                <p className="text-[1.08rem] font-bold leading-snug text-ink-950 transition group-hover:text-court-800">
                   <T en={s.titleEn} ur={s.titleUr} />
                 </p>
                 <p className="mt-1.5 text-[0.92rem] leading-relaxed text-ink-600">
@@ -354,6 +310,9 @@ export default async function Home() {
           ))}
         </div>
       </section>
+
+      {/* ============ TRUSTED ACROSS SINDH — institutional partners ============ */}
+      <PartnersMarquee />
 
       {/* ============ SPECIALTIES — circular browse ============ */}
       <section className="mx-auto max-w-7xl px-4 pt-14 sm:pt-20">
