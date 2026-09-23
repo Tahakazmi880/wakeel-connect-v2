@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { LanguageProvider } from "@/components/LanguageContext";
+import AuthBootstrap from "@/components/AuthBootstrap";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import CookieBanner from "@/components/CookieBanner";
@@ -17,6 +18,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en">
       <body className="bg-slate-50 text-slate-900 antialiased">
         <LanguageProvider>
+          <AuthBootstrap />
           <Header />
           <main className="min-h-[60vh]">{children}</main>
           <Footer />

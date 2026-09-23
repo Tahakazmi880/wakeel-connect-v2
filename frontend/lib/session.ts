@@ -1,121 +1,56 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import {
+  restoreSession,
+  logout as apiLogout,
+  type SessionUser,
+} from "./api";
+import { useAuth } from "./useAuth";
+
+export type { SessionUser };
 
 /**
- * Demo client auth — phone number + OTP is the account.
- * No passwords: the verified phone number IS the identity.
+ * Real auth session — thin adapter over lib/api.ts.
  *
- * Storage is localStorage only until the backend lands.
- * Keys: wc-session, wc-bookings.
+ * - Access token lives in api.ts module memory (never localStorage).
+ * - The rotating refresh token is an HttpOnly cookie; restoreSession()
+ *   uses it to re-establish the session after a page reload.
+ * - useSession() returns { user, loading }; loading is true until the
+ *   first restore attempt has finished.
  */
 
-const SESSION_KEY = "wc-session";
-const BOOKINGS_KEY = "wc-bookings";
+/** Idempotent bootstrap — call once on app mount (see AuthBootstrap). */
+let restorePromise: Promise<SessionUser | null> | null = null;
+let restoreDone = false;
 
-export interface Session {
-  phone: string; // 10 digits, without +92
-  createdAt: number;
-}
-
-export type BookingStatus = "upcoming" | "completed" | "cancelled";
-
-export interface CaseDocMeta {
-  name: string;
-  size: number; // bytes
-  type: string; // MIME type
-}
-
-export interface MyBooking {
-  id: string;
-  lawyerSlug: string;
-  mode: "video" | "chamber";
-  dateLabel: string;
-  dateSub: string;
-  time: string;
-  feePaisa: number;
-  phone: string; // booker's phone — links a guest booking to the session
-  docs: CaseDocMeta[]; // document metadata only (files upload on the live backend)
-  createdAt: number;
-  status: BookingStatus;
-}
-
-function read<T>(key: string, fallback: T): T {
-  if (typeof window === "undefined") return fallback;
-  try {
-    const raw = window.localStorage.getItem(key);
-    return raw ? (JSON.parse(raw) as T) : fallback;
-  } catch {
-    return fallback;
+export function bootstrapAuth(): Promise<SessionUser | null> {
+  if (!restorePromise) {
+    restorePromise = restoreSession().finally(() => {
+      restoreDone = true;
+    });
   }
+  return restorePromise;
 }
 
-function write(key: string, value: unknown) {
-  try {
-    window.localStorage.setItem(key, JSON.stringify(value));
-  } catch {
-    /* storage unavailable — session simply won't persist */
-  }
-}
-
-export function getSession(): Session | null {
-  return read<Session | null>(SESSION_KEY, null);
-}
-
-export function setSession(phone: string): Session {
-  const s: Session = { phone, createdAt: Date.now() };
-  write(SESSION_KEY, s);
-  return s;
-}
-
-export function clearSession() {
-  try {
-    window.localStorage.removeItem(SESSION_KEY);
-  } catch {
-    /* ignore */
-  }
-}
-
-/** React hook — re-reads on mount and on cross-tab storage changes. */
-export function useSession() {
-  const [session, setSessionState] = useState<Session | null>(null);
-  const [ready, setReady] = useState(false);
+export function useSession(): { user: SessionUser | null; loading: boolean } {
+  const { user } = useAuth();
+  const [loading, setLoading] = useState(!restoreDone);
 
   useEffect(() => {
-    setSessionState(getSession());
-    setReady(true);
-    const onStorage = (e: StorageEvent) => {
-      if (e.key === SESSION_KEY) setSessionState(getSession());
+    let alive = true;
+    bootstrapAuth().finally(() => {
+      if (alive) setLoading(false);
+    });
+    return () => {
+      alive = false;
     };
-    window.addEventListener("storage", onStorage);
-    return () => window.removeEventListener("storage", onStorage);
   }, []);
 
-  return {
-    session,
-    ready,
-    login: (phone: string) => setSessionState(setSession(phone)),
-    logout: () => {
-      clearSession();
-      setSessionState(null);
-    },
-  };
+  return { user, loading };
 }
 
-export function getMyBookings(): MyBooking[] {
-  return read<MyBooking[]>(BOOKINGS_KEY, []);
+export async function signOut(): Promise<void> {
+  await apiLogout();
 }
 
-/** Saves a booking; dedupes by id so double-clicks / strict-mode don't duplicate. */
-export function saveBooking(b: MyBooking): MyBooking[] {
-  const all = getMyBookings();
-  const next = all.some((x) => x.id === b.id) ? all : [b, ...all];
-  write(BOOKINGS_KEY, next);
-  return next;
-}
-
-export function updateBookingStatus(id: string, status: BookingStatus): MyBooking[] {
-  const next = getMyBookings().map((b) => (b.id === id ? { ...b, status } : b));
-  write(BOOKINGS_KEY, next);
-  return next;
-}

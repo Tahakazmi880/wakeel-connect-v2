@@ -3,8 +3,8 @@
 import { useState } from "react";
 import Link from "next/link";
 import { LangToggle, T } from "./LanguageContext";
-import { BriefcaseIcon, CalendarIcon, CloseIcon, DocIcon, MenuIcon, PhoneIcon, SearchIcon } from "./icons";
-import { useSession } from "@/lib/session";
+import { BriefcaseIcon, CalendarIcon, CloseIcon, DocIcon, MenuIcon, PhoneIcon, SearchIcon, ShieldIcon, UserIcon } from "./icons";
+import { useSession, signOut } from "@/lib/session";
 
 function Logo() {
   return (
@@ -22,7 +22,8 @@ function Logo() {
 
 export default function Header() {
   const [open, setOpen] = useState(false);
-  const { session, ready, logout } = useSession();
+  const { user, loading } = useSession();
+  const ready = !loading;
   const links = [
     { href: "/lawyers", en: "Find a Lawyer", ur: "وکیل تلاش کریں", icon: <SearchIcon className="h-5 w-5" /> },
     { href: "/practice-areas", en: "Practice Areas", ur: "قانونی شعبے", icon: <BriefcaseIcon className="h-5 w-5" /> },
@@ -48,14 +49,34 @@ export default function Header() {
         </nav>
         <div className="flex items-center gap-2">
           <LangToggle />
-          {ready && session ? (
-            <Link
-              href="/dashboard"
-              className="hidden min-h-[48px] items-center gap-2 rounded-2xl border-2 border-emerald-700 px-5 text-base font-bold text-emerald-800 transition hover:bg-emerald-50 md:inline-flex"
-            >
-              <CalendarIcon className="h-5 w-5" />
-              <T en="My bookings" ur="میری بکنگز" />
-            </Link>
+          {ready && user ? (
+            <>
+              <Link
+                href="/dashboard"
+                className="hidden min-h-[48px] items-center gap-2 rounded-2xl border-2 border-emerald-700 px-5 text-base font-bold text-emerald-800 transition hover:bg-emerald-50 md:inline-flex"
+              >
+                <CalendarIcon className="h-5 w-5" />
+                <T en="My bookings" ur="میری بکنگز" />
+              </Link>
+              {user.role === "ADMIN" && (
+                <Link
+                  href="/admin"
+                  className="hidden min-h-[48px] items-center gap-2 rounded-2xl border-2 border-amber-600 px-5 text-base font-bold text-amber-700 transition hover:bg-amber-50 md:inline-flex"
+                >
+                  <ShieldIcon className="h-5 w-5" />
+                  <T en="Admin" ur="ایڈمن" />
+                </Link>
+              )}
+              <button
+                type="button"
+                onClick={() => void signOut()}
+                title={user.fullName || user.phone}
+                className="hidden min-h-[48px] items-center gap-2 rounded-2xl px-4 text-base font-bold text-slate-600 transition hover:bg-slate-100 md:inline-flex"
+              >
+                <UserIcon className="h-5 w-5" />
+                <T en="Logout" ur="لاگ آؤٹ" />
+              </button>
+            </>
           ) : (
             <Link
               href="/login"
@@ -99,8 +120,12 @@ export default function Header() {
             ),
           )}
           {/* Helpline link removed until a real support number is provided — do not ship a fake number. */}
-          {ready && session ? (
+          {ready && user ? (
             <>
+              <p className="flex min-h-[52px] items-center gap-3 rounded-xl px-3 text-lg font-bold text-emerald-800">
+                <UserIcon className="h-5 w-5" />
+                {user.fullName || user.phone}
+              </p>
               <Link
                 href="/dashboard"
                 onClick={() => setOpen(false)}
@@ -109,9 +134,19 @@ export default function Header() {
                 <CalendarIcon className="h-5 w-5" />
                 <T en="My bookings" ur="میری بکنگز" />
               </Link>
+              {user.role === "ADMIN" && (
+                <Link
+                  href="/admin"
+                  onClick={() => setOpen(false)}
+                  className="flex min-h-[52px] items-center gap-3 rounded-xl px-3 text-lg font-bold text-amber-700 hover:bg-amber-50"
+                >
+                  <ShieldIcon className="h-5 w-5" />
+                  <T en="Admin" ur="ایڈمن" />
+                </Link>
+              )}
               <button
                 type="button"
-                onClick={() => { logout(); setOpen(false); }}
+                onClick={() => { void signOut(); setOpen(false); }}
                 className="flex min-h-[52px] w-full items-center gap-3 rounded-xl px-3 text-lg font-bold text-slate-700 hover:bg-emerald-50"
               >
                 <PhoneIcon className="h-5 w-5" />
