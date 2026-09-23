@@ -3,6 +3,7 @@ import { T } from "@/components/LanguageContext";
 import { PrimaryBtn } from "@/components/ui";
 import LawyerCard from "@/components/LawyerCard";
 import SearchHero from "@/components/SearchHero";
+import SpecialtyCircles from "@/components/SpecialtyCircles";
 import StatsBand from "@/components/StatsBand";
 import PartnersMarquee from "@/components/PartnersMarquee";
 import FaqAccordion from "@/components/FaqAccordion";
@@ -16,7 +17,7 @@ import {
   PinIcon,
   VideoIcon,
 } from "@/components/icons";
-import { CITIES, COURTS, PRACTICE_AREAS, getCity } from "@/lib/data";
+import { CITIES, COURTS, getCity } from "@/lib/data";
 import { API_V1, fileUrl, type LawyerSummary } from "@/lib/api";
 
 async function fetchFeatured(): Promise<{ lawyers: LawyerSummary[]; total: number }> {
@@ -42,12 +43,6 @@ async function fetchOnlineCount(): Promise<number> {
   } catch {
     return 0;
   }
-}
-
-/** Two-letter initials for the specialty circles, e.g. "Family Law" → "FL". */
-function initials(nameEn: string): string {
-  const words = nameEn.split(/\s+/).filter((w) => /[A-Za-z]/.test(w[0] ?? ""));
-  return words.slice(0, 2).map((w) => w[0]!.toUpperCase()).join("");
 }
 
 const SERVICES: {
@@ -314,31 +309,7 @@ export default async function Home() {
       {/* ============ TRUSTED ACROSS SINDH — institutional partners ============ */}
       <PartnersMarquee />
 
-      {/* ============ SPECIALTIES — circular browse ============ */}
-      <section className="mx-auto max-w-7xl px-4 pt-14 sm:pt-20">
-        <RowHead
-          title={<T en="Find the best wakeel for your case" ur="اپنے کیس کے لیے بہترین وکیل تلاش کریں" />}
-          href="/practice-areas"
-          linkEn="View All"
-          linkUr="سب دیکھیں"
-        />
-        <div className="wc-rail -mx-4 flex gap-5 overflow-x-auto px-4 pb-3 sm:mx-0 sm:px-0">
-          {PRACTICE_AREAS.map((a) => (
-            <Link
-              key={a.slug}
-              href={`/practice-areas/${a.slug}`}
-              className="group flex w-24 shrink-0 flex-col items-center gap-2.5 sm:w-28"
-            >
-              <span className="flex h-20 w-20 items-center justify-center rounded-full bg-court-50 font-display text-[1.45rem] font-semibold text-court-800 ring-1 ring-court-100 transition group-hover:bg-court-100 group-hover:ring-court-300 sm:h-24 sm:w-24 sm:text-[1.7rem]">
-                {initials(a.nameEn)}
-              </span>
-              <span className="text-center text-[0.92rem] font-semibold leading-tight text-ink-800 transition group-hover:text-court-800">
-                <T en={a.nameEn} ur={a.nameUr} />
-              </span>
-            </Link>
-          ))}
-        </div>
-      </section>
+      <SpecialtyCircles />
 
       {/* ============ FEATURED LAWYERS ============ */}
       <section className="mx-auto max-w-7xl px-4 pt-14 sm:pt-20">
