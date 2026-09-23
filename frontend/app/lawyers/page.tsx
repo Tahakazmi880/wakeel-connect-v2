@@ -62,10 +62,14 @@ export default async function LawyersPage({ searchParams }: Props) {
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-10">
-      <h1 className="text-3xl font-extrabold text-slate-900 sm:text-4xl">
+      <p className="wc-kicker">
+        <T en="Directory" ur="ڈائریکٹری" />
+      </p>
+      <h1 className="mt-3 font-display text-[2.25rem] font-semibold text-ink-950 sm:text-4xl">
         <T en="Find a lawyer" ur="وکیل تلاش کریں" />
       </h1>
-      <p className="mt-2 text-lg text-slate-600">
+      <span aria-hidden className="mt-4 block h-[3px] w-12 bg-brass-500" />
+      <p className="mt-4 text-[1.05rem] text-ink-600">
         <T en={`${total} ${total === 1 ? "lawyer" : "lawyers"} found`} ur={`${total} وکیل ملے`} />
       </p>
 
@@ -76,18 +80,18 @@ export default async function LawyersPage({ searchParams }: Props) {
       </div>
 
       {lawyers.length === 0 ? (
-        <div className="mt-10 rounded-3xl border border-dashed border-slate-300 bg-white p-12 text-center">
-          <SearchIcon className="mx-auto h-12 w-12 text-slate-300" />
-          <p className="mt-4 text-xl font-extrabold text-slate-800">
+        <div className="mx-auto mt-10 max-w-2xl rounded-lg border border-dashed border-ink-900/20 bg-white p-12 text-center">
+          <SearchIcon className="mx-auto h-12 w-12 text-ink-300" />
+          <p className="mt-4 font-display text-[1.5rem] font-semibold text-ink-950">
             <T en="No lawyers match your filters" ur="آپ کے فلٹر سے کوئی وکیل نہیں ملا" />
           </p>
-          <p className="mt-2 text-base text-slate-500">
+          <p className="mt-2 text-[1.02rem] text-ink-600">
             <T en="Try removing a filter or two." ur="کوئی فلٹر ہٹا کر دوبارہ کوشش کریں۔" />
           </p>
         </div>
       ) : (
         <>
-          <div className="mt-8 grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+          <div className="mx-auto mt-8 max-w-4xl space-y-5">
             {lawyers.map((l) => (
               <LawyerCard key={l.slug} lawyer={l} />
             ))}
@@ -98,30 +102,30 @@ export default async function LawyersPage({ searchParams }: Props) {
               {page > 1 ? (
                 <Link
                   href={withPage(sp, page - 1)}
-                  className="inline-flex min-h-[52px] items-center gap-1 rounded-2xl border-2 border-emerald-700 px-6 text-lg font-bold text-emerald-800 hover:bg-emerald-50"
+                  className="inline-flex min-h-[52px] items-center gap-1 rounded-lg border border-court-700/50 px-6 text-lg font-bold text-court-800 hover:bg-court-50"
                 >
                   <ArrowIcon className="h-5 w-5 rotate-180" />
                   <T en="Previous" ur="پچھلا" />
                 </Link>
               ) : (
-                <span className="inline-flex min-h-[52px] items-center gap-1 rounded-2xl border-2 border-slate-200 px-6 text-lg font-bold text-slate-300">
+                <span className="inline-flex min-h-[52px] items-center gap-1 rounded-lg border border-ink-900/10 px-6 text-lg font-bold text-ink-300">
                   <ArrowIcon className="h-5 w-5 rotate-180" />
                   <T en="Previous" ur="پچھلا" />
                 </span>
               )}
-              <span className="text-lg font-extrabold text-slate-700">
+              <span className="text-lg font-extrabold text-ink-700">
                 <T en={`Page ${page} of ${totalPages}`} ur={`صفحہ ${page} از ${totalPages}`} />
               </span>
               {page < totalPages ? (
                 <Link
                   href={withPage(sp, page + 1)}
-                  className="inline-flex min-h-[52px] items-center gap-1 rounded-2xl border-2 border-emerald-700 px-6 text-lg font-bold text-emerald-800 hover:bg-emerald-50"
+                  className="inline-flex min-h-[52px] items-center gap-1 rounded-lg border border-court-700/50 px-6 text-lg font-bold text-court-800 hover:bg-court-50"
                 >
                   <T en="Next" ur="اگلا" />
                   <ArrowIcon className="h-5 w-5" />
                 </Link>
               ) : (
-                <span className="inline-flex min-h-[52px] items-center gap-1 rounded-2xl border-2 border-slate-200 px-6 text-lg font-bold text-slate-300">
+                <span className="inline-flex min-h-[52px] items-center gap-1 rounded-lg border border-ink-900/10 px-6 text-lg font-bold text-ink-300">
                   <T en="Next" ur="اگلا" />
                   <ArrowIcon className="h-5 w-5" />
                 </span>

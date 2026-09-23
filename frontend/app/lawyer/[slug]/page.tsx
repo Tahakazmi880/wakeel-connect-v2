@@ -79,6 +79,16 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   };
 }
 
+/** Small editorial section title inside profile cards. */
+function ProfileSectionTitle({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="mb-5">
+      <h2 className="font-display text-[1.65rem] font-semibold text-ink-950">{children}</h2>
+      <span aria-hidden className="mt-2.5 block h-[3px] w-10 bg-brass-500" />
+    </div>
+  );
+}
+
 export default async function LawyerProfile({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const lawyer = await fetchLawyer(slug);
@@ -131,46 +141,46 @@ export default async function LawyerProfile({ params }: { params: Promise<{ slug
   return (
     <div className="mx-auto max-w-7xl px-4 py-8">
       {/* Breadcrumb */}
-      <nav className="mb-6 text-base text-slate-500" aria-label="Breadcrumb">
-        <Link href="/" className="hover:text-emerald-700">wakeel.connect</Link>
-        {" / "}
-        <Link href="/lawyers" className="hover:text-emerald-700"><T en="Lawyers" ur="وکیل" /></Link>
-        {" / "}
-        <span className="font-bold text-slate-800">{lawyer.displayName}</span>
+      <nav className="mb-6 text-[0.98rem] font-medium text-ink-500" aria-label="Breadcrumb">
+        <Link href="/" className="transition hover:text-court-700">wakeel.connect</Link>
+        <span className="mx-2 text-ink-300">/</span>
+        <Link href="/lawyers" className="transition hover:text-court-700"><T en="Lawyers" ur="وکیل" /></Link>
+        <span className="mx-2 text-ink-300">/</span>
+        <span className="font-bold text-ink-800">{lawyer.displayName}</span>
       </nav>
 
       <div className="grid gap-8 lg:grid-cols-3">
         {/* ===== Main column ===== */}
         <div className="lg:col-span-2">
           {/* Header card */}
-          <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
+          <section className="rounded-lg border border-ink-900/10 bg-white p-6 shadow-card sm:p-8">
             <div className="flex flex-col gap-5 sm:flex-row">
               <PhotoAvatar name={lawyer.displayName} photo={fileUrl(lawyer.photoUrl) ?? undefined} size="3xl" />
               <div className="min-w-0 flex-1">
-                <h1 className="text-3xl font-extrabold text-slate-900">{lawyer.displayName}</h1>
-                {lawyer.headline && <p className="mt-2 text-lg text-slate-600">{lawyer.headline}</p>}
-                <div className="mt-3 flex flex-wrap items-center gap-x-5 gap-y-2 text-base">
+                <h1 className="font-display text-[2.1rem] font-semibold leading-tight text-ink-950">{lawyer.displayName}</h1>
+                {lawyer.headline && <p className="mt-2 text-[1.08rem] text-ink-600">{lawyer.headline}</p>}
+                <div className="mt-3.5 flex flex-wrap items-center gap-x-5 gap-y-2">
                   <Rating rating={lawyer.ratingAvg} count={lawyer.ratingCount} />
                   {exp && (
-                    <span className="font-semibold text-slate-600">
+                    <span className="text-[0.98rem] font-semibold text-ink-600">
                       <T en={`${exp} experience`} ur={`${exp} تجربہ`} />
                     </span>
                   )}
-                  <span className="inline-flex items-center gap-1 font-semibold text-slate-600">
-                    <PinIcon className="h-5 w-5 text-emerald-700" /> <T en={lawyer.city.nameEn} ur={lawyer.city.nameUr} />
+                  <span className="inline-flex items-center gap-1.5 text-[0.98rem] font-semibold text-ink-600">
+                    <PinIcon className="h-5 w-5 text-brass-600" /> <T en={lawyer.city.nameEn} ur={lawyer.city.nameUr} />
                   </span>
                 </div>
                 <div className="mt-4 flex flex-wrap gap-2">
                   {lawyer.practiceAreas.map((a) => (
                     <Link key={a.practiceArea.slug} href={`/practice-areas/${a.practiceArea.slug}`}
-                      className="rounded-full bg-emerald-50 px-4 py-1.5 text-sm font-bold text-emerald-800 ring-1 ring-emerald-200 hover:bg-emerald-100">
+                      className="rounded-full border border-ink-900/15 px-4 py-1.5 text-sm font-semibold text-ink-700 transition hover:border-court-700 hover:text-court-800">
                       <T en={a.practiceArea.nameEn} ur={a.practiceArea.nameUr} />
                     </Link>
                   ))}
                 </div>
               </div>
             </div>
-            <div className="mt-6 grid gap-3 sm:grid-cols-2">
+            <div className="mt-7 grid gap-3 sm:grid-cols-2">
               <PrimaryBtn href={`/book/${lawyer.slug}?mode=video`} icon={<VideoIcon className="h-6 w-6" />}>
                 <T en={fee ? `Video Call — ${fee}` : "Video Call"} ur={fee ? `ویڈیو کال — ${fee}` : "ویڈیو کال"} />
               </PrimaryBtn>
@@ -181,50 +191,52 @@ export default async function LawyerProfile({ params }: { params: Promise<{ slug
           </section>
 
           {/* Availability */}
-          <section className="mt-6 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
-            <h2 className="mb-4 flex items-center gap-2 text-2xl font-extrabold text-slate-900">
-              <CalendarIcon className="h-7 w-7 text-emerald-700" />
-              <T en="Available times" ur="دستیاب اوقات" />
-            </h2>
+          <section className="mt-6 rounded-lg border border-ink-900/10 bg-white p-6 shadow-card sm:p-8">
+            <ProfileSectionTitle>
+              <span className="inline-flex items-center gap-2.5">
+                <CalendarIcon className="h-6 w-6 text-court-700" />
+                <T en="Available times" ur="دستیاب اوقات" />
+              </span>
+            </ProfileSectionTitle>
             <LawyerAvailability lawyerSlug={lawyer.slug} />
           </section>
 
           {/* About */}
-          <section className="mt-6 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
-            <h2 className="text-2xl font-extrabold text-slate-900"><T en="About" ur="تعارف" /></h2>
+          <section className="mt-6 rounded-lg border border-ink-900/10 bg-white p-6 shadow-card sm:p-8">
+            <ProfileSectionTitle><T en="About" ur="تعارف" /></ProfileSectionTitle>
             {lawyer.bio && (
-              <p className="mt-3 text-lg leading-relaxed text-slate-700">
+              <p className="text-[1.08rem] leading-relaxed text-ink-700">
                 <T en={lawyer.bio} ur={lawyer.bioUrdu ?? lawyer.bio} />
               </p>
             )}
             <div className="mt-6 grid gap-4 sm:grid-cols-2">
               {lawyer.education.length > 0 && (
-                <div className="rounded-2xl bg-slate-50 p-5">
-                  <p className="flex items-center gap-2 text-base font-extrabold text-slate-900">
-                    <BriefcaseIcon className="h-5 w-5 text-emerald-700" /> <T en="Education" ur="تعلیم" />
+                <div className="rounded-lg bg-paper-dark/50 p-5 ring-1 ring-ink-900/10">
+                  <p className="flex items-center gap-2 text-[1rem] font-bold text-ink-950">
+                    <BriefcaseIcon className="h-5 w-5 text-court-700" /> <T en="Education" ur="تعلیم" />
                   </p>
-                  <ul className="mt-2 space-y-2 text-base text-slate-700">
+                  <ul className="mt-2.5 space-y-2 text-[1rem] text-ink-700">
                     {lawyer.education.map((e, i) => (
                       <li key={i}>{e.degree}{e.institution ? ` — ${e.institution}` : ""}{e.year ? ` (${e.year})` : ""}</li>
                     ))}
                   </ul>
                 </div>
               )}
-              <div className="rounded-2xl bg-slate-50 p-5">
-                <p className="flex items-center gap-2 text-base font-extrabold text-slate-900">
-                  <ShieldIcon className="h-5 w-5 text-emerald-700" /> <T en="Bar & Courts" ur="بار اور عدالتیں" />
+              <div className="rounded-lg bg-paper-dark/50 p-5 ring-1 ring-ink-900/10">
+                <p className="flex items-center gap-2 text-[1rem] font-bold text-ink-950">
+                  <ShieldIcon className="h-5 w-5 text-court-700" /> <T en="Bar & Courts" ur="بار اور عدالتیں" />
                 </p>
-                <ul className="mt-2 space-y-2 text-base text-slate-700">
+                <ul className="mt-2.5 space-y-2 text-[1rem] text-ink-700">
                   {lawyer.barCouncil && <li>{lawyer.barCouncil}</li>}
                   {lawyer.courts.map((c) => <li key={c}>{c}</li>)}
                 </ul>
               </div>
             </div>
-            <div className="mt-4 rounded-2xl bg-slate-50 p-5">
+            <div className="mt-4 rounded-lg bg-paper-dark/50 p-5 ring-1 ring-ink-900/10">
               {langs.length > 0 && (
                 <>
-                  <p className="text-base font-extrabold text-slate-900"><T en="Languages" ur="زبانیں" /></p>
-                  <p className="mt-1 text-base text-slate-700">
+                  <p className="text-[1rem] font-bold text-ink-950"><T en="Languages" ur="زبانیں" /></p>
+                  <p className="mt-1.5 text-[1rem] text-ink-700">
                     {langs.map((l, i) => (
                       <span key={l.code}>
                         {i > 0 && ", "}<T en={l.nameEn} ur={l.nameUr} />
@@ -235,8 +247,8 @@ export default async function LawyerProfile({ params }: { params: Promise<{ slug
               )}
               {primaryChamber && (
                 <>
-                  <p className="mt-3 text-base font-extrabold text-slate-900"><T en="Chamber" ur="چیمبر" /></p>
-                  <p className="mt-1 text-base text-slate-700">{primaryChamber.name} — {primaryChamber.address}</p>
+                  <p className="mt-4 text-[1rem] font-bold text-ink-950"><T en="Chamber" ur="چیمبر" /></p>
+                  <p className="mt-1.5 text-[1rem] text-ink-700">{primaryChamber.name} — {primaryChamber.address}</p>
                 </>
               )}
             </div>
@@ -251,22 +263,22 @@ export default async function LawyerProfile({ params }: { params: Promise<{ slug
           />
 
           {/* Profile FAQs */}
-          <section className="mt-6 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
-            <h2 className="text-2xl font-extrabold text-slate-900">
+          <section className="mt-6 rounded-lg border border-ink-900/10 bg-white p-6 shadow-card sm:p-8">
+            <ProfileSectionTitle>
               <T en={`FAQs about ${lawyer.displayName}`} ur={`${lawyer.displayName} کے بارے میں سوالات`} />
-            </h2>
-            <div className="mt-4">
-              <FaqAccordion items={profileFaqs} wide />
-            </div>
+            </ProfileSectionTitle>
+            <FaqAccordion items={profileFaqs} wide />
           </section>
         </div>
 
         {/* ===== Side column: booking card ===== */}
         <aside className="lg:sticky lg:top-24 lg:self-start">
-          <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-lg">
-            <div className="rounded-2xl bg-emerald-50 p-5 text-center ring-1 ring-emerald-200">
-              <p className="text-sm font-bold uppercase tracking-wide text-emerald-700"><T en="Consultation fee" ur="مشاورت کی فیس" /></p>
-              <p className={`mt-1 font-extrabold text-emerald-900 ${fee ? "text-4xl" : "text-2xl"}`}>
+          <div className="rounded-lg border border-ink-900/10 bg-white p-6 shadow-lift">
+            <div className="border-b-2 border-brass-500 pb-4 text-center">
+              <p className="text-[0.78rem] font-bold uppercase tracking-[0.14em] text-ink-500">
+                <T en="Consultation fee" ur="مشاورت کی فیس" />
+              </p>
+              <p className={`wc-fee mt-1.5 text-ink-950 ${fee ? "text-[2.5rem]" : "text-[1.6rem]"}`}>
                 {fee ?? <T en="Fee on request" ur="فیس معلوم کریں" />}
               </p>
             </div>
@@ -278,9 +290,15 @@ export default async function LawyerProfile({ params }: { params: Promise<{ slug
                 <T en="Book Office Visit" ur="دفتر کی ملاقات بک کریں" />
               </SecondaryBtn>
             </div>
-            <ul className="mt-6 space-y-3 text-base text-slate-600">
-              <li className="flex gap-2"><CheckBadgeIcon className="h-5 w-5 shrink-0 text-emerald-600" /><T en="Your number stays private until confirmed" ur="تصدیق تک آپ کا نمبر نجی رہتا ہے" /></li>
-              <li className="flex gap-2"><CheckBadgeIcon className="h-5 w-5 shrink-0 text-emerald-600" /><T en="Pay the fee directly to the lawyer" ur="فیس براہِ راست وکیل کو ادا کریں" /></li>
+            <ul className="mt-6 space-y-3 border-t border-ink-900/10 pt-5 text-[0.98rem] text-ink-600">
+              <li className="flex gap-2.5">
+                <CheckBadgeIcon className="h-5 w-5 shrink-0 text-court-700" />
+                <T en="Your number stays private until confirmed" ur="تصدیق تک آپ کا نمبر نجی رہتا ہے" />
+              </li>
+              <li className="flex gap-2.5">
+                <CheckBadgeIcon className="h-5 w-5 shrink-0 text-court-700" />
+                <T en="Pay the fee directly to the lawyer" ur="فیس براہِ راست وکیل کو ادا کریں" />
+              </li>
             </ul>
           </div>
         </aside>
@@ -288,14 +306,18 @@ export default async function LawyerProfile({ params }: { params: Promise<{ slug
 
       {/* Similar lawyers */}
       {similar.length > 0 && (
-        <section className="mt-14">
-          <h2 className="text-center text-2xl font-extrabold text-slate-900 sm:text-3xl">
-            <T en="Similar lawyers" ur="ملتے جلتے وکیل" />
-          </h2>
-          <p className="mt-2 text-center text-lg text-slate-600">
-            <T en="More lawyers for your legal problem." ur="آپ کے قانونی مسئلے کے لیے مزید وکیل۔" />
-          </p>
-          <div className="mt-8 grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+        <section className="mt-16">
+          <div className="mb-8 text-center">
+            <p className="wc-kicker"><T en="Keep looking" ur="مزید دیکھیں" /></p>
+            <h2 className="mt-3 font-display text-[2rem] font-semibold text-ink-950">
+              <T en="Similar lawyers" ur="ملتے جلتے وکیل" />
+            </h2>
+            <span aria-hidden className="mx-auto mt-4 block h-[3px] w-12 bg-brass-500" />
+            <p className="mt-4 text-[1.05rem] text-ink-600">
+              <T en="More lawyers for your legal problem." ur="آپ کے قانونی مسئلے کے لیے مزید وکیل۔" />
+            </p>
+          </div>
+          <div className="mx-auto max-w-4xl space-y-5">
             {similar.map((l) => (
               <LawyerCard key={l.slug} lawyer={l} />
             ))}
@@ -304,7 +326,7 @@ export default async function LawyerProfile({ params }: { params: Promise<{ slug
       )}
 
       {/* Sticky mobile CTA — one primary action */}
-      <div className="fixed inset-x-0 bottom-0 z-30 border-t border-slate-200 bg-white/95 p-3 backdrop-blur lg:hidden">
+      <div className="fixed inset-x-0 bottom-0 z-30 border-t border-ink-900/10 bg-paper/95 p-3 backdrop-blur lg:hidden">
         <PrimaryBtn href={`/book/${lawyer.slug}?mode=video`} icon={<VideoIcon className="h-6 w-6" />} className="w-full">
           <T en={fee ? `Book Now — ${fee}` : "Book Now"} ur={fee ? `ابھی بک کریں — ${fee}` : "ابھی بک کریں"} />
         </PrimaryBtn>

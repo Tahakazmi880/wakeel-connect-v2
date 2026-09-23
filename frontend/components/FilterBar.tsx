@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { T } from "./LanguageContext";
-import { SearchIcon } from "./icons";
+import { CloseIcon, SearchIcon } from "./icons";
 import { CITIES, PRACTICE_AREAS } from "@/lib/data";
 
 /**
@@ -30,13 +30,13 @@ export default function FilterBar() {
   };
 
   const selectCls =
-    "min-h-[52px] w-full rounded-2xl border-2 border-slate-200 bg-white px-4 text-base font-semibold text-slate-800 outline-none focus:border-emerald-600";
+    "min-h-[52px] w-full rounded-lg border border-ink-900/15 bg-white px-4 text-[1.02rem] font-semibold text-ink-900 outline-none transition focus:border-court-600 focus:ring-2 focus:ring-court-600/20";
 
   return (
-    <div className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
+    <div className="rounded-lg border border-ink-900/10 bg-white p-5 shadow-card">
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
         <label className="block">
-          <span className="mb-1 block text-sm font-bold text-slate-600"><T en="City" ur="شہر" /></span>
+          <span className="mb-1 block text-sm font-bold text-ink-600"><T en="City" ur="شہر" /></span>
           <select value={get("city")} onChange={(e) => set("city", e.target.value)} className={selectCls}>
             <option value=""><T en="All Cities" ur="تمام شہر" /></option>
             {CITIES.map((c) => (
@@ -47,7 +47,7 @@ export default function FilterBar() {
           </select>
         </label>
         <label className="block">
-          <span className="mb-1 block text-sm font-bold text-slate-600"><T en="Legal Problem" ur="قانونی مسئلہ" /></span>
+          <span className="mb-1 block text-sm font-bold text-ink-600"><T en="Legal Problem" ur="قانونی مسئلہ" /></span>
           <select value={get("area")} onChange={(e) => set("area", e.target.value)} className={selectCls}>
             <option value=""><T en="All Areas" ur="تمام شعبے" /></option>
             {PRACTICE_AREAS.map((a) => (
@@ -58,20 +58,20 @@ export default function FilterBar() {
           </select>
         </label>
         <form onSubmit={submitSearch} className="block" role="search">
-          <span className="mb-1 block text-sm font-bold text-slate-600"><T en="Search" ur="تلاش" /></span>
-          <span className="flex min-h-[52px] items-center gap-2 rounded-2xl border-2 border-slate-200 bg-white px-4 focus-within:border-emerald-600">
-            <SearchIcon className="h-5 w-5 shrink-0 text-slate-400" />
+          <span className="mb-1 block text-sm font-bold text-ink-600"><T en="Search" ur="تلاش" /></span>
+          <span className="flex min-h-[52px] items-center gap-2 rounded-lg border border-ink-900/15 bg-white px-4 transition focus-within:border-court-600 focus-within:ring-2 focus-within:ring-court-600/20">
+            <SearchIcon className="h-5 w-5 shrink-0 text-ink-400" />
             <input
               value={q}
               onChange={(e) => setQ(e.target.value)}
               placeholder="نام، مسئلہ…"
               aria-label="Search lawyers"
-              className="w-full bg-transparent text-base font-semibold text-slate-800 outline-none placeholder:text-slate-400"
+              className="w-full bg-transparent text-[1.02rem] font-semibold text-ink-900 outline-none placeholder:text-ink-400"
             />
             <button
               type="submit"
               aria-label="Search"
-              className="inline-flex min-h-[44px] min-w-[44px] items-center justify-center rounded-xl bg-emerald-700 px-3 text-base font-bold text-white"
+              className="inline-flex min-h-[44px] min-w-[44px] items-center justify-center rounded-lg bg-court-700 px-3 text-base font-bold text-white transition hover:bg-court-800"
             >
               <SearchIcon className="h-5 w-5" />
             </button>
@@ -83,9 +83,9 @@ export default function FilterBar() {
         <button
           type="button"
           onClick={() => router.push("/lawyers", { scroll: false })}
-          className="mt-4 inline-flex min-h-[48px] items-center gap-2 rounded-xl px-4 text-base font-bold text-emerald-800 hover:bg-emerald-50"
+          className="mt-4 inline-flex min-h-[48px] items-center gap-2 rounded-lg px-4 text-[1.02rem] font-bold text-court-800 transition hover:bg-court-50"
         >
-          <SearchIcon className="h-5 w-5" />
+          <CloseIcon className="h-5 w-5" />
           <T en="Clear all filters" ur="تمام فلٹر صاف کریں" />
         </button>
       )}

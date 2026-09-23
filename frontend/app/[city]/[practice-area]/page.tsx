@@ -102,42 +102,43 @@ export default async function CityAreaPage({ params }: { params: Promise<{ city:
       </p>
 
       {/* trust strip */}
-      <div className="mt-6 grid gap-3 sm:grid-cols-3">
+      <div className="mt-6 flex flex-wrap items-center gap-x-8 gap-y-3 border-y border-ink-900/10 py-4">
         {[
-          { icon: <ShieldIcon className="h-6 w-6" />, en: "Reviewed profiles", ur: "جانچی ہوئی پروفائلز" },
-          { icon: <CalendarIcon className="h-6 w-6" />, en: "Book in 3 easy steps", ur: "۳ آسان مراحل میں بکنگ" },
-          { icon: <PhoneIcon className="h-6 w-6" />, en: "Phone-number login only", ur: "صرف فون نمبر سے لاگ اِن" },
+          { icon: <ShieldIcon className="h-5 w-5" />, en: "Reviewed profiles", ur: "جانچی ہوئی پروفائلز" },
+          { icon: <CalendarIcon className="h-5 w-5" />, en: "Book in 3 easy steps", ur: "۳ آسان مراحل میں بکنگ" },
+          { icon: <PhoneIcon className="h-5 w-5" />, en: "Phone-number login only", ur: "صرف فون نمبر سے لاگ اِن" },
         ].map((t) => (
-          <div key={t.en} className="flex items-center gap-3 rounded-lg bg-white p-4 ring-1 ring-court-100">
-            <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-court-100 text-court-700">{t.icon}</span>
-            <span className="text-base font-extrabold text-ink-800"><T en={t.en} ur={t.ur} /></span>
-          </div>
+          <span key={t.en} className="inline-flex items-center gap-2 text-[1rem] font-semibold text-ink-700">
+            <span className="text-brass-600">{t.icon}</span>
+            <T en={t.en} ur={t.ur} />
+          </span>
         ))}
       </div>
 
-      <div className="mt-8 grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+      <div className="mx-auto mt-8 max-w-4xl space-y-5">
         {lawyers.map((l) => <LawyerCard key={l.slug} lawyer={l} />)}
       </div>
 
       <SeoArticle area={a} citySlug={c.slug} />
 
-      {/* How booking works — tiny */}
-      <section className="mt-14 rounded-xl bg-court-50 p-8 ring-1 ring-court-100">
-        <h2 className="text-2xl font-extrabold text-ink-950 text-center">
+      {/* How booking works */}
+      <section className="mt-14">
+        <h2 className="text-center font-display text-[1.8rem] font-semibold text-ink-950">
           <T en="How booking works" ur="بکنگ کیسے ہوتی ہے" />
         </h2>
-        <div className="mx-auto mt-6 grid max-w-3xl gap-4 sm:grid-cols-3">
+        <span aria-hidden className="mx-auto mt-4 block h-[3px] w-12 bg-brass-500" />
+        <ol className="mx-auto mt-8 grid max-w-4xl gap-8 sm:grid-cols-3">
           {[
-            { icon: <SearchIcon className="h-7 w-7" />, en: "1. Choose your wakeel", ur: "۱۔ وکیل چنیں" },
-            { icon: <CalendarIcon className="h-7 w-7" />, en: "2. Pick a time", ur: "۲۔ وقت منتخب کریں" },
-            { icon: <PhoneIcon className="h-7 w-7" />, en: "3. Verify phone — done", ur: "۳۔ فون تصدیق — ہو گیا" },
+            { n: "1", en: "Choose your wakeel", ur: "وکیل چنیں" },
+            { n: "2", en: "Pick a time", ur: "وقت منتخب کریں" },
+            { n: "3", en: "Verify phone — done", ur: "فون تصدیق — ہو گیا" },
           ].map((s) => (
-            <div key={s.en} className="flex items-center gap-3 rounded-lg bg-white p-4 shadow-sm">
-              <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-court-700 text-white">{s.icon}</span>
-              <span className="text-base font-extrabold text-ink-800"><T en={s.en} ur={s.ur} /></span>
-            </div>
+            <li key={s.en} className="border-t-2 border-ink-900 pt-4">
+              <p className="font-display text-[2rem] font-semibold text-brass-500">{s.n}</p>
+              <p className="mt-2 text-[1.05rem] font-bold text-ink-950"><T en={s.en} ur={s.ur} /></p>
+            </li>
           ))}
-        </div>
+        </ol>
       </section>
 
       {/* internal links */}
