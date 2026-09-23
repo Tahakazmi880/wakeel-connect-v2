@@ -306,10 +306,25 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* ============ TRUSTED ACROSS SINDH — institutional partners ============ */}
-      <PartnersMarquee />
-
       <SpecialtyCircles />
+
+      {/* ============ FEATURED LAWYERS ============ */}
+      <section className="mx-auto max-w-7xl px-4 pt-14 sm:pt-20">
+        <RowHead
+          title={<T en="Featured lawyers" ur="نمایاں وکیل" />}
+          href="/lawyers"
+          linkEn="View All"
+          linkUr="سب دیکھیں"
+        />
+        <div className="mx-auto max-w-4xl space-y-5">
+          {featured.map((l) => (
+            <LawyerCard key={l.slug} lawyer={l} />
+          ))}
+        </div>
+      </section>
+
+      {/* ============ TRUSTED BY INSTITUTIONS — social proof ============ */}
+      <PartnersMarquee />
 
       {/* ============ PARTNERSHIP — corporate benefits ============ */}
       <section className="mx-auto max-w-7xl px-4 pt-14 sm:pt-20">
@@ -342,21 +357,6 @@ export default async function Home() {
               <ArrowIcon className="h-5 w-5 transition group-hover:translate-x-1 rtl:rotate-180" />
             </Link>
           </div>
-        </div>
-      </section>
-
-      {/* ============ FEATURED LAWYERS ============ */}
-      <section className="mx-auto max-w-7xl px-4 pt-14 sm:pt-20">
-        <RowHead
-          title={<T en="Featured lawyers" ur="نمایاں وکیل" />}
-          href="/lawyers"
-          linkEn="View All"
-          linkUr="سب دیکھیں"
-        />
-        <div className="mx-auto max-w-4xl space-y-5">
-          {featured.map((l) => (
-            <LawyerCard key={l.slug} lawyer={l} />
-          ))}
         </div>
       </section>
 
