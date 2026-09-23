@@ -1,16 +1,25 @@
 import { T } from "./LanguageContext";
 import { SectionHead } from "./ui";
-import { areaGuide, feeRangeForArea } from "@/lib/seo";
+import { areaGuide } from "@/lib/seo";
 import { cityName, type PracticeArea } from "@/lib/data";
 
 /**
  * oladoc-style SEO article block for practice-area pages:
  * "Who is a X lawyer? When should you consult one? What does it cost?"
- * Fee ranges come from real listed fees — never invented.
+ * Fee ranges come from real listed fees (passed in) — never invented.
  */
-export default function SeoArticle({ area, citySlug }: { area: PracticeArea; citySlug?: string }) {
+export default function SeoArticle({
+  area,
+  citySlug,
+  feeRange = null,
+}: {
+  area: PracticeArea;
+  citySlug?: string;
+  /** Min–max consultation fee computed from live directory data, or null. */
+  feeRange?: string | null;
+}) {
   const guide = areaGuide(area);
-  const range = feeRangeForArea(area.slug);
+  const range = feeRange;
   const place = citySlug ? cityName(citySlug) : "Pakistan";
 
   return (
@@ -51,8 +60,8 @@ export default function SeoArticle({ area, citySlug }: { area: PracticeArea; cit
               />
             ) : (
               <T
-                en={`No ${area.nameEn.toLowerCase()} lawyers are listed in ${place} yet — check back soon, or browse all Pakistan.`}
-                ur={`${place} میں ابھی ${area.nameUr} کے کوئی وکیل درج نہیں — جلد دوبارہ دیکھیں۔`}
+                en={`Consultation fees vary by lawyer and matter complexity — each profile below shows its fee upfront where listed, otherwise "Fee on request".`}
+                ur={`مشاورت فیس وکیل اور معاملے کے حساب سے مختلف ہوتی ہے — نیچے ہر پروفائل پر فیس واضح ہے جہاں درج ہے، ورنہ "فیس معلوم کریں" لکھا ہوگا۔`}
               />
             )}
           </p>

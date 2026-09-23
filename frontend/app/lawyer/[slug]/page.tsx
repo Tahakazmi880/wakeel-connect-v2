@@ -6,7 +6,8 @@ import { PrimaryBtn, Rating, SecondaryBtn } from "@/components/ui";
 import { PhotoAvatar } from "@/components/PhotoAvatar";
 import FaqAccordion from "@/components/FaqAccordion";
 import LawyerCard from "@/components/LawyerCard";
-import LawyerAvailability from "@/components/LawyerAvailability";
+import ProfileAvailability from "@/components/ProfileAvailability";
+import StickyProfileTabs from "@/components/StickyProfileTabs";
 import ReviewSection from "@/components/ReviewSection";
 import {
   BriefcaseIcon,
@@ -165,8 +166,11 @@ export default async function LawyerProfile({ params }: { params: Promise<{ slug
       <div className="grid gap-8 lg:grid-cols-3">
         {/* ===== Main column ===== */}
         <div className="lg:col-span-2">
+          {/* Sticky in-page section tabs (oladoc pattern) */}
+          <StickyProfileTabs />
+
           {/* Header card */}
-          <section className="rounded-lg border border-ink-900/10 bg-white p-6 shadow-card sm:p-8">
+          <section id="overview" className="scroll-mt-36 rounded-lg border border-ink-900/10 bg-white p-6 shadow-card sm:p-8">
             <div className="flex flex-col gap-5 sm:flex-row">
               <PhotoAvatar name={lawyer.displayName} photo={fileUrl(lawyer.photoUrl) ?? undefined} gender={lawyer.gender} size="3xl" />
               <div className="min-w-0 flex-1">
@@ -203,41 +207,69 @@ export default async function LawyerProfile({ params }: { params: Promise<{ slug
             </div>
           </section>
 
-          {/* Availability */}
-          <section className="mt-6 rounded-lg border border-ink-900/10 bg-white p-6 shadow-card sm:p-8">
+          {/* Availability — collapsible per-location rows (oladoc pattern) */}
+          <section id="availability" className="mt-6 scroll-mt-36 rounded-lg border border-ink-900/10 bg-white p-6 shadow-card sm:p-8">
             <ProfileSectionTitle>
               <span className="inline-flex items-center gap-2.5">
                 <CalendarIcon className="h-6 w-6 text-court-700" />
                 <T en="Available times" ur="دستیاب اوقات" />
               </span>
             </ProfileSectionTitle>
-            <LawyerAvailability lawyerSlug={lawyer.slug} />
+            <ProfileAvailability
+              lawyerSlug={lawyer.slug}
+              offersOnline={offersOnline}
+              onlineFee={onlineFee}
+              chamberFee={fee}
+              chambers={lawyer.chambers.map((c) => ({
+                id: c.id,
+                name: c.name,
+                address: c.address,
+                isPrimary: c.isPrimary,
+              }))}
+            />
           </section>
 
-          {/* Fees & timings */}
-          <section className="mt-6 rounded-lg border border-ink-900/10 bg-white p-6 shadow-card sm:p-8">
+          {/* Fees & timings — per-location fee table */}
+          <section id="fees" className="mt-6 scroll-mt-36 rounded-lg border border-ink-900/10 bg-white p-6 shadow-card sm:p-8">
             <ProfileSectionTitle><T en="Fees & timings" ur="فیس اور اوقات" /></ProfileSectionTitle>
             <dl className="divide-y divide-ink-900/10 overflow-hidden rounded-lg border border-ink-900/10">
               {offersOnline && (
                 <div className="flex items-center justify-between gap-4 px-5 py-4">
-                  <dt className="inline-flex items-center gap-2.5 text-[1.02rem] font-bold text-ink-800">
-                    <VideoIcon className="h-5 w-5 text-court-700" />
-                    <T en="Online consultation" ur="آن لائن مشاورت" />
+                  <dt className="min-w-0">
+                    <span className="inline-flex items-center gap-2.5 text-[1.02rem] font-bold text-ink-800">
+                      <VideoIcon className="h-5 w-5 shrink-0 text-court-700" />
+                      <T en="Online consultation" ur="آن لائن مشاورت" />
+                    </span>
+                    <span className="mt-0.5 block pl-[2.125rem] text-[0.92rem] font-medium text-ink-500">
+                      <T en="Video call from anywhere in Pakistan" ur="پاکستان میں کہیں سے بھی ویڈیو کال" />
+                    </span>
                   </dt>
-                  <dd className="wc-fee text-[1.15rem] font-semibold text-ink-950">
+                  <dd className="wc-fee shrink-0 text-[1.15rem] font-semibold text-ink-950">
                     {onlineFee ?? <T en="Fee on request" ur="فیس معلوم کریں" />}
                   </dd>
                 </div>
               )}
-              <div className="flex items-center justify-between gap-4 px-5 py-4">
-                <dt className="inline-flex items-center gap-2.5 text-[1.02rem] font-bold text-ink-800">
-                  <OfficeIcon className="h-5 w-5 text-court-700" />
-                  <T en="Chamber visit" ur="چیمبر ملاقات" />
-                </dt>
-                <dd className="wc-fee text-[1.15rem] font-semibold text-ink-950">
-                  {fee ?? <T en="Fee on request" ur="فیس معلوم کریں" />}
-                </dd>
-              </div>
+              {lawyer.chambers.map((c) => (
+                <div key={c.id} className="flex items-center justify-between gap-4 px-5 py-4">
+                  <dt className="min-w-0">
+                    <span className="inline-flex items-center gap-2.5 text-[1.02rem] font-bold text-ink-800">
+                      <OfficeIcon className="h-5 w-5 shrink-0 text-court-700" />
+                      <span className="truncate">{c.name}</span>
+                      {c.isPrimary && (
+                        <span className="shrink-0 rounded-full bg-court-50 px-2.5 py-0.5 text-[0.78rem] font-bold text-court-700">
+                          <T en="Main" ur="مرکزی" />
+                        </span>
+                      )}
+                    </span>
+                    <span className="mt-0.5 block truncate pl-[2.125rem] text-[0.92rem] font-medium text-ink-500">
+                      {c.address}
+                    </span>
+                  </dt>
+                  <dd className="wc-fee shrink-0 text-[1.15rem] font-semibold text-ink-950">
+                    {fee ?? <T en="Fee on request" ur="فیس معلوم کریں" />}
+                  </dd>
+                </div>
+              ))}
             </dl>
             <p className="mt-3.5 text-[0.98rem] font-medium text-ink-500">
               <T
@@ -248,7 +280,7 @@ export default async function LawyerProfile({ params }: { params: Promise<{ slug
           </section>
 
           {/* About */}
-          <section className="mt-6 rounded-lg border border-ink-900/10 bg-white p-6 shadow-card sm:p-8">
+          <section id="about" className="mt-6 scroll-mt-36 rounded-lg border border-ink-900/10 bg-white p-6 shadow-card sm:p-8">
             <ProfileSectionTitle><T en="About" ur="تعارف" /></ProfileSectionTitle>
             {lawyer.bio && (
               <p className="text-[1.08rem] leading-relaxed text-ink-700">
@@ -309,15 +341,17 @@ export default async function LawyerProfile({ params }: { params: Promise<{ slug
           </section>
 
           {/* Reviews */}
-          <ReviewSection
-            reviews={lawyer.reviews}
-            ratingAvg={lawyer.ratingAvg}
-            ratingCount={lawyer.ratingCount}
-            lawyerName={lawyer.displayName}
-          />
+          <div id="reviews" className="mt-6 scroll-mt-36">
+            <ReviewSection
+              reviews={lawyer.reviews}
+              ratingAvg={lawyer.ratingAvg}
+              ratingCount={lawyer.ratingCount}
+              lawyerName={lawyer.displayName}
+            />
+          </div>
 
           {/* Profile FAQs */}
-          <section className="mt-6 rounded-lg border border-ink-900/10 bg-white p-6 shadow-card sm:p-8">
+          <section id="faqs" className="mt-6 scroll-mt-36 rounded-lg border border-ink-900/10 bg-white p-6 shadow-card sm:p-8">
             <ProfileSectionTitle>
               <T en={`FAQs about ${lawyer.displayName}`} ur={`${lawyer.displayName} کے بارے میں سوالات`} />
             </ProfileSectionTitle>

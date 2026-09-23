@@ -3,79 +3,33 @@
 import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { T } from "./LanguageContext";
-import { CloseIcon, SearchIcon } from "./icons";
+import { SearchIcon } from "./icons";
 import { PRACTICE_AREAS } from "@/lib/data";
-import { detectCitySlug, rememberCitySlug, rememberedCitySlug } from "@/lib/geo";
-
-const SORT_CHIPS = [
-  { value: "most-experienced", en: "Most Experienced", ur: "سب سے تجربہ کار" },
-  { value: "lowest-fee", en: "Lowest Fee", ur: "کم ترین فیس" },
-  { value: "highest-rated", en: "Highest Rated", ur: "اعلیٰ ترین ریٹنگ" },
-] as const;
-
-const chipBase =
-  "inline-flex min-h-[48px] shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full border px-5 text-[1rem] font-bold transition active:translate-y-px";
-const chipOn = "border-court-700 bg-court-700 text-white shadow-card";
-const chipOff = "border-ink-900/15 bg-white text-ink-700 hover:border-court-700/50 hover:text-court-800";
+import FilterChips from "./FilterChips";
 
 /**
- * Quick-filter chips (oladoc pattern) — writes to the URL so filtered results
- * are shareable. Only filters the backend supports: online, today, gender,
- * sort, city (via Near Me), practice area, text search.
+ * Search panel (practice-area select + text search) for the directory page.
+ * Rendered in normal page flow; the quick-filter chips live in a separate
+ * sticky bar (see FilterChips) that stays visible while results scroll.
  */
-export default function FilterBar() {
+export function FilterSearchPanel() {
+  return (
+    <div className="rounded-lg border border-ink-900/10 bg-white p-5 shadow-card">
+      <SearchFields />
+    </div>
+  );
+}
+
+function SearchFields() {
   const router = useRouter();
   const sp = useSearchParams();
   const [q, setQ] = useState(sp.get("q") ?? "");
-  const [nearSlug, setNearSlug] = useState<string | null>(() => rememberedCitySlug());
-  const [detecting, setDetecting] = useState(false);
 
   const push = (p: URLSearchParams) => {
     p.delete("page");
     router.push(`/lawyers?${p.toString()}`, { scroll: false });
   };
   const get = (k: string) => sp.get(k) ?? "";
-
-  /** Toggle a flag param (online=1, today=1, gender=female) on/off. */
-  const toggleFlag = (k: string, v: string) => {
-    const p = new URLSearchParams(sp.toString());
-    if (p.get(k) === v) p.delete(k);
-    else p.set(k, v);
-    push(p);
-  };
-
-  /** Sort chips are mutually exclusive — tapping the active one clears it. */
-  const toggleSort = (v: string) => {
-    const p = new URLSearchParams(sp.toString());
-    if (p.get("sort") === v) p.delete("sort");
-    else p.set("sort", v);
-    push(p);
-  };
-
-  /** Near Me: toggle the remembered city; detect live if none remembered yet. */
-  const toggleNearMe = async () => {
-    const p = new URLSearchParams(sp.toString());
-    const saved = rememberedCitySlug();
-    if (saved) {
-      if (p.get("city") === saved) p.delete("city");
-      else p.set("city", saved);
-      push(p);
-      return;
-    }
-    if (detecting) return;
-    setDetecting(true);
-    try {
-      const slug = await detectCitySlug();
-      rememberCitySlug(slug);
-      setNearSlug(slug);
-      p.set("city", slug);
-      push(p);
-    } catch {
-      /* geolocation failed — user can still pick a city from the homepage search */
-    } finally {
-      setDetecting(false);
-    }
-  };
 
   const submitSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -85,19 +39,11 @@ export default function FilterBar() {
     push(p);
   };
 
-  const onlineActive = get("online") === "1";
-  const todayActive = get("today") === "1";
-  const femaleActive = get("gender") === "female";
-  const sortActive = get("sort");
-  const nearActive = !!nearSlug && get("city") === nearSlug;
-  const anyActive = onlineActive || todayActive || femaleActive || !!sortActive || !!nearActive || !!get("q") || !!get("area");
-
   const selectCls =
     "min-h-[52px] w-full rounded-lg border border-ink-900/15 bg-white px-4 text-[1.02rem] font-semibold text-ink-900 outline-none transition focus:border-court-600 focus:ring-2 focus:ring-court-600/20";
 
   return (
-    <div className="rounded-lg border border-ink-900/10 bg-white p-5 shadow-card">
-      <div className="grid gap-3 sm:grid-cols-2">
+    <div className="grid gap-3 sm:grid-cols-2">
         <label className="block">
           <span className="mb-1 block text-sm font-bold text-ink-600"><T en="Legal Problem" ur="قانونی مسئلہ" /></span>
           <select
@@ -138,67 +84,21 @@ export default function FilterBar() {
             </button>
           </span>
         </form>
-      </div>
+    </div>
+  );
+}
 
-      <div
-        className="mt-4 flex gap-2 overflow-x-auto pb-1 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
-        role="group"
-        aria-label="Quick filters"
-      >
-        <button
-          type="button"
-          onClick={() => toggleFlag("online", "1")}
-          aria-pressed={onlineActive}
-          className={`${chipBase} ${onlineActive ? chipOn : chipOff}`}
-        >
-          <T en="Online Consultation" ur="آن لائن مشاورت" />
-        </button>
-        <button
-          type="button"
-          onClick={() => toggleFlag("today", "1")}
-          aria-pressed={todayActive}
-          className={`${chipBase} ${todayActive ? chipOn : chipOff}`}
-        >
-          <T en="Available Today" ur="آج دستیاب" />
-        </button>
-        {SORT_CHIPS.map((s) => (
-          <button
-            key={s.value}
-            type="button"
-            onClick={() => toggleSort(s.value)}
-            aria-pressed={sortActive === s.value}
-            className={`${chipBase} ${sortActive === s.value ? chipOn : chipOff}`}
-          >
-            <T en={s.en} ur={s.ur} />
-          </button>
-        ))}
-        <button
-          type="button"
-          onClick={() => toggleFlag("gender", "female")}
-          aria-pressed={femaleActive}
-          className={`${chipBase} ${femaleActive ? chipOn : chipOff}`}
-        >
-          <T en="Female Lawyers" ur="خاتون وکیل" />
-        </button>
-        <button
-          type="button"
-          onClick={toggleNearMe}
-          aria-pressed={nearActive}
-          disabled={detecting}
-          className={`${chipBase} ${nearActive ? chipOn : chipOff} ${detecting ? "opacity-60" : ""}`}
-        >
-          <T en={detecting ? "Detecting…" : "Near Me"} ur={detecting ? "معلوم کیا جا رہا ہے…" : "میرے قریب"} />
-        </button>
-        {anyActive && (
-          <button
-            type="button"
-            onClick={() => router.push("/lawyers", { scroll: false })}
-            className={`${chipBase} border-clay-200 bg-clay-50 text-clay-700 hover:bg-clay-100`}
-          >
-            <CloseIcon className="h-4 w-4" />
-            <T en="Clear all" ur="صاف کریں" />
-          </button>
-        )}
+/**
+ * Back-compat default: search panel + chips in one card, as before.
+ * The directory page now renders FilterSearchPanel in flow and FilterChips
+ * in a sticky bar instead.
+ */
+export default function FilterBar() {
+  return (
+    <div className="rounded-lg border border-ink-900/10 bg-white p-5 shadow-card">
+      <SearchFields />
+      <div className="mt-4">
+        <FilterChips />
       </div>
     </div>
   );

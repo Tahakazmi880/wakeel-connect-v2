@@ -6,8 +6,19 @@ import { PrimaryBtn, SectionHead } from "@/components/ui";
 import SeoArticle from "@/components/SeoArticle";
 import LawyerCard from "@/components/LawyerCard";
 import { ArrowIcon, BriefcaseIcon } from "@/components/icons";
-import { CITIES, getPracticeArea, PRACTICE_AREAS } from "@/lib/data";
+import { CITIES, getPracticeArea, PRACTICE_AREAS, formatPKR } from "@/lib/data";
 import { API_V1, type LawyerSummary } from "@/lib/api";
+
+/** Real min–max fee range from live directory data (0 = "on request", excluded). */
+function feeRangeFor(lawyers: LawyerSummary[]): string | null {
+  const fees = lawyers
+    .map((l) => l.consultationFeePaisa ?? 0)
+    .filter((f) => f > 0);
+  if (fees.length === 0) return null;
+  const min = Math.min(...fees);
+  const max = Math.max(...fees);
+  return min === max ? formatPKR(min) : `${formatPKR(min)} – ${formatPKR(max)}`;
+}
 
 export async function generateStaticParams() {
   return PRACTICE_AREAS.map((a) => ({ area: a.slug }));
@@ -82,7 +93,7 @@ export default async function AreaPage({ params }: { params: Promise<{ area: str
         </section>
       )}
 
-      <SeoArticle area={a} />
+      <SeoArticle area={a} feeRange={feeRangeFor(lawyers)} />
 
       <div className="mt-14 text-center">
         <PrimaryBtn href="/lawyers" icon={<ArrowIcon className="h-6 w-6" />}>

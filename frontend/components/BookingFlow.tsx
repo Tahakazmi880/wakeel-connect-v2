@@ -102,13 +102,18 @@ function PhoneModal({
     return () => clearTimeout(t);
   }, [ttl]);
 
-  // Close on Escape.
+  // Close on Escape + lock body scroll while open.
   useEffect(() => {
     const h = (e: KeyboardEvent) => {
       if (e.key === "Escape") onClose();
     };
     window.addEventListener("keydown", h);
-    return () => window.removeEventListener("keydown", h);
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      window.removeEventListener("keydown", h);
+      document.body.style.overflow = prev;
+    };
   }, [onClose]);
 
   const phoneValid = phone.length === 10 && phone.startsWith("3");
@@ -146,16 +151,27 @@ function PhoneModal({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-end justify-center bg-ink-950/60 p-4 sm:items-center"
+      className="fixed inset-0 z-50 flex items-end justify-center bg-ink-950/60 sm:items-center sm:p-4"
       role="dialog"
       aria-modal="true"
       aria-label="Login with phone"
       onClick={onClose}
     >
+      {/* Mobile bottom-sheet slide-up (desktop keeps the centered fade). */}
+      <style jsx global>{`
+        @keyframes wc-sheet-up {
+          from { transform: translateY(28px); opacity: 0.4; }
+          to { transform: translateY(0); opacity: 1; }
+        }
+        @media (max-width: 639px) {
+          .wc-sheet-panel { animation: wc-sheet-up 0.28s ease-out; }
+        }
+      `}</style>
       <div
-        className="w-full max-w-md rounded-2xl bg-white p-6 shadow-lift sm:p-8"
+        className="wc-sheet-panel max-h-[92vh] w-full max-w-md overflow-y-auto rounded-b-none rounded-t-3xl bg-white p-6 pt-3 shadow-lift sm:rounded-2xl sm:p-8"
         onClick={(e) => e.stopPropagation()}
       >
+        <span className="mx-auto mb-3 block h-1.5 w-12 rounded-full bg-ink-900/15 sm:hidden" aria-hidden />
         <div className="flex items-start justify-between gap-4">
           <div>
             <h2 className="font-display text-[1.5rem] font-semibold text-ink-950">

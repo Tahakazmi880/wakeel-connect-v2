@@ -2,11 +2,12 @@ import { Suspense } from "react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { T } from "@/components/LanguageContext";
-import FilterBar from "@/components/FilterBar";
+import { FilterSearchPanel } from "@/components/FilterBar";
+import FilterChips from "@/components/FilterChips";
 import LawyerCard from "@/components/LawyerCard";
 import { ArrowIcon, SearchIcon } from "@/components/icons";
 import { API_V1, type LawyerSummary } from "@/lib/api";
-import { PRACTICE_AREAS, getCity } from "@/lib/data";
+import { PRACTICE_AREAS, getCity, getCourt } from "@/lib/data";
 
 export const metadata: Metadata = {
   title: "Find a Lawyer — wakeel.connect",
@@ -54,13 +55,14 @@ function DirectoryHeading({ total, sp }: { total: number; sp: Record<string, str
   const city = pick(sp.city) ? getCity(pick(sp.city)!) : undefined;
   const area = pick(sp.area) ? PRACTICE_AREAS.find((a) => a.slug === pick(sp.area)) : undefined;
   const q = pick(sp.q)?.trim();
+  const court = pick(sp.court) ? getCourt(pick(sp.court)!) : undefined;
 
   const nounEn = `${female ? "female " : ""}${total === 1 ? "lawyer" : "lawyers"}`;
-  const en = `${total} ${nounEn}${city ? ` in ${city.nameEn}` : ""}${area ? ` — ${area.nameEn}` : ""}${q ? ` for "${q}"` : ""}`;
-  const ur = `${city ? `${city.nameUr} میں ` : ""}${total} ${female ? "خاتون " : ""}وکیل${area ? ` — ${area.nameUr}` : ""}${q ? ` — "${q}"` : ""}`;
+  const en = `${total} ${nounEn}${city ? ` in ${city.nameEn}` : ""}${area ? ` — ${area.nameEn}` : ""}${court ? ` — ${court.nameEn}` : ""}${q ? ` for "${q}"` : ""}`;
+  const ur = `${city ? `${city.nameUr} میں ` : ""}${total} ${female ? "خاتون " : ""}وکیل${area ? ` — ${area.nameUr}` : ""}${court ? ` — ${court.nameUr}` : ""}${q ? ` — "${q}"` : ""}`;
 
   return (
-    <h1 className="mt-3 font-display text-[2.25rem] font-semibold text-ink-950 sm:text-4xl">
+    <h1 className="font-display text-[2.25rem] font-semibold text-ink-950 sm:text-4xl">
       <T en={en} ur={ur} />
     </h1>
   );
@@ -76,6 +78,7 @@ export default async function LawyersPage({ searchParams }: Props) {
   const today = pick(sp.today);
   const gender = pick(sp.gender);
   const sort = pick(sp.sort);
+  const court = pick(sp.court);
   const page = Math.max(1, Number(pick(sp.page)) || 1);
   if (city) q.set("city", city);
   if (area) q.set("area", area);
@@ -84,6 +87,7 @@ export default async function LawyersPage({ searchParams }: Props) {
   if (today) q.set("today", today);
   if (gender) q.set("gender", gender);
   if (sort) q.set("sort", sort);
+  if (court) q.set("court", court);
   q.set("page", String(page));
   q.set("limit", String(LIMIT));
 
@@ -102,12 +106,22 @@ export default async function LawyersPage({ searchParams }: Props) {
         </span>
       </nav>
 
-      <DirectoryHeading total={total} sp={sp} />
-      <span aria-hidden className="mt-4 block h-[3px] w-12 bg-brass-500" />
+      {/* Dynamic heading: the count announces through aria-live so filter
+          changes never shift the layout or leave the count stale. */}
+      <div className="mt-3 min-h-[4.5rem] sm:min-h-[5rem]" aria-live="polite">
+        <DirectoryHeading total={total} sp={sp} />
+        <span aria-hidden className="mt-4 block h-[3px] w-12 bg-brass-500" />
+      </div>
 
+      {/* Search panel scrolls away; chips stick under the header (oladoc pattern). */}
       <div className="mt-6">
         <Suspense fallback={null}>
-          <FilterBar />
+          <FilterSearchPanel />
+        </Suspense>
+      </div>
+      <div className="sticky top-16 z-30 -mx-4 mt-2 border-b border-ink-900/10 bg-paper/95 px-4 py-2.5 backdrop-blur">
+        <Suspense fallback={null}>
+          <FilterChips />
         </Suspense>
       </div>
 

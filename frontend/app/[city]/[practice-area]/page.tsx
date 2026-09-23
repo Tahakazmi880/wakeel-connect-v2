@@ -11,8 +11,20 @@ import {
   getCity,
   getPracticeArea,
   PRACTICE_AREAS,
+  formatPKR,
 } from "@/lib/data";
 import { API_V1, type LawyerSummary } from "@/lib/api";
+
+/** Real min–max fee range from live directory data (0 = "on request", excluded). */
+function feeRangeFor(lawyers: LawyerSummary[]): string | null {
+  const fees = lawyers
+    .map((l) => l.consultationFeePaisa ?? 0)
+    .filter((f) => f > 0);
+  if (fees.length === 0) return null;
+  const min = Math.min(...fees);
+  const max = Math.max(...fees);
+  return min === max ? formatPKR(min) : `${formatPKR(min)} – ${formatPKR(max)}`;
+}
 
 async function fetchCityAreaLawyers(citySlug: string, areaSlug: string): Promise<LawyerSummary[]> {
   try {
@@ -119,7 +131,7 @@ export default async function CityAreaPage({ params }: { params: Promise<{ city:
         {lawyers.map((l) => <LawyerCard key={l.slug} lawyer={l} />)}
       </div>
 
-      <SeoArticle area={a} citySlug={c.slug} />
+      <SeoArticle area={a} citySlug={c.slug} feeRange={feeRangeFor(lawyers)} />
 
       {/* How booking works */}
       <section className="mt-14">

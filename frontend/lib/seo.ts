@@ -1,4 +1,4 @@
-import { LAWYERS, formatPKR, type PracticeArea } from "./data";
+import { type PracticeArea } from "./data";
 
 export interface AreaGuide {
   whoEn: string;
@@ -87,15 +87,14 @@ export const AREA_GUIDES: Record<string, AreaGuide> = {
   },
 };
 
-/** Min–max consultation fee currently listed for a practice area, or null. */
-export function feeRangeForArea(areaSlug: string): string | null {
-  const fees = LAWYERS.filter((l) => l.practiceAreaSlugs.includes(areaSlug)).map(
-    (l) => l.consultationFeePaisa
-  );
-  if (fees.length === 0) return null;
-  const min = Math.min(...fees);
-  const max = Math.max(...fees);
-  return min === max ? formatPKR(min) : `${formatPKR(min)} – ${formatPKR(max)}`;
+/**
+ * DEPRECATED — do not use. It computed fee ranges from the hard-coded mock
+ * LAWYERS array, which is not the real directory data. Fee ranges shown in
+ * the UI are now computed from live API results and passed explicitly
+ * (see SeoArticle's `feeRange` prop). Kept only to avoid breaking imports.
+ */
+export function feeRangeForArea(_areaSlug: string): string | null {
+  return null;
 }
 
 export function areaGuide(area: PracticeArea): AreaGuide {
