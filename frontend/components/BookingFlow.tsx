@@ -1,10 +1,10 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { T } from "./LanguageContext";
-import { PrimaryBtn, Rating, SecondaryBtn, VerifiedBadge } from "./ui";
+import { PrimaryBtn, Rating, SecondaryBtn } from "./ui";
 import { PhotoAvatar } from "./PhotoAvatar";
 import {
   CalendarIcon,
@@ -15,15 +15,32 @@ import {
   VideoIcon,
   WalletIcon,
 } from "./icons";
-import { formatPKR, getLawyer, nextSlotDays } from "@/lib/data";
-import { saveBooking, setSession, type CaseDocMeta } from "@/lib/session";
+import SlotPicker, { slotToISO, type SlotPick } from "./SlotPicker";
+import {
+  ApiError,
+  createBooking,
+  fileUrl,
+  formatFee,
+  getLawyer,
+  getLawyerSlots,
+  restoreSession,
+  type Booking,
+  type BookingMode,
+  type LawyerSummary,
+  type SlotDay,
+} from "@/lib/api";
+import { useAuth } from "@/lib/useAuth";
 
-const MODE_LABEL = { video: { en: "Video Call", ur: "ویڈیو کال" }, chamber: { en: "Office Visit", ur: "دفتر کی ملاقات" } };
+const MODES: { id: BookingMode; en: string; ur: string; icon: (c: string) => React.ReactNode }[] = [
+  { id: "ONLINE_VIDEO", en: "Video Call", ur: "ویڈیو کال", icon: (c) => <VideoIcon className={c} /> },
+  { id: "IN_CHAMBER", en: "Office Visit", ur: "دفتر کی ملاقات", icon: (c) => <OfficeIcon className={c} /> },
+  { id: "PHONE", en: "Phone Call", ur: "فون کال", icon: (c) => <PhoneIcon className={c} /> },
+];
 
 function StepDots({ step }: { step: number }) {
   const labels = [
     { en: "Time", ur: "وقت" },
-    { en: "Phone", ur: "فون" },
+    { en: "Confirm", ur: "تصدیق" },
     { en: "Done", ur: "ہو گیا" },
   ];
   return (
@@ -55,143 +72,206 @@ function StepDots({ step }: { step: number }) {
 
 export default function BookingFlow({ lawyerSlug }: { lawyerSlug: string }) {
   const searchParams = useSearchParams();
-  const lawyer = getLawyer(lawyerSlug);
+  const { user } = useAuth();
+  const [ready, setReady] = useState(false);
 
-  const [mode, setMode] = useState<"video" | "chamber">(
-    searchParams.get("mode") === "chamber" ? "chamber" : "video"
-  );
+  const [lawyer, setLawyer] = useState<LawyerSummary | null>(null);
+  const [loadError, setLoadError] = useState("");
+  const [days, setDays] = useState<SlotDay[]>([]);
+  const [slotsLoading, setSlotsLoading] = useState(true);
+
+  const [mode, setMode] = useState<BookingMode>(() => {
+    const m = searchParams.get("mode")?.toUpperCase();
+    return m === "IN_CHAMBER" || m === "PHONE" ? (m as BookingMode) : "ONLINE_VIDEO";
+  });
   const [step, setStep] = useState(1);
-  const [dayIdx, setDayIdx] = useState(0);
-  const [slot, setSlot] = useState<string | null>(null);
-  const [phone, setPhone] = useState("");
-  const [otp, setOtp] = useState("");
-  const [otpSent, setOtpSent] = useState(false);
-  const [docs, setDocs] = useState<CaseDocMeta[]>([]);
-  const [docError, setDocError] = useState("");
+  const [pick, setPick] = useState<SlotPick | null>(null);
+  const [note, setNote] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState("");
+  const [booking, setBooking] = useState<Booking | null>(null);
 
-  const days = useMemo(() => (lawyer ? nextSlotDays(lawyer.slug) : []), [lawyer]);
+  // Session restore + lawyer + slots
+  useEffect(() => {
+    restoreSession().finally(() => setReady(true));
+  }, []);
 
-  if (!lawyer) {
+  useEffect(() => {
+    let cancelled = false;
+    getLawyer(lawyerSlug)
+      .then(({ lawyer }) => {
+        if (!cancelled) setLawyer(lawyer);
+      })
+      .catch(() => {
+        if (!cancelled) setLoadError("not-found");
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [lawyerSlug]);
+
+  const loadSlots = () => {
+    setSlotsLoading(true);
+    getLawyerSlots(lawyerSlug, 7)
+      .then(({ days }) => setDays(days))
+      .catch(() => setDays([]))
+      .finally(() => setSlotsLoading(false));
+  };
+  useEffect(loadSlots, [lawyerSlug]);
+
+  const initialPick: SlotPick | null =
+    searchParams.get("date") && searchParams.get("start")
+      ? { date: searchParams.get("date")!, start: searchParams.get("start")! }
+      : null;
+
+  if (!ready || !lawyer) {
     return (
-      <div className="mx-auto max-w-xl px-4 py-16 text-center">
-        <p className="text-xl font-extrabold text-slate-800"><T en="Lawyer not found" ur="وکیل نہیں ملا" /></p>
-        <Link href="/lawyers" className="mt-4 inline-block font-bold text-emerald-700 hover:underline">
-          <T en="Back to lawyers" ur="وکیلوں کی فہرست" />
-        </Link>
+      <div className="mx-auto max-w-3xl px-4 py-16 text-center">
+        {loadError ? (
+          <>
+            <p className="text-xl font-extrabold text-slate-800"><T en="Lawyer not found" ur="وکیل نہیں ملا" /></p>
+            <Link href="/lawyers" className="mt-4 inline-block font-bold text-emerald-700 hover:underline">
+              <T en="Back to lawyers" ur="وکیلوں کی فہرست" />
+            </Link>
+          </>
+        ) : (
+          <p className="text-lg font-bold text-slate-500">…</p>
+        )}
       </div>
     );
   }
 
-  const day = days[dayIdx];
-  const fee = formatPKR(lawyer.consultationFeePaisa);
-  // Unique per booking — Date.now + random so two bookings never share a reference.
-  const [bookingRef] = useState(
-    () => `BK-${Date.now().toString(36).toUpperCase()}${Math.floor(Math.random() * 1296).toString(36).toUpperCase().padStart(2, "0")}`
-  );
+  // ---- auth gate ----
+  if (!user) {
+    const next = `/book/${lawyerSlug}${searchParams.toString() ? `?${searchParams.toString()}` : ""}`;
+    return (
+      <div className="mx-auto max-w-xl px-4 py-16 text-center">
+        <span className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-emerald-100">
+          <PhoneIcon className="h-10 w-10 text-emerald-700" />
+        </span>
+        <h1 className="mt-6 text-3xl font-extrabold text-slate-900">
+          <T en="Login to book" ur="بکنگ کے لیے لاگ اِن کریں" />
+        </h1>
+        <p className="mt-2 text-lg text-slate-600">
+          <T en="Enter your mobile number — we'll send a code. No password needed." ur="اپنا موبائل نمبر لکھیں — کوڈ آئے گا۔ پاس ورڈ کی ضرورت نہیں۔" />
+        </p>
+        <div className="mt-8">
+          <PrimaryBtn href={`/login?next=${encodeURIComponent(next)}`} icon={<PhoneIcon className="h-6 w-6" />}>
+            <T en="Login with phone" ur="فون سے لاگ اِن" />
+          </PrimaryBtn>
+        </div>
+      </div>
+    );
+  }
+
+  const fee = formatFee(lawyer.consultationFeePaisa);
+  const modeInfo = MODES.find((m) => m.id === mode)!;
+  const pickedDay = pick ? days.find((d) => d.date === pick.date) : undefined;
+
+  const confirmBooking = async () => {
+    if (!pick || submitting) return;
+    setSubmitting(true);
+    setError("");
+    try {
+      const { booking } = await createBooking({
+        lawyerId: lawyer.id,
+        startAt: slotToISO(pick.date, pick.start),
+        mode,
+        clientNote: note.trim() || undefined,
+      });
+      setBooking(booking);
+      setStep(3);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    } catch (e) {
+      if (e instanceof ApiError && e.code === "SLOT_TAKEN") {
+        setError("taken");
+        loadSlots();
+        setPick(null);
+        setStep(1);
+      } else if (e instanceof ApiError && e.code === "INVALID_SLOT") {
+        setError("past");
+      } else {
+        setError("generic");
+      }
+    } finally {
+      setSubmitting(false);
+    }
+  };
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-10">
       {/* lawyer summary */}
       <div className="flex items-center gap-4 rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
-        <PhotoAvatar name={lawyer.displayName} photo={lawyer.photo} size="sm" />
+        <PhotoAvatar name={lawyer.displayName} photo={fileUrl(lawyer.photoUrl) ?? undefined} size="sm" />
         <div className="min-w-0 flex-1">
-          <p className="flex flex-wrap items-center gap-2 text-lg font-extrabold text-slate-900">
-            {lawyer.displayName} <VerifiedBadge />
-          </p>
-          <Rating rating={lawyer.rating} count={lawyer.reviewCount} />
+          <p className="text-lg font-extrabold text-slate-900">{lawyer.displayName}</p>
+          <Rating rating={lawyer.ratingAvg} count={lawyer.ratingCount} />
         </div>
-        <p className="text-xl font-extrabold text-emerald-800">{fee}</p>
+        <p className="text-xl font-extrabold text-emerald-800">
+          {fee ?? <T en="Fee on request" ur="فیس معلوم کریں" />}
+        </p>
       </div>
 
       <div className="mt-8"><StepDots step={step} /></div>
 
-      {/* ============ STEP 1: TIME ============ */}
+      {error === "taken" && (
+        <p className="mx-auto mt-6 max-w-xl rounded-2xl bg-amber-50 px-5 py-4 text-center text-base font-bold text-amber-900 ring-1 ring-amber-200">
+          <T en="That slot was just taken — please pick another time." ur="یہ وقت ابھی بک ہو گیا — کوئی اور وقت چنیں۔" />
+        </p>
+      )}
+      {error === "past" && (
+        <p className="mx-auto mt-6 max-w-xl rounded-2xl bg-amber-50 px-5 py-4 text-center text-base font-bold text-amber-900 ring-1 ring-amber-200">
+          <T en="Please pick a time at least 15 minutes in the future." ur="کم از کم ۱۵ منٹ بعد کا وقت چنیں۔" />
+        </p>
+      )}
+      {error === "generic" && (
+        <p className="mx-auto mt-6 max-w-xl rounded-2xl bg-red-50 px-5 py-4 text-center text-base font-bold text-red-800 ring-1 ring-red-200">
+          <T en="Something went wrong. Please try again." ur="کچھ غلط ہو گیا۔ دوبارہ کوشش کریں۔" />
+        </p>
+      )}
+
+      {/* ============ STEP 1: MODE + TIME ============ */}
       {step === 1 && (
         <section className="mt-8 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8" aria-label="Choose time">
           <h1 className="text-2xl font-extrabold text-slate-900">
             <T en="When should we book you?" ur="کب بک کریں؟" />
           </h1>
           <p className="mt-2 inline-flex items-center gap-2 rounded-full bg-emerald-50 px-4 py-1.5 text-sm font-bold text-emerald-800">
-            <T en="⚡ Takes about a minute · No account needed" ur="⚡ تقریباً ایک منٹ · اکاؤنٹ کی ضرورت نہیں" />
+            <T en="⚡ Takes about a minute" ur="⚡ تقریباً ایک منٹ" />
           </p>
 
           <p className="mb-2 mt-6 text-base font-extrabold text-slate-700"><T en="How do you want to meet?" ur="ملاقات کیسے ہوگی؟" /></p>
-          <div className="grid grid-cols-2 gap-3">
-            {(["video", "chamber"] as const).map((m) => (
+          <div className="grid grid-cols-3 gap-3">
+            {MODES.map((m) => (
               <button
-                key={m}
+                key={m.id}
                 type="button"
-                onClick={() => setMode(m)}
-                aria-pressed={mode === m}
-                className={`flex min-h-[64px] items-center justify-center gap-2 rounded-2xl border-2 text-lg font-extrabold transition ${
-                  mode === m ? "border-emerald-700 bg-emerald-700 text-white shadow" : "border-slate-200 bg-white text-slate-700 hover:border-emerald-400"
+                onClick={() => setMode(m.id)}
+                aria-pressed={mode === m.id}
+                className={`flex min-h-[72px] flex-col items-center justify-center gap-1 rounded-2xl border-2 text-base font-extrabold transition sm:flex-row sm:gap-2 sm:text-lg ${
+                  mode === m.id ? "border-emerald-700 bg-emerald-700 text-white shadow" : "border-slate-200 bg-white text-slate-700 hover:border-emerald-400"
                 }`}
               >
-                {m === "video" ? <VideoIcon className="h-6 w-6" /> : <OfficeIcon className="h-6 w-6" />}
-                <T en={MODE_LABEL[m].en} ur={MODE_LABEL[m].ur} />
+                {m.icon("h-6 w-6")}
+                <T en={m.en} ur={m.ur} />
               </button>
             ))}
           </div>
 
-          <p className="mb-2 mt-6 text-base font-extrabold text-slate-700">
-            <T en="Pick a day" ur="دن چنیں" />
-          </p>
-          <div className="wc-rail flex gap-2 overflow-x-auto pb-2" role="radiogroup" aria-label="Day">
-            {days.map((d, i) => (
-              <button
-                key={d.date.toISOString()}
-                type="button"
-                role="radio"
-                aria-checked={dayIdx === i}
-                onClick={() => { setDayIdx(i); setSlot(null); }}
-                className={`min-h-[72px] min-w-[86px] shrink-0 rounded-2xl border-2 px-3 py-2 text-center transition ${
-                  dayIdx === i ? "border-emerald-700 bg-emerald-700 text-white shadow" : "border-slate-200 bg-white text-slate-700 hover:border-emerald-400"
-                }`}
-              >
-                <span className="block text-sm font-bold opacity-80">{d.label}</span>
-                <span className="block text-lg font-extrabold">{d.sub}</span>
-              </button>
-            ))}
+          <div className="mt-6">
+            <SlotPicker days={days} loading={slotsLoading} initial={initialPick} onPick={setPick} />
           </div>
-
-          {day && (
-            <>
-              <p className="mb-2 mt-6 text-base font-extrabold text-slate-700">
-                <T en="Pick a time" ur="وقت چنیں" />
-              </p>
-              <div className="grid grid-cols-3 gap-2 sm:grid-cols-4" role="radiogroup" aria-label="Time slot">
-                {day.slots.map((s) => (
-                  <button
-                    key={s.time}
-                    type="button"
-                    role="radio"
-                    aria-checked={slot === s.time}
-                    disabled={s.taken}
-                    onClick={() => setSlot(s.time)}
-                    className={`min-h-[52px] rounded-xl border-2 text-base font-bold transition ${
-                      s.taken
-                        ? "cursor-not-allowed border-slate-100 bg-slate-50 text-slate-300 line-through"
-                        : slot === s.time
-                          ? "border-emerald-700 bg-emerald-700 text-white shadow"
-                          : "border-slate-200 bg-white text-slate-700 hover:border-emerald-400"
-                    }`}
-                  >
-                    {s.time}
-                  </button>
-                ))}
-              </div>
-            </>
-          )}
 
           <div className="mt-8">
             <PrimaryBtn
               className="w-full"
-              icon={<PhoneIcon className="h-6 w-6" />}
-              onClick={() => slot && setStep(2)}
+              icon={<CalendarIcon className="h-6 w-6" />}
+              disabled={!pick}
+              onClick={() => pick && setStep(2)}
             >
-              <T en={slot ? "Continue" : "First pick a time above"} ur={slot ? "آگے بڑھیں" : "پہلے اوپر وقت چنیں"} />
+              <T en={pick ? "Continue" : "First pick a time above"} ur={pick ? "آگے بڑھیں" : "پہلے اوپر وقت چنیں"} />
             </PrimaryBtn>
-            {!slot && (
+            {!pick && (
               <p className="mt-2 text-center text-sm font-semibold text-amber-700">
                 <T en="Tap a day and a time slot to continue." ur="آگے بڑھنے کے لیے دن اور وقت چنیں۔" />
               </p>
@@ -200,161 +280,49 @@ export default function BookingFlow({ lawyerSlug }: { lawyerSlug: string }) {
         </section>
       )}
 
-      {/* ============ STEP 2: PHONE (+ OTP placeholder) ============ */}
-      {step === 2 && (
-        <section className="mt-8 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8" aria-label="Phone number">
+      {/* ============ STEP 2: CONFIRM ============ */}
+      {step === 2 && pick && (
+        <section className="mt-8 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8" aria-label="Confirm booking">
           <h1 className="text-2xl font-extrabold text-slate-900">
-            <T en="Your phone number" ur="آپ کا فون نمبر" />
+            <T en="Confirm your booking" ur="بکنگ کی تصدیق کریں" />
           </h1>
-          <p className="mt-2 text-lg text-slate-600">
-            <T en="We'll send a code to confirm. No password needed." ur="تصدیق کے لیے کوڈ بھیجیں گے۔ پاس ورڈ کی ضرورت نہیں۔" />
-          </p>
-          <p className="mt-3 flex items-start gap-2 rounded-2xl bg-amber-50 p-4 text-base font-semibold text-amber-900 ring-1 ring-amber-200">
-            <span aria-hidden>🔒</span>
-            <T
-              en="We share this number only with the lawyer you book, so they can confirm your appointment. It is never shown publicly."
-              ur="یہ نمبر صرف اس وکیل سے شیئر ہوگا جسے آپ بک کریں گے، تاکہ وہ آپ کی ملاقات کی تصدیق کر سکے۔ یہ کبھی عوامی نہیں دکھایا جائے گا۔"
-            />
-          </p>
 
-          <div className="mt-6 rounded-2xl bg-emerald-50 p-4 text-base font-semibold text-emerald-900 ring-1 ring-emerald-200">
-            <T en={`${MODE_LABEL[mode].en} · ${day?.label} ${day?.sub} · ${slot} · ${fee}`} ur={`${MODE_LABEL[mode].ur} · ${day?.label} ${day?.sub} · ${slot} · ${fee}`} />
+          <div className="mt-6 rounded-2xl bg-emerald-50 p-6 ring-1 ring-emerald-200">
+            <dl className="space-y-3 text-lg">
+              <div className="flex justify-between gap-4"><dt className="font-bold text-slate-500"><T en="Lawyer" ur="وکیل" /></dt><dd className="text-right font-extrabold text-slate-900">{lawyer.displayName}</dd></div>
+              <div className="flex justify-between gap-4"><dt className="font-bold text-slate-500"><T en="Meeting" ur="ملاقات" /></dt><dd className="text-right font-extrabold text-slate-900"><T en={modeInfo.en} ur={modeInfo.ur} /></dd></div>
+              <div className="flex justify-between gap-4"><dt className="font-bold text-slate-500"><T en="When" ur="کب" /></dt><dd className="text-right font-extrabold text-slate-900">{pickedDay?.label} · {pick.start}</dd></div>
+              <div className="flex justify-between gap-4"><dt className="font-bold text-slate-500"><T en="Fee" ur="فیس" /></dt><dd className="text-right font-extrabold text-emerald-800">{fee ?? <T en="On request" ur="معلوم کریں" />}</dd></div>
+            </dl>
           </div>
 
           <label className="mt-6 block">
-            <span className="mb-1 block text-base font-extrabold text-slate-700"><T en="Mobile number" ur="موبائل نمبر" /></span>
-            <span className="flex overflow-hidden rounded-2xl border-2 border-slate-200 focus-within:border-emerald-600">
-              <span className="flex min-h-[60px] items-center bg-slate-100 px-4 text-lg font-extrabold text-slate-700">+92</span>
-              <input
-                value={phone}
-                onChange={(e) => setPhone(e.target.value.replace(/\D/g, "").slice(0, 10))}
-                inputMode="numeric"
-                placeholder="300 1234567"
-                className="min-h-[60px] w-full px-4 text-xl font-bold tracking-wider text-slate-900 outline-none"
-                aria-label="Mobile number"
-              />
+            <span className="mb-1 block text-base font-extrabold text-slate-700">
+              <T en="Note for the lawyer (optional)" ur="وکیل کے لیے نوٹ (اختیاری)" />
             </span>
+            <textarea
+              value={note}
+              onChange={(e) => setNote(e.target.value.slice(0, 500))}
+              rows={3}
+              placeholder="…"
+              className="w-full rounded-2xl border-2 border-slate-200 px-4 py-3 text-lg text-slate-900 outline-none focus:border-emerald-600"
+            />
           </label>
 
-          {!otpSent ? (
-            <div className="mt-6">
-              <PrimaryBtn className="w-full" icon={<PhoneIcon className="h-6 w-6" />} onClick={() => phone.length >= 10 && setOtpSent(true)}>
-                <T en="Send code" ur="کوڈ بھیجیں" />
-              </PrimaryBtn>
-              {phone.length > 0 && phone.length < 10 && (
-                <p className="mt-2 text-center text-sm font-semibold text-amber-700">
-                  <T en="Please enter a full 10-digit number." ur="پورا ۱۰ ہندسوں کا نمبر لکھیں۔" />
-                </p>
-              )}
-            </div>
-          ) : (
-            <div className="mt-6 rounded-2xl bg-slate-50 p-5 ring-1 ring-slate-200">
-              {/* Case documents (optional) */}
-              <div className="mb-6 rounded-2xl border-2 border-dashed border-slate-300 bg-white p-5">
-                <p className="flex items-center gap-2 text-lg font-extrabold text-slate-800">
-                  <span aria-hidden>📎</span>
-                  <T en="Case documents (optional)" ur="کیس کے کاغذات (اختیاری)" />
-                </p>
-                <p className="mt-1 text-sm font-semibold text-slate-500">
-                  <T en="FIR copy, registry, notices — the lawyer reads them before your meeting." ur="ایف آئی آر کی نقل، رجسٹری، نوٹس — وکیل ملاقات سے پہلے پڑھ لے گا۔" />
-                </p>
-                <label className="mt-3 inline-flex min-h-[52px] cursor-pointer items-center gap-2 rounded-xl border-2 border-emerald-700 px-5 text-base font-bold text-emerald-800 transition hover:bg-emerald-50">
-                  <span aria-hidden>📤</span>
-                  <T en="Attach files" ur="فائلیں لگائیں" />
-                  <input
-                    type="file"
-                    multiple
-                    accept=".pdf,.jpg,.jpeg,.png,.webp,.doc,.docx"
-                    className="sr-only"
-                    onChange={(e) => {
-                      setDocError("");
-                      const files = Array.from(e.target.files ?? []);
-                      const fresh: CaseDocMeta[] = [];
-                      for (const f of files) {
-                        if (f.size > 10 * 1024 * 1024) {
-                          setDocError(f.name);
-                          continue;
-                        }
-                        fresh.push({ name: f.name, size: f.size, type: f.type });
-                      }
-                      setDocs((prev) => [...prev, ...fresh].slice(0, 5));
-                      e.target.value = "";
-                    }}
-                  />
-                </label>
-                {docError && (
-                  <p className="mt-2 text-sm font-bold text-red-700">
-                    <T en={`"${docError}" is over 10 MB and was skipped.`} ur={`"${docError}" ۱۰ ایم بی سے بڑی ہے، شامل نہیں ہوئی۔`} />
-                  </p>
-                )}
-                {docs.length > 0 ? (
-                  <ul className="mt-3 space-y-2">
-                    {docs.map((d, i) => (
-                      <li key={`${d.name}-${i}`} className="flex items-center justify-between gap-3 rounded-xl bg-emerald-50 px-4 py-2.5 ring-1 ring-emerald-200">
-                        <span className="min-w-0 flex-1 truncate text-base font-bold text-slate-800">{d.name}</span>
-                        <span className="shrink-0 text-sm font-semibold text-slate-500">{(d.size / 1024).toFixed(0)} KB</span>
-                        <button
-                          type="button"
-                          onClick={() => setDocs((prev) => prev.filter((_, j) => j !== i))}
-                          className="shrink-0 rounded-lg px-2 py-1 text-sm font-bold text-red-700 hover:bg-red-50"
-                          aria-label={`Remove ${d.name}`}
-                        >
-                          ✕
-                        </button>
-                      </li>
-                    ))}
-                  </ul>
-                ) : (
-                  <p className="mt-2 text-sm font-semibold text-slate-400">
-                    <T en="No files attached yet (max 5 files, 10 MB each)." ur="ابھی کوئی فائل نہیں (زیادہ سے زیادہ ۵ فائلیں، ہر ایک ۱۰ ایم بی)۔" />
-                  </p>
-                )}
-              </div>
-              <p className="text-base font-bold text-slate-700">
-                <T en={`Code sent to +92 ${phone} (demo — any 4 digits work)`} ur={`+92 ${phone} پر کوڈ بھیجا گیا (ڈیمو — کوئی بھی ۴ ہندسے)`} />
-              </p>
-              <label className="mt-3 block">
-                <span className="mb-1 block text-base font-extrabold text-slate-700"><T en="Enter code" ur="کوڈ لکھیں" /></span>
-                <input
-                  value={otp}
-                  onChange={(e) => setOtp(e.target.value.replace(/\D/g, "").slice(0, 4))}
-                  inputMode="numeric"
-                  placeholder="----"
-                  className="min-h-[60px] w-full rounded-2xl border-2 border-slate-200 px-4 text-center text-2xl font-extrabold tracking-[0.5em] text-slate-900 outline-none focus:border-emerald-600"
-                  aria-label="Verification code"
-                />
-              </label>
-              <div className="mt-5">
-                <PrimaryBtn
-                  className="w-full"
-                  icon={<CheckIcon className="h-6 w-6" />}
-                  onClick={() => {
-                    if (otp.length !== 4) return;
-                    saveBooking({
-                      id: bookingRef,
-                      lawyerSlug: lawyer.slug,
-                      mode,
-                      dateLabel: day?.label ?? "",
-                      dateSub: day?.sub ?? "",
-                      time: slot ?? "",
-                      feePaisa: lawyer.consultationFeePaisa,
-                      phone,
-                      docs,
-                      createdAt: Date.now(),
-                      status: "upcoming",
-                    });
-                    // The verified phone IS the account — booking confirms the session.
-                    setSession(phone);
-                    setStep(3);
-                  }}
-                >
-                  <T en="Confirm booking" ur="بکنگ پکی کریں" />
-                </PrimaryBtn>
-              </div>
-            </div>
-          )}
+          <p className="mt-4 flex items-start gap-2 rounded-2xl bg-slate-50 p-4 text-base font-semibold text-slate-600 ring-1 ring-slate-200">
+            <ShieldIcon className="h-6 w-6 shrink-0 text-emerald-700" />
+            <T
+              en="Your phone number is shared only with this lawyer to confirm the appointment. It is never shown publicly."
+              ur="آپ کا فون نمبر صرف اس وکیل سے شیئر ہوگا تاکہ ملاقات کی تصدیق ہو سکے۔ یہ کبھی عوامی نہیں دکھایا جائے گا۔"
+            />
+          </p>
 
-          <div className="mt-6 text-center">
+          <div className="mt-6">
+            <PrimaryBtn className="w-full" icon={<CheckIcon className="h-6 w-6" />} disabled={submitting} onClick={confirmBooking}>
+              <T en={submitting ? "Booking…" : "Confirm booking"} ur={submitting ? "بک ہو رہی ہے…" : "بکنگ پکی کریں"} />
+            </PrimaryBtn>
+          </div>
+          <div className="mt-4 text-center">
             <SecondaryBtn icon={<CalendarIcon className="h-5 w-5" />} onClick={() => setStep(1)}>
               <T en="Back to time" ur="وقت بدلیں" />
             </SecondaryBtn>
@@ -363,7 +331,7 @@ export default function BookingFlow({ lawyerSlug }: { lawyerSlug: string }) {
       )}
 
       {/* ============ STEP 3: DONE ============ */}
-      {step === 3 && (
+      {step === 3 && booking && (
         <section className="mt-8 rounded-3xl border border-slate-200 bg-white p-6 text-center shadow-sm sm:p-10" aria-label="Booking confirmed">
           <span className="mx-auto flex h-24 w-24 items-center justify-center rounded-full bg-emerald-100">
             <CheckIcon className="h-12 w-12 text-emerald-700" />
@@ -372,46 +340,31 @@ export default function BookingFlow({ lawyerSlug }: { lawyerSlug: string }) {
             <T en="Booking confirmed!" ur="بکنگ ہو گئی!" />
           </h1>
           <p className="mt-2 text-lg text-slate-600">
-            <T en={`Reference: ${bookingRef}`} ur={`حوالہ نمبر: ${bookingRef}`} />
+            <T en={`Reference: ${booking.id.slice(0, 8).toUpperCase()}`} ur={`حوالہ نمبر: ${booking.id.slice(0, 8).toUpperCase()}`} />
           </p>
 
           <div className="mx-auto mt-6 max-w-md rounded-2xl bg-emerald-50 p-6 text-left ring-1 ring-emerald-200">
             <dl className="space-y-3 text-lg">
               <div className="flex justify-between gap-4"><dt className="font-bold text-slate-500"><T en="Lawyer" ur="وکیل" /></dt><dd className="text-right font-extrabold text-slate-900">{lawyer.displayName}</dd></div>
-              <div className="flex justify-between gap-4"><dt className="font-bold text-slate-500"><T en="Meeting" ur="ملاقات" /></dt><dd className="text-right font-extrabold text-slate-900"><T en={MODE_LABEL[mode].en} ur={MODE_LABEL[mode].ur} /></dd></div>
-              <div className="flex justify-between gap-4"><dt className="font-bold text-slate-500"><T en="When" ur="کب" /></dt><dd className="text-right font-extrabold text-slate-900">{day?.label} {day?.sub} · {slot}</dd></div>
-              <div className="flex justify-between gap-4"><dt className="font-bold text-slate-500"><T en="Fee" ur="فیس" /></dt><dd className="text-right font-extrabold text-emerald-800">{fee}</dd></div>
+              <div className="flex justify-between gap-4"><dt className="font-bold text-slate-500"><T en="Meeting" ur="ملاقات" /></dt><dd className="text-right font-extrabold text-slate-900"><T en={modeInfo.en} ur={modeInfo.ur} /></dd></div>
+              <div className="flex justify-between gap-4"><dt className="font-bold text-slate-500"><T en="When" ur="کب" /></dt><dd className="text-right font-extrabold text-slate-900">{pickedDay?.label} · {pick?.start}</dd></div>
+              <div className="flex justify-between gap-4"><dt className="font-bold text-slate-500"><T en="Fee" ur="فیس" /></dt><dd className="text-right font-extrabold text-emerald-800">{fee ?? <T en="On request" ur="معلوم کریں" />}</dd></div>
             </dl>
           </div>
 
-          <p className="mx-auto mt-6 flex max-w-md items-start gap-2 text-left text-base text-slate-600">
-            <ShieldIcon className="h-6 w-6 shrink-0 text-emerald-700" />
-            <T
-              en="Demo booking — no real payment was taken. Payment options will appear here on the live site."
-              ur="ڈیمو بکنگ — کوئی حقیقی ادائیگی نہیں ہوئی۔ اصل سائٹ پر ادائیگی کے طریقے یہاں نظر آئیں گے۔"
-            />
-          </p>
-
           <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
-            {mode === "video" && (
-              <PrimaryBtn href={`/video/${bookingRef}`} icon={<VideoIcon className="h-6 w-6" />}>
+            {mode === "ONLINE_VIDEO" && (
+              <PrimaryBtn href={`/video/${booking.id}`} icon={<VideoIcon className="h-6 w-6" />}>
                 <T en="Join video call" ur="ویڈیو کال جوائن کریں" />
               </PrimaryBtn>
             )}
             <PrimaryBtn href="/dashboard" icon={<CalendarIcon className="h-6 w-6" />}>
               <T en="My bookings" ur="میری بکنگز" />
             </PrimaryBtn>
-            <SecondaryBtn href="/lawyers" icon={<VideoIcon className="h-6 w-6" />}>
+            <SecondaryBtn href="/lawyers">
               <T en="Book another" ur="ایک اور بک کریں" />
             </SecondaryBtn>
           </div>
-
-          {docs.length > 0 && (
-            <p className="mt-4 text-center text-base font-bold text-emerald-800">
-              <T en={`📎 ${docs.length} document${docs.length > 1 ? "s" : ""} attached — the lawyer will review them before your meeting.`}
-                 ur={`📎 ${docs.length} کاغذات منسلک — وکیل ملاقات سے پہلے انہیں دیکھ لے گا۔`} />
-            </p>
-          )}
 
           <p className="mt-6 inline-flex items-center gap-2 text-base font-bold text-slate-500">
             <WalletIcon className="h-5 w-5" />
