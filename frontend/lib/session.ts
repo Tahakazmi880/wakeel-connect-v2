@@ -20,6 +20,12 @@ export interface Session {
 
 export type BookingStatus = "upcoming" | "completed" | "cancelled";
 
+export interface CaseDocMeta {
+  name: string;
+  size: number; // bytes
+  type: string; // MIME type
+}
+
 export interface MyBooking {
   id: string;
   lawyerSlug: string;
@@ -29,6 +35,7 @@ export interface MyBooking {
   time: string;
   feePaisa: number;
   phone: string; // booker's phone — links a guest booking to the session
+  docs: CaseDocMeta[]; // document metadata only (files upload on the live backend)
   createdAt: number;
   status: BookingStatus;
 }

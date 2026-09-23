@@ -16,7 +16,7 @@ import {
   WalletIcon,
 } from "./icons";
 import { formatPKR, getLawyer, nextSlotDays } from "@/lib/data";
-import { saveBooking } from "@/lib/session";
+import { saveBooking, setSession, type CaseDocMeta } from "@/lib/session";
 
 const MODE_LABEL = { video: { en: "Video Call", ur: "ویڈیو کال" }, chamber: { en: "Office Visit", ur: "دفتر کی ملاقات" } };
 
@@ -66,6 +66,8 @@ export default function BookingFlow({ lawyerSlug }: { lawyerSlug: string }) {
   const [phone, setPhone] = useState("");
   const [otp, setOtp] = useState("");
   const [otpSent, setOtpSent] = useState(false);
+  const [docs, setDocs] = useState<CaseDocMeta[]>([]);
+  const [docError, setDocError] = useState("");
 
   const days = useMemo(() => (lawyer ? nextSlotDays(lawyer.slug) : []), [lawyer]);
 
@@ -82,7 +84,10 @@ export default function BookingFlow({ lawyerSlug }: { lawyerSlug: string }) {
 
   const day = days[dayIdx];
   const fee = formatPKR(lawyer.consultationFeePaisa);
-  const bookingRef = `BK-${(lawyer.slug.length * 7919 + dayIdx * 131).toString().padStart(5, "0")}`;
+  // Unique per booking — Date.now + random so two bookings never share a reference.
+  const [bookingRef] = useState(
+    () => `BK-${Date.now().toString(36).toUpperCase()}${Math.floor(Math.random() * 1296).toString(36).toUpperCase().padStart(2, "0")}`
+  );
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-10">
@@ -244,6 +249,67 @@ export default function BookingFlow({ lawyerSlug }: { lawyerSlug: string }) {
             </div>
           ) : (
             <div className="mt-6 rounded-2xl bg-slate-50 p-5 ring-1 ring-slate-200">
+              {/* Case documents (optional) */}
+              <div className="mb-6 rounded-2xl border-2 border-dashed border-slate-300 bg-white p-5">
+                <p className="flex items-center gap-2 text-lg font-extrabold text-slate-800">
+                  <span aria-hidden>📎</span>
+                  <T en="Case documents (optional)" ur="کیس کے کاغذات (اختیاری)" />
+                </p>
+                <p className="mt-1 text-sm font-semibold text-slate-500">
+                  <T en="FIR copy, registry, notices — the lawyer reads them before your meeting." ur="ایف آئی آر کی نقل، رجسٹری، نوٹس — وکیل ملاقات سے پہلے پڑھ لے گا۔" />
+                </p>
+                <label className="mt-3 inline-flex min-h-[52px] cursor-pointer items-center gap-2 rounded-xl border-2 border-emerald-700 px-5 text-base font-bold text-emerald-800 transition hover:bg-emerald-50">
+                  <span aria-hidden>📤</span>
+                  <T en="Attach files" ur="فائلیں لگائیں" />
+                  <input
+                    type="file"
+                    multiple
+                    accept=".pdf,.jpg,.jpeg,.png,.webp,.doc,.docx"
+                    className="sr-only"
+                    onChange={(e) => {
+                      setDocError("");
+                      const files = Array.from(e.target.files ?? []);
+                      const fresh: CaseDocMeta[] = [];
+                      for (const f of files) {
+                        if (f.size > 10 * 1024 * 1024) {
+                          setDocError(f.name);
+                          continue;
+                        }
+                        fresh.push({ name: f.name, size: f.size, type: f.type });
+                      }
+                      setDocs((prev) => [...prev, ...fresh].slice(0, 5));
+                      e.target.value = "";
+                    }}
+                  />
+                </label>
+                {docError && (
+                  <p className="mt-2 text-sm font-bold text-red-700">
+                    <T en={`"${docError}" is over 10 MB and was skipped.`} ur={`"${docError}" ۱۰ ایم بی سے بڑی ہے، شامل نہیں ہوئی۔`} />
+                  </p>
+                )}
+                {docs.length > 0 ? (
+                  <ul className="mt-3 space-y-2">
+                    {docs.map((d, i) => (
+                      <li key={`${d.name}-${i}`} className="flex items-center justify-between gap-3 rounded-xl bg-emerald-50 px-4 py-2.5 ring-1 ring-emerald-200">
+                        <span className="min-w-0 flex-1 truncate text-base font-bold text-slate-800">{d.name}</span>
+                        <span className="shrink-0 text-sm font-semibold text-slate-500">{(d.size / 1024).toFixed(0)} KB</span>
+                        <button
+                          type="button"
+                          onClick={() => setDocs((prev) => prev.filter((_, j) => j !== i))}
+                          className="shrink-0 rounded-lg px-2 py-1 text-sm font-bold text-red-700 hover:bg-red-50"
+                          aria-label={`Remove ${d.name}`}
+                        >
+                          ✕
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <p className="mt-2 text-sm font-semibold text-slate-400">
+                    <T en="No files attached yet (max 5 files, 10 MB each)." ur="ابھی کوئی فائل نہیں (زیادہ سے زیادہ ۵ فائلیں، ہر ایک ۱۰ ایم بی)۔" />
+                  </p>
+                )}
+              </div>
               <p className="text-base font-bold text-slate-700">
                 <T en={`Code sent to +92 ${phone} (demo — any 4 digits work)`} ur={`+92 ${phone} پر کوڈ بھیجا گیا (ڈیمو — کوئی بھی ۴ ہندسے)`} />
               </p>
@@ -273,9 +339,12 @@ export default function BookingFlow({ lawyerSlug }: { lawyerSlug: string }) {
                       time: slot ?? "",
                       feePaisa: lawyer.consultationFeePaisa,
                       phone,
+                      docs,
                       createdAt: Date.now(),
                       status: "upcoming",
                     });
+                    // The verified phone IS the account — booking confirms the session.
+                    setSession(phone);
                     setStep(3);
                   }}
                 >
@@ -324,6 +393,11 @@ export default function BookingFlow({ lawyerSlug }: { lawyerSlug: string }) {
           </p>
 
           <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
+            {mode === "video" && (
+              <PrimaryBtn href={`/video/${bookingRef}`} icon={<VideoIcon className="h-6 w-6" />}>
+                <T en="Join video call" ur="ویڈیو کال جوائن کریں" />
+              </PrimaryBtn>
+            )}
             <PrimaryBtn href="/dashboard" icon={<CalendarIcon className="h-6 w-6" />}>
               <T en="My bookings" ur="میری بکنگز" />
             </PrimaryBtn>
@@ -331,6 +405,13 @@ export default function BookingFlow({ lawyerSlug }: { lawyerSlug: string }) {
               <T en="Book another" ur="ایک اور بک کریں" />
             </SecondaryBtn>
           </div>
+
+          {docs.length > 0 && (
+            <p className="mt-4 text-center text-base font-bold text-emerald-800">
+              <T en={`📎 ${docs.length} document${docs.length > 1 ? "s" : ""} attached — the lawyer will review them before your meeting.`}
+                 ur={`📎 ${docs.length} کاغذات منسلک — وکیل ملاقات سے پہلے انہیں دیکھ لے گا۔`} />
+            </p>
+          )}
 
           <p className="mt-6 inline-flex items-center gap-2 text-base font-bold text-slate-500">
             <WalletIcon className="h-5 w-5" />

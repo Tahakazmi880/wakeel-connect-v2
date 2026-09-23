@@ -28,6 +28,7 @@ export default function Header() {
     { href: "/practice-areas", en: "Practice Areas", ur: "قانونی شعبے", icon: <BriefcaseIcon className="h-5 w-5" /> },
     { href: "/cities", en: "Cities", ur: "شہر", icon: <SearchIcon className="h-5 w-5" /> },
     { href: "/guides", en: "Legal Guides", ur: "قانونی رہنمائی", icon: <DocIcon className="h-5 w-5" /> },
+    { href: "/questions", en: "Q&A", ur: "سوال جواب", icon: <DocIcon className="h-5 w-5" /> },
   ];
   return (
     <header className="sticky top-0 z-40 border-b border-emerald-100 bg-white/95 backdrop-blur">

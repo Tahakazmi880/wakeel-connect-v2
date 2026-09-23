@@ -2,10 +2,11 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { T } from "@/components/LanguageContext";
-import { AvailableBadge, DemoNotice, PrimaryBtn, Rating, SecondaryBtn, Stars, VerifiedBadge } from "@/components/ui";
+import { AvailableBadge, DemoNotice, PrimaryBtn, Rating, SecondaryBtn, VerifiedBadge } from "@/components/ui";
 import { PhotoAvatar } from "@/components/PhotoAvatar";
 import FaqAccordion from "@/components/FaqAccordion";
 import LawyerCard from "@/components/LawyerCard";
+import ReviewSection from "@/components/ReviewSection";
 import {
   BriefcaseIcon,
   CalendarIcon,
@@ -14,7 +15,6 @@ import {
   OfficeIcon,
   PinIcon,
   ShieldIcon,
-  StarIcon,
   VideoIcon,
 } from "@/components/icons";
 import {
@@ -47,10 +47,6 @@ export default async function LawyerProfile({ params }: { params: Promise<{ slug
 
   const areas = lawyerAreas(lawyer);
   const langs = lawyerLanguages(lawyer);
-  const dist = [5, 4, 3, 2, 1].map((s) => ({
-    star: s,
-    pct: Math.round((lawyer.reviews.filter((r) => r.rating === s).length / Math.max(lawyer.reviewCount, 1)) * 100),
-  }));
 
   const similar = LAWYERS.filter((l) => l.slug !== lawyer.slug)
     .map((l) => ({
@@ -234,47 +230,13 @@ export default async function LawyerProfile({ params }: { params: Promise<{ slug
           )}
 
           {/* Reviews */}
-          <section className="mt-6 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
-            <h2 className="text-2xl font-extrabold text-slate-900">
-              <T en={`Client reviews (${lawyer.reviewCount})`} ur={`کلائنٹ کی آراء (${lawyer.reviewCount})`} />
-            </h2>
-            {lawyer.reviewCount === 0 ? (
-              <p className="mt-4 rounded-2xl bg-slate-50 p-5 text-base text-slate-600">
-                <T en="No client reviews yet. Book a consultation — after your case, your review will appear here."
-                   ur="ابھی کوئی رائے نہیں۔ مشورہ بک کریں — آپ کے کیس کے بعد آپ کی رائے یہاں نظر آئے گی۔" />
-              </p>
-            ) : (
-            <div className="mt-4 flex items-center gap-4">
-              <p className="text-5xl font-extrabold text-slate-900">{lawyer.rating.toFixed(1)}</p>
-              <div className="flex-1 space-y-1.5">
-                {dist.map((d) => (
-                  <div key={d.star} className="flex items-center gap-2 text-sm">
-                    <span className="flex w-10 items-center gap-0.5 font-bold text-slate-600">{d.star}<StarIcon className="h-3.5 w-3.5 text-amber-400" /></span>
-                    <div className="h-2.5 flex-1 overflow-hidden rounded-full bg-slate-100">
-                      <div className="h-full rounded-full bg-amber-400" style={{ width: `${Math.max(d.pct, 2)}%` }} />
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-            )}
-            <div className="mt-6 space-y-4">
-              {lawyer.reviews.map((r) => (
-                <div key={r.id} className="rounded-2xl bg-slate-50 p-5">
-                  <div className="flex items-center justify-between gap-3">
-                    <p className="text-lg font-extrabold text-slate-900">{r.clientName}</p>
-                    {r.verified && (
-                      <span className="inline-flex items-center gap-1 rounded-full bg-emerald-100 px-3 py-1 text-sm font-bold text-emerald-800">
-                        <CheckBadgeIcon className="h-4 w-4" /> <T en="Verified client" ur="تصدیق شدہ کلائنٹ" />
-                      </span>
-                    )}
-                  </div>
-                  <Stars rating={r.rating} className="mt-1" />
-                  <p className="mt-2 text-base text-slate-700">{r.comment}</p>
-                </div>
-              ))}
-            </div>
-          </section>
+          <ReviewSection
+            lawyerSlug={lawyer.slug}
+            lawyerName={lawyer.displayName}
+            baseReviews={lawyer.reviews}
+            baseCount={lawyer.reviewCount}
+            baseRating={lawyer.rating}
+          />
           {/* Profile FAQs */}
           <section className="mt-6 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
             <h2 className="text-2xl font-extrabold text-slate-900">

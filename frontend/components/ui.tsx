@@ -91,17 +91,19 @@ export function PrimaryBtn({
   children,
   type,
   className = "",
+  disabled = false,
 }: {
   href?: string;
   onClick?: () => void;
-  icon: ReactNode;
+  icon?: ReactNode;
   children: ReactNode;
   type?: "submit" | "button";
   className?: string;
+  disabled?: boolean;
 }) {
-  const cls = `inline-flex min-h-[52px] items-center justify-center gap-2 rounded-2xl bg-emerald-700 px-6 py-3 text-lg font-bold text-white shadow-md transition hover:bg-emerald-800 hover:shadow-lg active:scale-[0.98] ${className}`;
-  if (href) return <a href={href} className={cls}>{icon}{children}</a>;
-  return <button type={type ?? "button"} onClick={onClick} className={cls}>{icon}{children}</button>;
+  const cls = `inline-flex min-h-[52px] items-center justify-center gap-2 rounded-2xl px-6 py-3 text-lg font-bold text-white shadow-md transition active:scale-[0.98] ${disabled ? "cursor-not-allowed bg-slate-300 shadow-none" : "bg-emerald-700 hover:bg-emerald-800 hover:shadow-lg"} ${className}`;
+  if (href && !disabled) return <a href={href} className={cls}>{icon}{children}</a>;
+  return <button type={type ?? "button"} onClick={disabled ? undefined : onClick} disabled={disabled} className={cls}>{icon}{children}</button>;
 }
 
 export function SecondaryBtn({
@@ -113,7 +115,7 @@ export function SecondaryBtn({
 }: {
   href?: string;
   onClick?: () => void;
-  icon: ReactNode;
+  icon?: ReactNode;
   children: ReactNode;
   className?: string;
 }) {

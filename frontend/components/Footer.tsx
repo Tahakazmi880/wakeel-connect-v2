@@ -140,6 +140,11 @@ export default function Footer() {
                   <T en="Join as Lawyer" ur="وکیل بنیں" />
                 </Link>
               </li>
+              <li>
+                <Link className="hover:text-amber-300" href="/questions">
+                  <T en="Q&A Forum" ur="سوال جواب" />
+                </Link>
+              </li>
             </ul>
           </div>
         </div>

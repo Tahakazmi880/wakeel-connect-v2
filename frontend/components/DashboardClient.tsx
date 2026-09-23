@@ -45,8 +45,25 @@ function BookingCard({ booking }: { booking: MyBooking }) {
           <span className="font-extrabold text-emerald-800">{formatPKR(booking.feePaisa)}</span>
         </p>
         <p className="mt-1 text-sm text-slate-400">Ref: {booking.id}</p>
+        {booking.docs && booking.docs.length > 0 && (
+          <p className="mt-2 flex flex-wrap items-center gap-2 text-sm font-bold text-slate-600">
+            <span aria-hidden>📎</span>
+            <T
+              en={`${booking.docs.length} document${booking.docs.length > 1 ? "s" : ""}: ${booking.docs.map((d) => d.name).join(", ")}`}
+              ur={`${booking.docs.length} کاغذات: ${booking.docs.map((d) => d.name).join("، ")}`}
+            />
+          </p>
+        )}
       </div>
       <div className="flex gap-2 sm:flex-col">
+        {booking.status === "upcoming" && booking.mode === "video" && !confirming && (
+          <Link
+            href={`/video/${booking.id}`}
+            className="inline-flex min-h-[48px] items-center justify-center gap-2 rounded-xl bg-emerald-700 px-5 text-base font-bold text-white hover:bg-emerald-800"
+          >
+            <VideoIcon className="h-5 w-5" /><T en="Join video call" ur="ویڈیو کال" />
+          </Link>
+        )}
         {booking.status === "upcoming" && !confirming && (
           <>
             <Link
