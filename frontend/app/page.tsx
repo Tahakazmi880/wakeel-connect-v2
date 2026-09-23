@@ -2,6 +2,7 @@ import Link from "next/link";
 import { T } from "@/components/LanguageContext";
 import { PrimaryBtn, SafeImage } from "@/components/ui";
 import LawyerCard from "@/components/LawyerCard";
+import { PhotoAvatar } from "@/components/PhotoAvatar";
 import SearchHero from "@/components/SearchHero";
 import SpecialtyCircles from "@/components/SpecialtyCircles";
 import StatsBand from "@/components/StatsBand";
@@ -18,7 +19,7 @@ import {
   VideoIcon,
 } from "@/components/icons";
 import { CITIES, COURTS, getCity } from "@/lib/data";
-import { API_V1, fileUrl, type LawyerSummary } from "@/lib/api";
+import { API_V1, fileUrl, formatFee, type LawyerSummary } from "@/lib/api";
 
 async function fetchFeatured(): Promise<{ lawyers: LawyerSummary[]; total: number }> {
   try {
@@ -235,6 +236,46 @@ export default async function Home() {
           </div>
         </div>
       </section>
+
+      {/* ============ TOP WAKEELS — profiles right up front ============ */}
+      {featured.length > 0 && (
+        <section className="mx-auto max-w-7xl px-4 pt-6 sm:pt-8" aria-label="Top wakeels">
+          <RowHead
+            title={<T en="Top wakeels near you" ur="آپ کے قریب نمایاں وکیل" />}
+            href="/lawyers"
+            linkEn="View All"
+            linkUr="سب دیکھیں"
+          />
+          <div className="flex snap-x snap-mandatory gap-4 overflow-x-auto pb-3 sm:grid sm:grid-cols-2 sm:overflow-visible lg:grid-cols-4">
+            {featured.map((l) => (
+              <Link
+                key={l.id}
+                href={`/lawyer/${l.slug}`}
+                className="group flex w-64 shrink-0 snap-start items-center gap-3.5 rounded-2xl bg-white p-3.5 shadow-card ring-1 ring-ink-900/10 transition hover:shadow-lift sm:w-auto"
+              >
+                <PhotoAvatar
+                  name={l.displayName}
+                  photo={fileUrl(l.photoUrl) ?? undefined}
+                  gender={l.gender}
+                  size="lg"
+                  className="h-16 w-16"
+                />
+                <div className="min-w-0">
+                  <p className="truncate text-[1.02rem] font-bold text-ink-950 transition group-hover:text-court-800">
+                    {l.displayName}
+                  </p>
+                  <p className="truncate text-[0.85rem] text-ink-600">
+                    {l.headline ?? <T en="Wakeel" ur="وکیل" />}
+                  </p>
+                  <p className="mt-0.5 text-[0.85rem] font-bold text-brass-700">
+                    {formatFee(l.consultationFeePaisa) ?? <T en="Fee on request" ur="فیس معلوم کریں" />}
+                  </p>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </section>
+      )}
 
       {/* ============ SERVICES — 5 image cards, oladoc-style row ============ */}
       <section className="mx-auto max-w-7xl px-4 pt-8 sm:pt-10">
