@@ -1,16 +1,28 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { T } from "./LanguageContext";
 import { PinIcon, SearchIcon } from "./icons";
-import { CITIES } from "@/lib/data";
+import NearMeButton from "./NearMeButton";
+import { rememberedCitySlug } from "@/lib/geo";
+import { CITIES, getCity } from "@/lib/data";
 
 /** Dual search: city + legal problem / lawyer name → /lawyers */
 export default function SearchHero() {
   const router = useRouter();
   const [city, setCity] = useState("");
   const [q, setQ] = useState("");
+  const [autoCity, setAutoCity] = useState(false);
+
+  // Preselect the city detected on a previous visit — no re-prompt needed.
+  useEffect(() => {
+    const saved = rememberedCitySlug();
+    if (saved && CITIES.some((c) => c.slug === saved)) {
+      setCity(saved);
+      setAutoCity(true);
+    }
+  }, []);
 
   const submit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -21,6 +33,7 @@ export default function SearchHero() {
   };
 
   return (
+    <>
     <form
       onSubmit={submit}
       role="search"
@@ -32,7 +45,7 @@ export default function SearchHero() {
         <span className="sr-only"><T en="City" ur="شہر" /></span>
         <select
           value={city}
-          onChange={(e) => setCity(e.target.value)}
+          onChange={(e) => { setCity(e.target.value); setAutoCity(false); }}
           className="w-full cursor-pointer bg-transparent text-[1.05rem] font-semibold text-ink-900 outline-none"
           aria-label="City"
         >
@@ -43,6 +56,10 @@ export default function SearchHero() {
             </option>
           ))}
         </select>
+        <NearMeButton
+          small
+          onDetected={(slug) => { setCity(slug); setAutoCity(true); }}
+        />
       </label>
       <label className="flex min-h-[58px] flex-[1.5] items-center gap-3 border-t border-ink-900/10 px-4 sm:border-t-0">
         <SearchIcon className="h-6 w-6 shrink-0 text-court-700" />
@@ -65,5 +82,22 @@ export default function SearchHero() {
         </button>
       </div>
     </form>
+    {autoCity && city && <AutoCityNote slug={city} />}
+    </>
+  );
+}
+
+/** Small "lawyers near you" note shown under the hero form after auto-detection. */
+function AutoCityNote({ slug }: { slug: string }) {
+  const city = getCity(slug);
+  if (!city) return null;
+  return (
+    <p className="mx-auto mt-3 flex max-w-3xl items-center justify-center gap-1.5 text-[0.92rem] font-semibold text-ink-200">
+      <PinIcon className="h-4 w-4 text-brass-300" />
+      <T
+        en={`Showing lawyers near you — ${city.nameEn}`}
+        ur={`آپ کے قریب کے وکیل دکھائے جا رہے ہیں — ${city.nameUr}`}
+      />
+    </p>
   );
 }

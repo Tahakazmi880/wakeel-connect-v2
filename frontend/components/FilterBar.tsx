@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { T } from "./LanguageContext";
 import { CloseIcon, SearchIcon } from "./icons";
+import NearMeButton from "./NearMeButton";
 import { CITIES, PRACTICE_AREAS } from "@/lib/data";
 
 /**
@@ -36,7 +37,10 @@ export default function FilterBar() {
     <div className="rounded-lg border border-ink-900/10 bg-white p-5 shadow-card">
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
         <label className="block">
-          <span className="mb-1 block text-sm font-bold text-ink-600"><T en="City" ur="شہر" /></span>
+          <span className="mb-1 flex items-center justify-between text-sm font-bold text-ink-600">
+            <T en="City" ur="شہر" />
+            <NearMeButton small onDetected={(slug) => set("city", slug)} />
+          </span>
           <select value={get("city")} onChange={(e) => set("city", e.target.value)} className={selectCls}>
             <option value=""><T en="All Cities" ur="تمام شہر" /></option>
             {CITIES.map((c) => (
