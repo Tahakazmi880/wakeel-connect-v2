@@ -57,7 +57,7 @@ export function Logo({ compact = false }: { compact?: boolean }) {
         alt="wakeel.connect logo"
         width={compact ? 36 : 40}
         height={compact ? 36 : 40}
-        className={`${compact ? "h-9 w-9" : "h-10 w-10"} rounded-lg object-cover shadow-card`}
+        className={`${compact ? "h-9 w-9" : "h-10 w-10"} rounded-lg object-cover`}
       />
       <span
         className={`font-display font-semibold tracking-tight text-ink-950 ${
