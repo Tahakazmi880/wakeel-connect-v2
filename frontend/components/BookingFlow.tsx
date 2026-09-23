@@ -47,7 +47,7 @@ function StepDots({ step }: { step: number }) {
     { en: "Done", ur: "ہو گیا" },
   ];
   return (
-    <ol className="mx-auto flex max-w-xl items-center justify-center gap-2" aria-label="Booking progress">
+    <ol className="mx-auto flex max-w-xl flex-wrap items-center justify-center gap-x-2 gap-y-3" aria-label="Booking progress">
       {labels.map((l, i) => {
         const n = i + 1;
         const done = n < step;
@@ -55,17 +55,17 @@ function StepDots({ step }: { step: number }) {
         return (
           <li key={l.en} className="flex items-center gap-2">
             <span
-              className={`flex h-11 w-11 items-center justify-center rounded-full text-lg font-bold transition ${
+              className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-base font-bold transition sm:h-11 sm:w-11 sm:text-lg ${
                 done ? "bg-court-700 text-white" : current ? "bg-court-700 text-white ring-2 ring-brass-500 ring-offset-2 ring-offset-paper" : "bg-ink-900/5 text-ink-500"
               }`}
               aria-current={current ? "step" : undefined}
             >
               {done ? <CheckIcon className="h-6 w-6" /> : n}
             </span>
-            <span className={`text-base font-bold ${current || done ? "text-court-800" : "text-ink-500"}`}>
+            <span className={`whitespace-nowrap text-sm font-bold sm:text-base ${current || done ? "text-court-800" : "text-ink-500"}`}>
               <T en={l.en} ur={l.ur} />
             </span>
-            {n < 3 && <span className="mx-1 h-0.5 w-8 bg-ink-900/15 sm:w-14" />}
+            {n < 3 && <span className="mx-1 h-0.5 w-6 bg-ink-900/15 sm:w-14" />}
           </li>
         );
       })}
@@ -434,13 +434,15 @@ export default function BookingFlow({ lawyerSlug }: { lawyerSlug: string }) {
   return (
     <div className="mx-auto max-w-3xl px-4 py-10">
       {/* lawyer summary */}
-      <div className="flex items-center gap-4 rounded-lg border border-ink-900/10 bg-white p-5 shadow-card">
-        <PhotoAvatar name={lawyer.displayName} photo={fileUrl(lawyer.photoUrl) ?? undefined} gender={lawyer.gender} size="sm" />
-        <div className="min-w-0 flex-1">
-          <p className="font-display text-[1.25rem] font-semibold text-ink-950">{lawyer.displayName}</p>
-          <Rating rating={lawyer.ratingAvg} count={lawyer.ratingCount} />
+      <div className="flex flex-col gap-3 rounded-lg border border-ink-900/10 bg-white p-5 shadow-card sm:flex-row sm:items-center sm:gap-4">
+        <div className="flex min-w-0 items-center gap-4">
+          <PhotoAvatar name={lawyer.displayName} photo={fileUrl(lawyer.photoUrl) ?? undefined} gender={lawyer.gender} size="sm" />
+          <div className="min-w-0">
+            <p className="font-display text-[1.25rem] font-semibold leading-snug text-ink-950">{lawyer.displayName}</p>
+            <Rating rating={lawyer.ratingAvg} count={lawyer.ratingCount} />
+          </div>
         </div>
-        <p className="wc-fee text-[1.4rem] text-ink-950">
+        <p className="wc-fee shrink-0 text-[1.3rem] text-ink-950 sm:ml-auto sm:text-[1.4rem]">
           {fee ?? <T en="Fee on request" ur="فیس معلوم کریں" />}
         </p>
       </div>
@@ -475,19 +477,19 @@ export default function BookingFlow({ lawyerSlug }: { lawyerSlug: string }) {
           </p>
 
           <p className="mb-2 mt-6 text-base font-bold text-ink-700"><T en="How do you want to meet?" ur="ملاقات کیسے ہوگی؟" /></p>
-          <div className="grid grid-cols-3 gap-3">
+          <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-3 sm:gap-3">
             {MODES.map((m) => (
               <button
                 key={m.id}
                 type="button"
                 onClick={() => setMode(m.id)}
                 aria-pressed={mode === m.id}
-                className={`flex min-h-[72px] flex-col items-center justify-center gap-1 rounded-lg border text-base font-bold transition sm:flex-row sm:gap-2 sm:text-lg ${
+                className={`flex items-center gap-3 rounded-lg border px-4 py-3.5 text-left text-[0.95rem] font-bold leading-snug transition sm:min-h-[76px] sm:flex-col sm:justify-center sm:gap-1 sm:px-2 sm:py-3 sm:text-center sm:text-base ${
                   mode === m.id ? "border-court-700 bg-court-700 text-white shadow-card" : "border-ink-900/15 bg-white text-ink-700 hover:border-court-700/50"
                 }`}
               >
-                {m.icon("h-6 w-6")}
-                <T en={m.en} ur={m.ur} />
+                {m.icon("h-6 w-6 shrink-0")}
+                <span className="min-w-0 flex-1 break-words sm:flex-none"><T en={m.en} ur={m.ur} /></span>
               </button>
             ))}
           </div>

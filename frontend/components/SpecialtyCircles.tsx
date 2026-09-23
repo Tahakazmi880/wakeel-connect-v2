@@ -109,12 +109,12 @@ function ViewAllModal({ open, onClose }: { open: boolean; onClose: () => void })
               <Link
                 key={a.slug}
                 href={`/lawyers?area=${a.slug}&online=1`}
-                className="group flex items-center gap-3 rounded-xl border border-ink-900/10 bg-white p-3 transition hover:border-court-400 hover:bg-court-50"
+                className="group flex flex-col items-center gap-2 rounded-xl border border-ink-900/10 bg-white p-3 text-center transition hover:border-court-400 hover:bg-court-50"
               >
                 <span className="block h-12 w-12 shrink-0 overflow-hidden rounded-full">
                   <PracticeAreaIcon slug={a.slug} />
                 </span>
-                <span className="min-w-0 text-[0.95rem] font-semibold leading-tight text-ink-800 group-hover:text-court-800">
+                <span className="break-words text-[0.85rem] font-semibold leading-snug text-ink-800 group-hover:text-court-800">
                   <T en={a.nameEn} ur={a.nameUr} />
                 </span>
               </Link>
