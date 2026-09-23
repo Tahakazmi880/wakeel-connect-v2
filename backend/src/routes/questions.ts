@@ -2,7 +2,7 @@ import type { FastifyInstance } from "fastify";
 import { z } from "zod";
 import { prisma } from "../lib/prisma.js";
 import { badRequest, notFound, forbidden } from "../lib/errors.js";
-import { requireAuth } from "../middleware/auth.js";
+import { requireAuth, requireRole } from "../middleware/auth.js";
 
 const askSchema = z.object({
   areaSlug: z.string().max(64).optional(),
@@ -113,4 +113,65 @@ export async function questionRoutes(app: FastifyInstance) {
     });
     return reply.code(201).send({ ok: true, answer });
   });
+
+  /** Admin: list all questions, newest first, with optional lock filter. */
+  app.get(
+    "/admin/questions",
+    { preHandler: [requireAuth, requireRole("ADMIN")] },
+    async (req) => {
+      const parsed = z
+        .object({
+          page: z.coerce.number().int().min(1).default(1),
+          limit: z.coerce.number().int().min(1).max(100).default(20),
+          locked: z.coerce.boolean().optional(),
+        })
+        .safeParse(req.query);
+      if (!parsed.success) throw badRequest("INVALID_QUERY", "Invalid parameters.");
+      const { page, limit, locked } = parsed.data;
+      const where: { isLocked?: boolean } = {};
+      if (locked !== undefined) where.isLocked = locked;
+      const [total, questions] = await prisma.$transaction([
+        prisma.forumQuestion.count({ where }),
+        prisma.forumQuestion.findMany({
+          where,
+          orderBy: { createdAt: "desc" },
+          skip: (page - 1) * limit,
+          take: limit,
+          select: {
+            id: true, title: true, body: true, authorName: true, isSeed: true, isLocked: true, createdAt: true,
+            area: { select: { slug: true, nameEn: true, nameUr: true } },
+            _count: { select: { answers: true } },
+          },
+        }),
+      ]);
+      return { ok: true, total, page, limit, questions };
+    }
+  );
+
+  /** Admin: lock (close answers) or unlock a question. */
+  app.patch(
+    "/admin/questions/:id",
+    { preHandler: [requireAuth, requireRole("ADMIN")] },
+    async (req) => {
+      const { id } = req.params as { id: string };
+      const parsed = z.object({ locked: z.boolean() }).safeParse(req.body ?? {});
+      if (!parsed.success) throw badRequest("INVALID_INPUT", "locked must be true or false.");
+      const existing = await prisma.forumQuestion.findUnique({ where: { id }, select: { id: true } });
+      if (!existing) throw notFound("Question not found.");
+      const question = await prisma.forumQuestion.update({
+        where: { id },
+        data: { isLocked: parsed.data.locked },
+        select: { id: true, isLocked: true },
+      });
+      await prisma.auditLog.create({
+        data: {
+          actorId: req.user.sub,
+          action: parsed.data.locked ? "question.locked" : "question.unlocked",
+          entityType: "ForumQuestion",
+          entityId: id,
+        },
+      });
+      return { ok: true, question };
+    }
+  );
 }

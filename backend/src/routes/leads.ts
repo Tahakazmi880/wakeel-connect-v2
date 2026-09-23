@@ -4,6 +4,7 @@
  */
 import type { FastifyInstance } from "fastify";
 import { z } from "zod";
+import { LeadStatus } from "@prisma/client";
 import { prisma } from "../lib/prisma.js";
 import { normalizePhone } from "../lib/crypto.js";
 import { badRequest } from "../lib/errors.js";
@@ -53,7 +54,7 @@ export async function leadRoutes(app: FastifyInstance) {
         .object({
           page: z.coerce.number().int().min(1).default(1),
           limit: z.coerce.number().int().min(1).max(100).default(20),
-          status: z.string().max(20).optional(),
+          status: z.nativeEnum(LeadStatus).optional(),
         })
         .safeParse(req.query);
       if (!parsed.success) throw badRequest("INVALID_QUERY", "Invalid parameters.");
@@ -69,6 +70,33 @@ export async function leadRoutes(app: FastifyInstance) {
         }),
       ]);
       return { ok: true, total, page, limit, leads };
+    }
+  );
+
+  /** Admin: change a lead's status (NEW → CONTACTED → CONVERTED / CLOSED). */
+  app.patch(
+    "/admin/leads/:id",
+    { preHandler: [requireAuth, requireRole("ADMIN")] },
+    async (req) => {
+      const { id } = req.params as { id: string };
+      const parsed = z.object({ status: z.nativeEnum(LeadStatus) }).safeParse(req.body ?? {});
+      if (!parsed.success) throw badRequest("INVALID_INPUT", "status must be NEW, CONTACTED, CONVERTED or CLOSED.");
+      const existing = await prisma.lead.findUnique({ where: { id }, select: { id: true } });
+      if (!existing) throw badRequest("NOT_FOUND", "Lead not found.");
+      const lead = await prisma.lead.update({
+        where: { id },
+        data: { status: parsed.data.status },
+      });
+      await prisma.auditLog.create({
+        data: {
+          actorId: req.user.sub,
+          action: "lead.status_changed",
+          entityType: "Lead",
+          entityId: id,
+          metadata: { status: parsed.data.status },
+        },
+      });
+      return { ok: true, lead };
     }
   );
 }

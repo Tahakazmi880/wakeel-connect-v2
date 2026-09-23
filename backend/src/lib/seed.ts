@@ -183,6 +183,109 @@ const SEED_QA: { title: string; body: string; authorName: string; areaSlug: stri
   },
 ];
 
+// ---------------- FAQs (bilingual; describe existing features only) ----------------
+
+const FAQS: {
+  question: string;
+  questionUr: string;
+  answer: string;
+  answerUr: string;
+  category: string;
+  sortOrder: number;
+}[] = [
+  {
+    question: "How do I book a lawyer?",
+    questionUr: "وکیل کی بکنگ کیسے کروں؟",
+    answer:
+      "Find a lawyer in the directory, open their profile, pick a date and time slot, and verify your phone number with the 6-digit code we send you. Your booking is then sent to the lawyer for confirmation.",
+    answerUr:
+      "ڈائریکٹری میں وکیل تلاش کریں، ان کا پروفائل کھولیں، تاریخ اور وقت منتخب کریں، اور موبائل نمبر پر آنے والے 6 ہندسوں کے کوڈ سے تصدیق کریں۔ اس کے بعد آپ کی بکنگ وکیل کو بھیجی جائے گی۔",
+    category: "booking",
+    sortOrder: 1,
+  },
+  {
+    question: "Is my phone number shown to everyone?",
+    questionUr: "کیا میرا فون نمبر سب کو نظر آتا ہے؟",
+    answer:
+      "No. Your phone number is only shared with the lawyer after your booking is confirmed, so they can contact you about your appointment.",
+    answerUr:
+      "نہیں۔ آپ کا فون نمبر صرف اس وکیل کو دکھایا جاتا ہے جس کی بکنگ کنفرم ہو جائے، تاکہ وہ ملاقات کے بارے میں آپ سے رابطہ کر سکے۔",
+    category: "booking",
+    sortOrder: 2,
+  },
+  {
+    question: 'What does "Fee on request" mean?',
+    questionUr: "’فیس معلوم کریں‘ کا کیا مطلب ہے؟",
+    answer:
+      "It means the lawyer has not published a fixed consultation fee. Please confirm the fee with the lawyer before your appointment.",
+    answerUr:
+      "اس کا مطلب ہے کہ وکیل نے مشاورت کی فیس مقرر کر کے نہیں بتائی۔ براہ کرم ملاقات سے پہلے فیس وکیل سے کنفرم کر لیں۔",
+    category: "booking",
+    sortOrder: 3,
+  },
+  {
+    question: "Can I consult a lawyer online?",
+    questionUr: "کیا میں آن لائن مشورہ لے سکتا ہوں؟",
+    answer:
+      "Lawyers marked as offering online consultation can advise you remotely. The call itself happens over the phone with the lawyer — video calls inside the app are not available yet.",
+    answerUr:
+      "جو وکیل آن لائن مشورے کی سہولت دیتے ہیں وہ دور سے آپ کی رہنمائی کر سکتے ہیں۔ کال فون پر ہوتی ہے — ایپ کے اندر ویڈیو کال کی سہولت ابھی دستیاب نہیں۔",
+    category: "booking",
+    sortOrder: 4,
+  },
+  {
+    question: "How do I ask a free legal question?",
+    questionUr: "مفت قانونی سوال کیسے پوچھوں؟",
+    answer:
+      "Go to the Q&A section, write your question with a few details, and submit it. Questions are reviewed before they appear publicly.",
+    answerUr:
+      "سوال و جواب کے سیکشن میں جائیں، اپنا سوال چند تفصیلات کے ساتھ لکھیں اور بھیج دیں۔ سوالات عوامی طور پر ظاہر ہونے سے پہلے جانچے جاتے ہیں۔",
+    category: "qna",
+    sortOrder: 5,
+  },
+  {
+    question: "How are lawyers verified on wakeel.connect?",
+    questionUr: "wakeel.connect پر وکلا کی تصدیق کیسے ہوتی ہے؟",
+    answer:
+      "Lawyers sign up on the platform and submit their CNIC and Bar Council documents. Our team reviews the documents and only then is the profile listed publicly as a reviewed profile.",
+    answerUr:
+      "وکیل پلیٹ فارم پر رجسٹر ہوتے ہیں اور اپنا شناختی کارڈ اور بار کونسل کے دستاویزات جمع کراتے ہیں۔ ہماری ٹیم دستاویزات کی جانچ کرتی ہے اور اس کے بعد ہی پروفائل عوامی طور پر ظاہر ہوتا ہے۔",
+    category: "general",
+    sortOrder: 6,
+  },
+  {
+    question: "What documents do I need to join as a lawyer?",
+    questionUr: "وکیل کے طور پر شامل ہونے کے لیے کون سے دستاویزات چاہئیں؟",
+    answer:
+      "You will need your CNIC (front and back) and your Bar Council certificate. You can also add your degree and a profile photo. Documents are uploaded privately during signup and reviewed by our team.",
+    answerUr:
+      "آپ کو اپنا شناختی کارڈ (سامنے اور پیچھے) اور بار کونسل کا سرٹیفکیٹ درکار ہوگا۔ آپ اپنی ڈگری اور پروفائل تصویر بھی شامل کر سکتے ہیں۔ دستاویزات رجسٹریشن کے دوران نجی طور پر اپ لوڈ ہوتی ہیں اور ہماری ٹیم ان کی جانچ کرتی ہے۔",
+    category: "documents",
+    sortOrder: 7,
+  },
+];
+
+// ---------------- Institutional partners (confirmed real clients only) ----------------
+
+const PARTNERS: { name: string; logoUrl: string }[] = [
+  { name: "Amreli Steels", logoUrl: "/partners/amreli-steels.png" },
+  { name: "JS Bank", logoUrl: "/partners/js-bank.png" },
+  { name: "BankIslami", logoUrl: "/partners/bankislami.png" },
+  { name: "Halan", logoUrl: "/partners/halan.png" },
+  { name: "Pakistan Rangers Sindh", logoUrl: "/partners/pakistan-rangers.png" },
+  { name: "PTCL", logoUrl: "/partners/ptcl.png" },
+  { name: "STEVTA", logoUrl: "/partners/stevta.png" },
+  { name: "Pathfinder Group", logoUrl: "/partners/pathfinder-group.png" },
+  { name: "Wackenhut", logoUrl: "/partners/wackenhut.png" },
+  { name: "CITADEL", logoUrl: "/partners/citadel.png" },
+  { name: "DevTects", logoUrl: "/partners/devtects.png" },
+  { name: "AsaanPay", logoUrl: "/partners/asaanpay.png" },
+  { name: "SMS Technologies", logoUrl: "/partners/sms-technologies.png" },
+  { name: "SMS Services", logoUrl: "/partners/sms-services.png" },
+  { name: "iPath", logoUrl: "/partners/ipath.png" },
+  { name: "VRG", logoUrl: "/partners/vrg.png" },
+];
+
 // ---------------- Seed ----------------
 
 export async function seedDatabase(prisma: PrismaClient): Promise<void> {
@@ -311,4 +414,25 @@ export async function seedDatabase(prisma: PrismaClient): Promise<void> {
     }
   }
   console.log(`seeded ${DEMO_LAWYERS.length} demo lawyers (isSeedData=true)`);
+
+  for (const f of FAQS) {
+    const existing = await prisma.faq.findFirst({ where: { question: f.question } });
+    if (!existing) {
+      await prisma.faq.create({ data: f });
+    }
+  }
+  console.log(`seeded ${FAQS.length} FAQs`);
+
+  for (const [i, p] of PARTNERS.entries()) {
+    const existing = await prisma.partner.findFirst({ where: { name: p.name } });
+    if (existing) {
+      await prisma.partner.update({
+        where: { id: existing.id },
+        data: { logoUrl: p.logoUrl, sortOrder: i + 1, isActive: true },
+      });
+    } else {
+      await prisma.partner.create({ data: { name: p.name, logoUrl: p.logoUrl, sortOrder: i + 1 } });
+    }
+  }
+  console.log(`seeded ${PARTNERS.length} partners`);
 }

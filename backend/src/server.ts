@@ -15,6 +15,9 @@ import { reviewRoutes } from "./routes/reviews.js";
 import { questionRoutes } from "./routes/questions.js";
 import { applicationRoutes } from "./routes/applications.js";
 import { leadRoutes } from "./routes/leads.js";
+import { contentRoutes } from "./routes/content.js";
+import { favoriteRoutes } from "./routes/favorites.js";
+import { adminRoutes } from "./routes/admin.js";
 
 const PORT = env.PORT;
 
@@ -87,6 +90,9 @@ export async function buildApp() {
       await api.register(questionRoutes);
       await api.register(applicationRoutes);
       await api.register(leadRoutes);
+      await api.register(contentRoutes);
+      await api.register(favoriteRoutes);
+      await api.register(adminRoutes);
     },
     { prefix: "/api/v1" }
   );
