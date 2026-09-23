@@ -6,6 +6,7 @@ import FilterBar from "@/components/FilterBar";
 import LawyerCard from "@/components/LawyerCard";
 import { ArrowIcon, SearchIcon } from "@/components/icons";
 import { API_V1, type LawyerSummary } from "@/lib/api";
+import { PRACTICE_AREAS, getCity } from "@/lib/data";
 
 export const metadata: Metadata = {
   title: "Find a Lawyer — wakeel.connect",
@@ -44,16 +45,45 @@ function withPage(sp: Record<string, string | string[] | undefined>, page: numbe
   return `/lawyers?${p.toString()}`;
 }
 
+/**
+ * Dynamic H1 (oladoc pattern) — the heading and result count reflect the
+ * active filters, e.g. "23 lawyers", "4 female lawyers in Lahore".
+ */
+function DirectoryHeading({ total, sp }: { total: number; sp: Record<string, string | string[] | undefined> }) {
+  const female = pick(sp.gender) === "female";
+  const city = pick(sp.city) ? getCity(pick(sp.city)!) : undefined;
+  const area = pick(sp.area) ? PRACTICE_AREAS.find((a) => a.slug === pick(sp.area)) : undefined;
+  const q = pick(sp.q)?.trim();
+
+  const nounEn = `${female ? "female " : ""}${total === 1 ? "lawyer" : "lawyers"}`;
+  const en = `${total} ${nounEn}${city ? ` in ${city.nameEn}` : ""}${area ? ` — ${area.nameEn}` : ""}${q ? ` for "${q}"` : ""}`;
+  const ur = `${city ? `${city.nameUr} میں ` : ""}${total} ${female ? "خاتون " : ""}وکیل${area ? ` — ${area.nameUr}` : ""}${q ? ` — "${q}"` : ""}`;
+
+  return (
+    <h1 className="mt-3 font-display text-[2.25rem] font-semibold text-ink-950 sm:text-4xl">
+      <T en={en} ur={ur} />
+    </h1>
+  );
+}
+
 export default async function LawyersPage({ searchParams }: Props) {
   const sp = await searchParams;
   const q = new URLSearchParams();
   const city = pick(sp.city);
   const area = pick(sp.area);
   const query = pick(sp.q);
+  const online = pick(sp.online);
+  const today = pick(sp.today);
+  const gender = pick(sp.gender);
+  const sort = pick(sp.sort);
   const page = Math.max(1, Number(pick(sp.page)) || 1);
   if (city) q.set("city", city);
   if (area) q.set("area", area);
   if (query) q.set("q", query);
+  if (online) q.set("online", online);
+  if (today) q.set("today", today);
+  if (gender) q.set("gender", gender);
+  if (sort) q.set("sort", sort);
   q.set("page", String(page));
   q.set("limit", String(LIMIT));
 
@@ -62,16 +92,18 @@ export default async function LawyersPage({ searchParams }: Props) {
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-10">
-      <p className="wc-kicker">
-        <T en="Directory" ur="ڈائریکٹری" />
-      </p>
-      <h1 className="mt-3 font-display text-[2.25rem] font-semibold text-ink-950 sm:text-4xl">
-        <T en="Find a lawyer" ur="وکیل تلاش کریں" />
-      </h1>
+      <nav aria-label="Breadcrumb" className="text-[0.95rem] font-semibold text-ink-500">
+        <Link href="/" className="transition hover:text-court-800">
+          <T en="Home" ur="ہوم" />
+        </Link>
+        <span aria-hidden className="mx-2 text-ink-300">/</span>
+        <span aria-current="page" className="text-ink-900">
+          <T en="Find a Lawyer" ur="وکیل تلاش کریں" />
+        </span>
+      </nav>
+
+      <DirectoryHeading total={total} sp={sp} />
       <span aria-hidden className="mt-4 block h-[3px] w-12 bg-brass-500" />
-      <p className="mt-4 text-[1.05rem] text-ink-600">
-        <T en={`${total} ${total === 1 ? "lawyer" : "lawyers"} found`} ur={`${total} وکیل ملے`} />
-      </p>
 
       <div className="mt-6">
         <Suspense fallback={null}>

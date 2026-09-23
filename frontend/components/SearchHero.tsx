@@ -8,7 +8,10 @@ import NearMeButton from "./NearMeButton";
 import { rememberedCitySlug } from "@/lib/geo";
 import { CITIES, getCity } from "@/lib/data";
 
-/** Dual search: city + legal problem / lawyer name → /lawyers */
+/**
+ * Combined search (oladoc pattern): ONE text input covering lawyer name,
+ * courts and legal issues + city selector + Detect + Search button → /lawyers
+ */
 export default function SearchHero() {
   const router = useRouter();
   const [city, setCity] = useState("");
@@ -63,13 +66,13 @@ export default function SearchHero() {
       </label>
       <label className="flex min-h-[58px] flex-[1.5] items-center gap-3 border-t border-ink-900/10 px-4 sm:border-t-0">
         <SearchIcon className="h-6 w-6 shrink-0 text-court-700" />
-        <span className="sr-only"><T en="Legal problem or lawyer name" ur="قانونی مسئلہ یا وکیل کا نام" /></span>
+        <span className="sr-only"><T en="Lawyers, courts, legal issues" ur="وکیل، عدالت، قانونی مسئلہ" /></span>
         <input
           value={q}
           onChange={(e) => setQ(e.target.value)}
-          placeholder="طلاق، جائیداد، ضمانت…"
+          placeholder="Lawyers, courts, legal issues… — وکیل، عدالت، قانونی مسئلہ…"
           className="w-full bg-transparent text-[1.05rem] text-ink-900 outline-none placeholder:text-ink-400"
-          aria-label="Legal problem or lawyer name"
+          aria-label="Lawyers, courts, legal issues"
         />
       </label>
       <div className="p-1 sm:pl-2">
