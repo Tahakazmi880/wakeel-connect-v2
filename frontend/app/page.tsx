@@ -4,6 +4,7 @@ import { PrimaryBtn } from "@/components/ui";
 import LawyerCard from "@/components/LawyerCard";
 import SearchHero from "@/components/SearchHero";
 import StatsBand from "@/components/StatsBand";
+import PartnersMarquee from "@/components/PartnersMarquee";
 import FaqAccordion from "@/components/FaqAccordion";
 import {
   ArrowIcon,
@@ -251,6 +252,9 @@ export default async function Home() {
           </div>
         </div>
       </section>
+
+      {/* ============ TRUSTED ACROSS SINDH — institutional partners ============ */}
+      <PartnersMarquee />
 
       {/* ============ SERVICES — oladoc-style cards ============ */}
       <section className="mx-auto max-w-7xl px-4 pt-12 sm:pt-16">

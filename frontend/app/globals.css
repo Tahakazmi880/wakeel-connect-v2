@@ -138,6 +138,23 @@ body {
   border-radius: 8px;
 }
 
+/* Slow infinite marquee for the "Trusted Across Sindh" partner logos */
+@keyframes wc-partners-scroll {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+.wc-partners-track {
+  animation: wc-partners-scroll 60s linear infinite;
+}
+.wc-partners-track:hover {
+  animation-play-state: paused;
+}
+@media (prefers-reduced-motion: reduce) {
+  .wc-partners-track {
+    animation: none;
+  }
+}
+
 /* =====================================================================
    Urdu mode — the toggle sets data-lang="ur" on <html>.
    Nastaliq needs generous line-height and no letter-spacing.
