@@ -8,10 +8,10 @@ import { ArrowIcon, ClockIcon, DocIcon } from "@/components/icons";
 import { GUIDE_CATEGORIES, guidesByCategory } from "@/lib/guides";
 
 const CAT_STYLES: Record<string, string> = {
-  Family: "bg-rose-100 text-rose-800",
-  Criminal: "bg-clay-100 text-clay-700",
-  Property: "bg-brass-100 text-brass-700",
-  Digital: "bg-sky-100 text-sky-800",
+  Family: "bg-brass-50 text-brass-700 ring-1 ring-brass-200",
+  Criminal: "bg-clay-50 text-clay-700 ring-1 ring-clay-200",
+  Property: "bg-court-50 text-court-800 ring-1 ring-court-700/20",
+  Digital: "bg-ink-900/5 text-ink-700 ring-1 ring-ink-900/15",
 };
 
 export default function GuidesList() {
@@ -72,7 +72,7 @@ export default function GuidesList() {
             <Link
               key={g.slug}
               href={`/guides/${g.slug}`}
-              className="group flex flex-col rounded-xl border border-ink-200 bg-white p-6 shadow-sm transition hover:-translate-y-1 hover:border-court-300 hover:shadow-xl"
+              className="group flex flex-col rounded-lg border border-ink-900/10 bg-white p-6 shadow-card transition hover:-translate-y-1 hover:border-court-300 hover:shadow-xl"
             >
               <div className="mb-4 flex items-center justify-between">
                 <span className="flex h-12 w-12 items-center justify-center rounded-lg bg-court-100">
@@ -84,7 +84,7 @@ export default function GuidesList() {
                   <T en={g.categoryEn} ur={g.categoryUr} />
                 </span>
               </div>
-              <h2 className="text-xl font-extrabold text-ink-950 group-hover:text-court-800">
+              <h2 className="font-display text-[1.3rem] font-semibold text-ink-950 transition group-hover:text-court-800">
                 <T en={g.titleEn} ur={g.titleUr} />
               </h2>
               <p className="mt-2 line-clamp-3 flex-1 text-base text-ink-600">

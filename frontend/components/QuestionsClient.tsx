@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { T } from "./LanguageContext";
 import { PrimaryBtn, SecondaryBtn } from "./ui";
+import { ChatIcon } from "./icons";
 import { PRACTICE_AREAS } from "@/lib/data";
 import {
   askQuestion,
@@ -34,24 +35,24 @@ function QuestionCard({ q }: { q: ForumQuestion }) {
   return (
     <Link
       href={`/questions/${q.id}`}
-      className="block rounded-3xl border border-slate-200 bg-white p-5 shadow-sm transition hover:border-emerald-400 hover:shadow-md sm:p-6"
+      className="block rounded-lg border border-ink-900/10 bg-white p-5 shadow-sm transition hover:border-court-400 hover:shadow-md sm:p-6"
     >
       <p className="flex flex-wrap items-center gap-2 text-sm font-bold">
-        <span className="rounded-full bg-emerald-100 px-3 py-1 text-emerald-800">
+        <span className="rounded-full bg-court-100 px-3 py-1 text-court-800">
           {area ? <T en={area.nameEn} ur={area.nameUr} /> : <T en="General" ur="عام" />}
         </span>
-        <span className="text-slate-400">
+        <span className="text-ink-400">
           {q.authorName} · {timeAgo(q.createdAt)}
         </span>
         {q.isSeed && (
-          <span className="rounded-full bg-slate-100 px-3 py-1 text-slate-500">
+          <span className="rounded-full bg-ink-900/5 px-3 py-1 text-sm font-semibold text-ink-600 ring-1 ring-ink-900/10">
             <T en="Sample" ur="نمونہ" />
           </span>
         )}
       </p>
-      <h3 className="mt-2 text-xl font-extrabold text-slate-900">{q.title}</h3>
-      <p className="mt-1 line-clamp-2 text-base text-slate-600">{q.body}</p>
-      <p className="mt-3 text-base font-bold text-emerald-800">
+      <h3 className="mt-2 font-display text-[1.3rem] font-semibold text-ink-950">{q.title}</h3>
+      <p className="mt-1 line-clamp-2 text-base text-ink-600">{q.body}</p>
+      <p className="mt-3 text-base font-bold text-court-800">
         💬 {q._count.answers} {q._count.answers === 1 ? <T en="answer" ur="جواب" /> : <T en="answers" ur="جوابات" />}
       </p>
     </Link>
@@ -125,10 +126,10 @@ export default function QuestionsClient({
 
   return (
     <div className="mx-auto max-w-4xl px-4 py-10">
-      <h1 className="text-3xl font-extrabold text-slate-900 sm:text-4xl">
+      <h1 className="font-display text-[2.1rem] font-semibold text-ink-950 sm:text-4xl">
         <T en="Ask a legal question" ur="قانونی سوال پوچھیں" />
       </h1>
-      <p className="mt-2 max-w-2xl text-lg text-slate-600">
+      <p className="mt-2 max-w-2xl text-lg text-ink-600">
         <T
           en="Confused about your case? Ask here — lawyers and the community answer. Free."
           ur="اپنے کیس کے بارے میں الجھن؟ یہاں پوچھیں — وکیل اور کمیونٹی جواب دیں گے۔ مفت۔"
@@ -137,15 +138,15 @@ export default function QuestionsClient({
 
       <div className="mt-6">
         {!formOpen ? (
-          <PrimaryBtn onClick={() => setFormOpen(true)} icon={<span aria-hidden>❓</span>}>
+          <PrimaryBtn onClick={() => setFormOpen(true)} icon={<ChatIcon className="h-6 w-6" />}>
             <T en="Ask your question" ur="اپنا سوال پوچھیں" />
           </PrimaryBtn>
         ) : !user ? (
-          <div className="rounded-3xl border border-amber-200 bg-amber-50 p-5 sm:p-6">
-            <p className="text-lg font-extrabold text-amber-900">
+          <div className="rounded-lg border border-brass-200 bg-brass-50 p-5 sm:p-6">
+            <p className="text-lg font-bold text-brass-800">
               <T en="Login to ask a question" ur="سوال پوچھنے کے لیے لاگ اِن کریں" />
             </p>
-            <p className="mt-1 text-base text-amber-800">
+            <p className="mt-1 text-base text-brass-700">
               <T en="It takes 30 seconds — just your mobile number." ur="صرف 30 سیکنڈ — بس آپ کا موبائل نمبر۔" />
             </p>
             <div className="mt-4 flex flex-wrap gap-3">
@@ -155,26 +156,26 @@ export default function QuestionsClient({
               <button
                 type="button"
                 onClick={() => setFormOpen(false)}
-                className="inline-flex min-h-[56px] items-center rounded-2xl border-2 border-amber-300 px-6 text-lg font-bold text-amber-800"
+                className="inline-flex min-h-[56px] items-center rounded-lg border border-brass-400 px-6 text-lg font-bold text-brass-700"
               >
                 <T en="Cancel" ur="منسوخ" />
               </button>
             </div>
           </div>
         ) : (
-          <div className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
-            <p className="text-xl font-extrabold text-slate-900"><T en="Your question" ur="آپ کا سوال" /></p>
+          <div className="rounded-lg border border-ink-900/10 bg-white p-5 shadow-sm sm:p-6">
+            <p className="font-display text-[1.3rem] font-semibold text-ink-950"><T en="Your question" ur="آپ کا سوال" /></p>
             {submitError && (
-              <p className="mt-3 rounded-2xl bg-red-50 p-3 text-base font-bold text-red-700 ring-1 ring-red-200">
+              <p className="mt-3 rounded-lg bg-clay-50 p-3 text-base font-bold text-clay-700 ring-1 ring-clay-200">
                 <T en={submitError.en} ur={submitError.ur} />
               </p>
             )}
             <label className="mt-4 block">
-              <span className="mb-1 block text-base font-extrabold text-slate-700"><T en="Topic (optional)" ur="موضوع (اختیاری)" /></span>
+              <span className="mb-1 block text-base font-bold text-ink-700"><T en="Topic (optional)" ur="موضوع (اختیاری)" /></span>
               <select
                 value={areaSlug}
                 onChange={(e) => setAreaSlug(e.target.value)}
-                className="min-h-[56px] w-full rounded-2xl border-2 border-slate-200 bg-white px-4 text-lg font-bold outline-none focus:border-emerald-600"
+                className="min-h-[56px] w-full rounded-lg border border-ink-900/15 bg-white px-4 text-lg font-bold outline-none focus:border-court-600 focus:ring-2 focus:ring-court-600/20"
               >
                 <option value="">{/* general */}<T en="General" ur="عام" /></option>
                 {PRACTICE_AREAS.map((a) => (
@@ -183,9 +184,9 @@ export default function QuestionsClient({
               </select>
             </label>
             <label className="mt-4 block">
-              <span className="mb-1 flex items-baseline justify-between text-base font-extrabold text-slate-700">
+              <span className="mb-1 flex items-baseline justify-between text-base font-bold text-ink-700">
                 <T en="Question headline" ur="سوال کی سرخی" />
-                <span className={`text-sm font-bold ${title.trim().length > 140 || (title && title.trim().length < 10) ? "text-red-600" : "text-slate-400"}`}>
+                <span className={`text-sm font-bold ${title.trim().length > 140 || (title && title.trim().length < 10) ? "text-clay-600" : "text-ink-400"}`}>
                   {title.trim().length}/140
                 </span>
               </span>
@@ -193,19 +194,19 @@ export default function QuestionsClient({
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 maxLength={160}
-                className="min-h-[56px] w-full rounded-2xl border-2 border-slate-200 px-4 text-lg font-bold outline-none focus:border-emerald-600"
+                className="min-h-[56px] w-full rounded-lg border border-ink-900/15 px-4 text-lg font-bold outline-none focus:border-court-600 focus:ring-2 focus:ring-court-600/20"
                 placeholder="e.g. Khula ke baad custody kis ko milti hai?"
               />
               {title.length > 0 && !titleOk && (
-                <span className="mt-1 block text-sm font-bold text-red-600">
+                <span className="mt-1 block text-sm font-bold text-clay-600">
                   <T en="Headline must be 10–140 characters." ur="سرخی 10 سے 140 حروف کی ہونی چاہیے۔" />
                 </span>
               )}
             </label>
             <label className="mt-4 block">
-              <span className="mb-1 flex items-baseline justify-between text-base font-extrabold text-slate-700">
+              <span className="mb-1 flex items-baseline justify-between text-base font-bold text-ink-700">
                 <T en="Details" ur="تفصیل" />
-                <span className={`text-sm font-bold ${body.trim().length > 2000 || (body && body.trim().length < 20) ? "text-red-600" : "text-slate-400"}`}>
+                <span className={`text-sm font-bold ${body.trim().length > 2000 || (body && body.trim().length < 20) ? "text-clay-600" : "text-ink-400"}`}>
                   {body.trim().length}/2000
                 </span>
               </span>
@@ -214,16 +215,16 @@ export default function QuestionsClient({
                 onChange={(e) => setBody(e.target.value)}
                 maxLength={2100}
                 rows={4}
-                className="w-full rounded-2xl border-2 border-slate-200 px-4 py-3 text-base font-semibold outline-none focus:border-emerald-600"
+                className="w-full rounded-lg border border-ink-900/15 px-4 py-3 text-base font-semibold outline-none focus:border-court-600 focus:ring-2 focus:ring-court-600/20"
                 placeholder="Apne case ki mukhtasar tafseel likhein… (naam/pata/CNIC na likhein)"
               />
               {body.length > 0 && !bodyOk && (
-                <span className="mt-1 block text-sm font-bold text-red-600">
+                <span className="mt-1 block text-sm font-bold text-clay-600">
                   <T en="Details must be 20–2000 characters." ur="تفصیل 20 سے 2000 حروف کی ہونی چاہیے۔" />
                 </span>
               )}
             </label>
-            <p className="mt-2 text-sm font-semibold text-slate-500">
+            <p className="mt-2 text-sm font-semibold text-ink-500">
               <T en="Your question is public. Never share CNIC numbers or full addresses here." ur="آپ کا سوال عوامی ہے۔ یہاں شناختی کارڈ نمبر یا پورا پتہ کبھی نہ لکھیں۔" />
             </p>
             <div className="mt-4 flex flex-wrap gap-3">
@@ -233,7 +234,7 @@ export default function QuestionsClient({
               <button
                 type="button"
                 onClick={() => setFormOpen(false)}
-                className="inline-flex min-h-[56px] items-center rounded-2xl border-2 border-slate-200 px-6 text-lg font-bold text-slate-600"
+                className="inline-flex min-h-[56px] items-center rounded-lg border border-ink-900/15 px-6 text-lg font-bold text-ink-600"
               >
                 <T en="Cancel" ur="منسوخ" />
               </button>
@@ -241,7 +242,7 @@ export default function QuestionsClient({
           </div>
         )}
         {posted && !formOpen && (
-          <p className="mt-4 rounded-2xl bg-emerald-50 p-4 text-base font-bold text-emerald-800 ring-1 ring-emerald-200">
+          <p className="mt-4 rounded-lg bg-court-50 p-4 text-base font-bold text-court-800 ring-1 ring-court-200">
             <T en="✅ Posted! It now appears in the list below." ur="✅ شائع ہو گیا! یہ نیچے فہرست میں نظر آ رہا ہے۔" />
           </p>
         )}
@@ -255,8 +256,8 @@ export default function QuestionsClient({
             role="radio"
             aria-checked={initialArea === a.slug}
             onClick={() => goTo(a.slug, 1)}
-            className={`shrink-0 rounded-full border-2 px-5 py-2.5 text-base font-bold transition ${
-              initialArea === a.slug ? "border-emerald-700 bg-emerald-700 text-white" : "border-slate-200 bg-white text-slate-700 hover:border-emerald-400"
+            className={`shrink-0 rounded-full border px-5 py-2.5 text-base font-bold transition ${
+              initialArea === a.slug ? "border-court-700 bg-court-700 text-white" : "border-ink-200 bg-white text-ink-700 hover:border-court-400"
             }`}
           >
             <T en={a.nameEn} ur={a.nameUr} />
@@ -266,8 +267,8 @@ export default function QuestionsClient({
 
       <div className="mt-6 space-y-4">
         {loadError || !initial ? (
-          <div className="rounded-3xl border border-red-200 bg-red-50 p-8 text-center">
-            <p className="text-lg font-extrabold text-red-800">
+          <div className="rounded-lg border border-clay-200 bg-clay-50 p-8 text-center">
+            <p className="text-lg font-bold text-clay-700">
               <T en="Couldn't load questions. Check your connection and try again." ur="سوالات لوڈ نہ ہو سکے۔ کنکشن چیک کر کے دوبارہ کوشش کریں۔" />
             </p>
             <div className="mt-4">
@@ -275,7 +276,7 @@ export default function QuestionsClient({
             </div>
           </div>
         ) : initial.questions.length === 0 ? (
-          <p className="rounded-3xl border border-slate-200 bg-white p-8 text-center text-lg text-slate-500">
+          <p className="rounded-lg border border-ink-900/10 bg-white p-8 text-center text-lg text-ink-500">
             <T en="No questions on this topic yet — be the first to ask!" ur="اس موضوع پر ابھی کوئی سوال نہیں — پہلا سوال آپ پوچھیں!" />
           </p>
         ) : (
@@ -290,11 +291,11 @@ export default function QuestionsClient({
               <T en="← Newer" ur="← نئے" />
             </SecondaryBtn>
           ) : (
-            <span className="inline-flex min-h-[52px] items-center rounded-2xl border-2 border-slate-200 px-6 py-3 text-lg font-bold text-slate-300">
+            <span className="inline-flex min-h-[52px] items-center rounded-lg border border-ink-900/15 px-6 py-3 text-lg font-bold text-ink-300">
               <T en="← Newer" ur="← نئے" />
             </span>
           )}
-          <p className="text-base font-bold text-slate-600">
+          <p className="text-base font-bold text-ink-600">
             <T en={`Page ${initialPage} of ${totalPages}`} ur={`صفحہ ${initialPage} از ${totalPages}`} />
           </p>
           {initialPage < totalPages ? (
@@ -302,7 +303,7 @@ export default function QuestionsClient({
               <T en="Older →" ur="پرانے →" />
             </SecondaryBtn>
           ) : (
-            <span className="inline-flex min-h-[52px] items-center rounded-2xl border-2 border-slate-200 px-6 py-3 text-lg font-bold text-slate-300">
+            <span className="inline-flex min-h-[52px] items-center rounded-lg border border-ink-900/15 px-6 py-3 text-lg font-bold text-ink-300">
               <T en="Older →" ur="پرانے →" />
             </span>
           )}

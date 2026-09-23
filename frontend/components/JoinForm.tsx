@@ -15,7 +15,7 @@ import { CITIES, PRACTICE_AREAS } from "@/lib/data";
 import { submitApplication, normalizePhone, ApiError } from "@/lib/api";
 
 const inputCls =
-  "min-h-[56px] w-full rounded-2xl border-2 border-slate-200 bg-white px-4 text-lg text-slate-900 outline-none focus:border-emerald-600";
+  "min-h-[56px] w-full rounded-lg border border-ink-900/15 bg-white px-4 text-lg text-ink-950 outline-none transition placeholder:text-ink-400 focus:border-court-600 focus:ring-2 focus:ring-court-600/20";
 
 const BAR_COUNCILS = [
   "Punjab Bar Council",
@@ -42,12 +42,12 @@ function StepDots({ step }: { step: number }) {
         return (
           <li key={l.en} className="flex items-center gap-1 sm:gap-2">
             <span className={`flex min-h-[48px] items-center gap-2 rounded-full px-3 sm:px-5 text-base font-extrabold transition ${
-              active ? "bg-emerald-700 text-white shadow" : done ? "bg-emerald-100 text-emerald-800" : "bg-slate-100 text-slate-400"
+              active ? "bg-court-700 text-white shadow-card" : done ? "bg-court-50 text-court-800 ring-1 ring-court-700/20" : "bg-ink-900/5 text-ink-500"
             }`}>
               {done ? <CheckIcon className="h-5 w-5" /> : l.icon}
               <T en={l.en} ur={l.ur} />
             </span>
-            {n < 3 && <span className="h-0.5 w-4 bg-slate-200 sm:w-8" />}
+            {n < 3 && <span className="h-0.5 w-4 bg-ink-200 sm:w-8" />}
           </li>
         );
       })}
@@ -153,7 +153,7 @@ export default function JoinForm() {
 
   const err = (k: string) =>
     errors[k] ? (
-      <span className="mt-1 block text-sm font-bold text-red-600">
+      <span className="mt-1 block text-sm font-bold text-clay-600">
         <T en={errors[k]!.en} ur={errors[k]!.ur} />
       </span>
     ) : null;
@@ -161,13 +161,13 @@ export default function JoinForm() {
   if (done) {
     return (
       <div className="mx-auto max-w-2xl px-4 py-14 text-center">
-        <span className="mx-auto flex h-24 w-24 items-center justify-center rounded-full bg-emerald-100">
-          <ShieldIcon className="h-12 w-12 text-emerald-700" />
+        <span className="mx-auto flex h-24 w-24 items-center justify-center rounded-full bg-court-50 ring-1 ring-court-700/20">
+          <ShieldIcon className="h-12 w-12 text-court-700" />
         </span>
-        <h1 className="mt-6 text-3xl font-extrabold text-slate-900">
+        <h1 className="mt-6 font-display text-[2.1rem] font-semibold text-ink-950">
           <T en="Application received!" ur="درخواست موصول ہو گئی!" />
         </h1>
-        <p className="mx-auto mt-3 max-w-lg text-lg text-slate-600">
+        <p className="mx-auto mt-3 max-w-lg text-lg text-ink-600">
           <T
             en="Our team will call you on your phone number to collect your CNIC and Bar Council documents for verification. This is a real review — usually done in 2–3 working days."
             ur="ہماری ٹیم تصدیق کے لیے آپ کے شناختی کارڈ اور بار کونسل دستاویزات لینے آپ کے فون نمبر پر رابطہ کرے گی۔ یہ حقیقی جائزہ ہے — عام طور پر ۲ سے ۳ دن میں مکمل۔"
@@ -186,17 +186,17 @@ export default function JoinForm() {
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-10">
-      <h1 className="text-center text-3xl font-extrabold text-slate-900 sm:text-4xl">
+      <h1 className="text-center font-display text-[2.1rem] font-semibold text-ink-950 sm:text-4xl">
         <T en="Join wakeel.connect as a lawyer" ur="وکیل کے طور پر wakeel.connect سے جڑیں" />
       </h1>
-      <p className="mx-auto mt-2 max-w-xl text-center text-lg text-slate-600">
+      <p className="mx-auto mt-2 max-w-xl text-center text-lg text-ink-600">
         <T en="Free to join. Verified lawyers get real client bookings." ur="شمولیت مفت۔ تصدیق شدہ وکیلوں کو حقیقی کلائنٹ ملتے ہیں۔" />
       </p>
       <div className="mt-8"><StepDots step={step} /></div>
 
-      <div className="mt-8 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
+      <div className="mt-8 rounded-lg border border-ink-900/10 bg-white p-6 shadow-card sm:p-8">
         {serverError && (
-          <p className="mb-5 rounded-2xl bg-red-50 p-4 text-base font-bold text-red-700 ring-1 ring-red-200">
+          <p className="mb-5 rounded-lg bg-clay-50 p-4 text-base font-bold text-clay-700 ring-1 ring-clay-200">
             <T en={serverError.en} ur={serverError.ur} />
           </p>
         )}
@@ -204,22 +204,22 @@ export default function JoinForm() {
         {/* ===== STEP 1: personal ===== */}
         {step === 1 && (
           <div className="space-y-4">
-            <h2 className="text-2xl font-extrabold text-slate-900"><T en="Your details" ur="آپ کی معلومات" /></h2>
+            <h2 className="font-display text-[1.65rem] font-semibold text-ink-950"><T en="Your details" ur="آپ کی معلومات" /></h2>
             <label className="block">
-              <span className="mb-1 block text-base font-extrabold text-slate-700"><T en="Full name" ur="پورا نام" /></span>
+              <span className="mb-1 block text-base font-bold text-ink-700"><T en="Full name" ur="پورا نام" /></span>
               <input value={fullName} onChange={(e) => setFullName(e.target.value)} maxLength={80} className={inputCls} placeholder="Adv. Muhammad Ali" />
               {err("fullName")}
             </label>
             <label className="block">
-              <span className="mb-1 block text-base font-extrabold text-slate-700"><T en="Mobile number" ur="موبائل نمبر" /></span>
-              <span className="flex overflow-hidden rounded-2xl border-2 border-slate-200 focus-within:border-emerald-600">
-                <span className="flex min-h-[56px] items-center bg-slate-100 px-4 text-lg font-extrabold text-slate-700">+92</span>
+              <span className="mb-1 block text-base font-bold text-ink-700"><T en="Mobile number" ur="موبائل نمبر" /></span>
+              <span className="flex overflow-hidden rounded-lg border border-ink-900/15 transition focus-within:border-court-600 focus-within:ring-2 focus-within:ring-court-600/20">
+                <span className="flex min-h-[56px] items-center border-r border-ink-900/15 bg-paper-dark/40 px-4 text-lg font-bold text-ink-700">+92</span>
                 <input value={phone} onChange={(e) => setPhone(e.target.value)} className="min-h-[56px] w-full px-4 text-lg outline-none" inputMode="numeric" placeholder="300 1234567" />
               </span>
               {err("phone")}
             </label>
             <label className="block">
-              <span className="mb-1 block text-base font-extrabold text-slate-700"><T en="City" ur="شہر" /></span>
+              <span className="mb-1 block text-base font-bold text-ink-700"><T en="City" ur="شہر" /></span>
               <select value={citySlug} onChange={(e) => setCitySlug(e.target.value)} className={inputCls}>
                 <option value="" disabled><T en="Select city" ur="شہر چنیں" /></option>
                 {CITIES.map((c) => <option key={c.slug} value={c.slug}>{c.nameEn}</option>)}
@@ -232,9 +232,9 @@ export default function JoinForm() {
         {/* ===== STEP 2: professional ===== */}
         {step === 2 && (
           <div className="space-y-4">
-            <h2 className="text-2xl font-extrabold text-slate-900"><T en="Professional details" ur="پیشہ ورانہ معلومات" /></h2>
+            <h2 className="font-display text-[1.65rem] font-semibold text-ink-950"><T en="Professional details" ur="پیشہ ورانہ معلومات" /></h2>
             <label className="block">
-              <span className="mb-1 block text-base font-extrabold text-slate-700"><T en="Bar Council (optional)" ur="بار کونسل (اختیاری)" /></span>
+              <span className="mb-1 block text-base font-bold text-ink-700"><T en="Bar Council (optional)" ur="بار کونسل (اختیاری)" /></span>
               <select value={barCouncil} onChange={(e) => setBarCouncil(e.target.value)} className={inputCls}>
                 <option value=""><T en="Select Bar Council" ur="بار کونسل چنیں" /></option>
                 {BAR_COUNCILS.map((b) => <option key={b} value={b}>{b}</option>)}
@@ -242,23 +242,23 @@ export default function JoinForm() {
             </label>
             <div className="grid gap-4 sm:grid-cols-2">
               <label className="block">
-                <span className="mb-1 block text-base font-extrabold text-slate-700"><T en="Enrolment number (optional)" ur="انرولمنٹ نمبر (اختیاری)" /></span>
+                <span className="mb-1 block text-base font-bold text-ink-700"><T en="Enrolment number (optional)" ur="انرولمنٹ نمبر (اختیاری)" /></span>
                 <input value={barCouncilNo} onChange={(e) => setBarCouncilNo(e.target.value)} maxLength={40} className={inputCls} placeholder="PBC-12345" />
                 {err("barCouncilNo")}
               </label>
               <label className="block">
-                <span className="mb-1 block text-base font-extrabold text-slate-700"><T en="Years of experience" ur="تجربے کے سال" /></span>
+                <span className="mb-1 block text-base font-bold text-ink-700"><T en="Years of experience" ur="تجربے کے سال" /></span>
                 <input value={years} onChange={(e) => setYears(e.target.value)} className={inputCls} type="number" min={0} max={60} placeholder="8" />
                 {err("years")}
               </label>
             </div>
             <label className="block">
-              <span className="mb-1 block text-base font-extrabold text-slate-700"><T en="Consultation fee (PKR)" ur="مشاورت کی فیس (روپے)" /></span>
+              <span className="mb-1 block text-base font-bold text-ink-700"><T en="Consultation fee (PKR)" ur="مشاورت کی فیس (روپے)" /></span>
               <input value={feePkr} onChange={(e) => setFeePkr(e.target.value)} className={inputCls} type="number" min={0} max={1000000} placeholder="3000" />
               {err("feePkr")}
             </label>
             <div>
-              <span className="mb-2 block text-base font-extrabold text-slate-700">
+              <span className="mb-2 block text-base font-bold text-ink-700">
                 <T en={`Practice areas (pick 1–6) — ${areas.length} selected`} ur={`قانونی شعبے (1 تا 6 چنیں) — ${areas.length} منتخب`} />
               </span>
               <div className="flex flex-wrap gap-2">
@@ -268,8 +268,8 @@ export default function JoinForm() {
                     type="button"
                     onClick={() => toggleArea(a.slug)}
                     aria-pressed={areas.includes(a.slug)}
-                    className={`min-h-[48px] rounded-full border-2 px-4 text-base font-bold transition ${
-                      areas.includes(a.slug) ? "border-emerald-700 bg-emerald-700 text-white" : "border-slate-200 bg-white text-slate-700 hover:border-emerald-400"
+                    className={`min-h-[48px] rounded-full border px-4 text-base font-bold transition ${
+                      areas.includes(a.slug) ? "border-court-700 bg-court-700 text-white" : "border-ink-900/15 bg-white text-ink-700 hover:border-court-700/50"
                     }`}
                   >
                     <T en={a.nameEn} ur={a.nameUr} />
@@ -279,11 +279,11 @@ export default function JoinForm() {
               {err("areas")}
             </div>
             <label className="block">
-              <span className="mb-1 flex items-baseline justify-between text-base font-extrabold text-slate-700">
+              <span className="mb-1 flex items-baseline justify-between text-base font-bold text-ink-700">
                 <T en="Short bio (optional)" ur="مختصر تعارف (اختیاری)" />
-                <span className="text-sm font-bold text-slate-400">{bio.trim().length}/2000</span>
+                <span className="text-sm font-bold text-ink-400">{bio.trim().length}/2000</span>
               </span>
-              <textarea value={bio} onChange={(e) => setBio(e.target.value)} maxLength={2100} rows={3} className="w-full rounded-2xl border-2 border-slate-200 px-4 py-3 text-base font-semibold outline-none focus:border-emerald-600" placeholder="e.g. 10 years of family law practice in Lahore…" />
+              <textarea value={bio} onChange={(e) => setBio(e.target.value)} maxLength={2100} rows={3} className="w-full rounded-lg border border-ink-900/15 px-4 py-3 text-base font-semibold outline-none transition placeholder:text-ink-400 focus:border-court-600 focus:ring-2 focus:ring-court-600/20" placeholder="e.g. 10 years of family law practice in Lahore…" />
               {err("bio")}
             </label>
           </div>
@@ -292,8 +292,8 @@ export default function JoinForm() {
         {/* ===== STEP 3: review & submit ===== */}
         {step === 3 && (
           <div className="space-y-5">
-            <h2 className="text-2xl font-extrabold text-slate-900"><T en="Review & submit" ur="جائزہ اور ارسال" /></h2>
-            <dl className="divide-y divide-slate-100 rounded-2xl border border-slate-200">
+            <h2 className="font-display text-[1.65rem] font-semibold text-ink-950"><T en="Review & submit" ur="جائزہ اور ارسال" /></h2>
+            <dl className="divide-y divide-ink-900/10 rounded-lg border border-ink-900/10">
               {[
                 { en: "Name", ur: "نام", v: fullName.trim() },
                 { en: "Mobile", ur: "موبائل", v: normalizePhone(phone) },
@@ -308,12 +308,12 @@ export default function JoinForm() {
                 },
               ].map((row) => (
                 <div key={row.en} className="flex gap-4 px-4 py-3">
-                  <dt className="w-32 shrink-0 text-base font-extrabold text-slate-500"><T en={row.en} ur={row.ur} /></dt>
-                  <dd className="text-base font-bold text-slate-900">{row.v}</dd>
+                  <dt className="w-32 shrink-0 text-base font-bold text-ink-600"><T en={row.en} ur={row.ur} /></dt>
+                  <dd className="text-base font-bold text-ink-950">{row.v}</dd>
                 </div>
               ))}
             </dl>
-            <p className="flex items-start gap-2 rounded-2xl bg-emerald-50 p-4 text-base text-emerald-900 ring-1 ring-emerald-200">
+            <p className="flex items-start gap-2 rounded-lg bg-court-50 p-4 text-base text-ink-900 ring-1 ring-court-200">
               <ShieldIcon className="h-6 w-6 shrink-0" />
               <T
                 en="After you submit, our team will call you to collect your CNIC and Bar Council documents. Documents stay private — they are never shown to clients."
@@ -342,9 +342,9 @@ export default function JoinForm() {
         </div>
       </div>
 
-      <p className="mt-6 text-center text-base text-slate-500">
+      <p className="mt-6 text-center text-base text-ink-500">
         <T en="Questions? Call our helpline — we help you fill the form." ur="سوالات؟ ہماری ہیلپ لائن پر کال کریں — فارم بھرنے میں مدد کریں گے۔" />{" "}
-        <Link href="/" className="font-bold text-emerald-700 hover:underline"><T en="Back to home" ur="ہوم" /></Link>
+        <Link href="/" className="font-bold text-court-700 hover:underline"><T en="Back to home" ur="ہوم" /></Link>
       </p>
     </div>
   );

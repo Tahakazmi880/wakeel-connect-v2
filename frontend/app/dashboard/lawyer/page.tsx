@@ -15,13 +15,13 @@ export const metadata: Metadata = {
 export default function LawyerDashboard() {
   return (
     <div className="mx-auto max-w-3xl px-4 py-16 text-center">
-      <span className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-emerald-100">
-        <BriefcaseIcon className="h-10 w-10 text-emerald-700" />
+      <span className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-court-100">
+        <BriefcaseIcon className="h-10 w-10 text-court-700" />
       </span>
-      <h1 className="mt-6 text-3xl font-extrabold text-slate-900">
+      <h1 className="mt-6 font-display text-[2.1rem] font-semibold text-ink-950">
         <T en="Lawyer portal" ur="وکیل پورٹل" />
       </h1>
-      <p className="mx-auto mt-3 max-w-xl text-lg text-slate-600">
+      <p className="mx-auto mt-3 max-w-xl text-lg text-ink-600">
         <T
           en="Booking management, availability editing and earnings reports for listed lawyers are coming soon. Nothing here is live yet — we won't show you fake numbers."
           ur="رجسٹرڈ وکیلوں کے لیے بکنگ مینجمنٹ، دستیابی اور آمدنی کی رپورٹس جلد آ رہی ہیں۔ یہاں ابھی کچھ لائیو نہیں — ہم آپ کو جھوٹے اعداد نہیں دکھائیں گے۔"

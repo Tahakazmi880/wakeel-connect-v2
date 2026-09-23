@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 export default async function BookPage({ params }: { params: Promise<{ lawyerSlug: string }> }) {
   const { lawyerSlug } = await params;
   return (
-    <Suspense fallback={<div className="mx-auto max-w-3xl px-4 py-16 text-center text-lg font-bold text-slate-500">Loading…</div>}>
+    <Suspense fallback={<div className="mx-auto max-w-3xl px-4 py-16 text-center text-lg font-bold text-ink-500">Loading…</div>}>
       <BookingFlow lawyerSlug={lawyerSlug} />
     </Suspense>
   );

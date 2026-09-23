@@ -34,7 +34,7 @@ export default function SlotPicker({
   const [picked, setPicked] = useState<SlotPick | null>(initial ?? null);
 
   if (loading) {
-    return <p className="py-8 text-center text-lg font-bold text-slate-500">…</p>;
+    return <p className="py-8 text-center text-lg font-bold text-ink-500">…</p>;
   }
 
   const day = days[dayIdx];
@@ -42,7 +42,7 @@ export default function SlotPicker({
 
   return (
     <div>
-      <p className="mb-2 text-base font-extrabold text-slate-700">
+      <p className="mb-2 text-base font-bold text-ink-700">
         <T en="Pick a day" ur="دن چنیں" />
       </p>
       <div className="wc-rail flex gap-2 overflow-x-auto pb-2" role="radiogroup" aria-label="Day">
@@ -57,24 +57,24 @@ export default function SlotPicker({
               setPicked(null);
               onPick(null);
             }}
-            className={`min-h-[72px] min-w-[110px] shrink-0 rounded-2xl border-2 px-3 py-2 text-center transition ${
+            className={`min-h-[72px] min-w-[110px] shrink-0 rounded-lg border px-3 py-2 text-center transition ${
               dayIdx === i
-                ? "border-emerald-700 bg-emerald-700 text-white shadow"
-                : "border-slate-200 bg-white text-slate-700 hover:border-emerald-400"
+                ? "border-court-700 bg-court-700 text-white shadow-card"
+                : "border-ink-900/15 bg-white text-ink-700 hover:border-court-700/50"
             }`}
           >
-            <span className="block text-base font-extrabold">{d.label}</span>
+            <span className="block text-base font-bold">{d.label}</span>
           </button>
         ))}
       </div>
 
       {day && (
         <>
-          <p className="mb-2 mt-6 text-base font-extrabold text-slate-700">
+          <p className="mb-2 mt-6 text-base font-bold text-ink-700">
             <T en="Pick a time" ur="وقت چنیں" />
           </p>
           {free.length === 0 ? (
-            <p className="rounded-2xl bg-slate-50 px-4 py-6 text-center text-base font-bold text-slate-500 ring-1 ring-slate-200">
+            <p className="rounded-lg bg-paper-dark/40 px-4 py-6 text-center text-base font-semibold text-ink-600 ring-1 ring-ink-900/10">
               <T en="No free slots this day — try another day." ur="اس دن کوئی خالی وقت نہیں — کوئی اور دن آزمائیں۔" />
             </p>
           ) : (
@@ -93,12 +93,12 @@ export default function SlotPicker({
                       setPicked(p);
                       onPick(p);
                     }}
-                    className={`min-h-[52px] rounded-xl border-2 text-base font-bold transition ${
+                    className={`min-h-[52px] rounded-lg border text-base font-bold transition ${
                       s.taken
-                        ? "cursor-not-allowed border-slate-100 bg-slate-50 text-slate-300 line-through"
+                        ? "cursor-not-allowed border-ink-900/10 bg-paper text-ink-300 line-through"
                         : isPicked
-                          ? "border-emerald-700 bg-emerald-700 text-white shadow"
-                          : "border-slate-200 bg-white text-slate-700 hover:border-emerald-400"
+                          ? "border-court-700 bg-court-700 text-white shadow-card"
+                          : "border-ink-900/15 bg-white text-ink-700 hover:border-court-700/50"
                     }`}
                   >
                     {s.start}

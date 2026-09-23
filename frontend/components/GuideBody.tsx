@@ -10,7 +10,7 @@ export default function GuideBody({ guide }: { guide: Guide }) {
   return (
     <div className={lang === "ur" ? "text-right" : "text-left"}>
       {paragraphs.map((p, i) => (
-        <p key={i} className="mb-5 text-lg leading-8 text-slate-700">
+        <p key={i} className="mb-5 text-lg leading-8 text-ink-700">
           {p}
         </p>
       ))}

@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { T, useLang } from "./LanguageContext";
 import { PrimaryBtn, SectionHead } from "./ui";
 import { PhotoAvatar } from "./PhotoAvatar";
-import { CalendarIcon, CheckIcon, OfficeIcon, PhoneIcon, VideoIcon } from "./icons";
+import { CalendarIcon, CheckIcon, DocIcon, OfficeIcon, PhoneIcon, UploadIcon, VideoIcon } from "./icons";
 import SlotPicker, { slotToISO, type SlotPick } from "./SlotPicker";
 import {
   ApiError,
@@ -30,11 +30,11 @@ import {
 import { useAuth } from "@/lib/useAuth";
 
 const STATUS_STYLE: Record<BookingStatus, string> = {
-  PENDING: "bg-amber-100 text-amber-800",
-  CONFIRMED: "bg-emerald-100 text-emerald-800",
-  COMPLETED: "bg-slate-100 text-slate-600",
-  CANCELLED: "bg-red-50 text-red-700",
-  NO_SHOW: "bg-slate-100 text-slate-500",
+  PENDING: "bg-brass-100 text-brass-700",
+  CONFIRMED: "bg-court-100 text-court-800",
+  COMPLETED: "bg-ink-900/5 text-ink-700 ring-1 ring-ink-900/10",
+  CANCELLED: "bg-clay-50 text-clay-700",
+  NO_SHOW: "bg-ink-900/5 text-ink-600 ring-1 ring-ink-900/10",
 };
 
 const STATUS_LABEL: Record<BookingStatus, { en: string; ur: string }> = {
@@ -114,34 +114,34 @@ function DocumentsSection({ booking, onDocs }: { booking: Booking; onDocs: (docs
   };
 
   return (
-    <div className="mt-3 rounded-2xl bg-slate-50 p-4 ring-1 ring-slate-200">
-      <p className="flex items-center gap-2 text-base font-extrabold text-slate-800">
-        <span aria-hidden>📎</span>
+    <div className="mt-3 rounded-lg bg-paper p-4 ring-1 ring-ink-200">
+      <p className="flex items-center gap-2 text-base font-bold text-ink-800">
+        <DocIcon className="h-5 w-5 text-court-700" />
         <T en="Case documents" ur="کیس کے کاغذات" />
       </p>
       {booking.documents.length > 0 ? (
         <ul className="mt-2 space-y-2">
           {booking.documents.map((d) => (
-            <li key={d.id} className="flex items-center justify-between gap-3 rounded-xl bg-white px-4 py-2.5 ring-1 ring-slate-200">
-              <span className="min-w-0 flex-1 truncate text-base font-bold text-slate-800">{d.fileName}</span>
+            <li key={d.id} className="flex items-center justify-between gap-3 rounded-lg bg-white px-4 py-2.5 ring-1 ring-ink-200">
+              <span className="min-w-0 flex-1 truncate text-base font-bold text-ink-800">{d.fileName}</span>
               <button
                 type="button"
                 onClick={() => download(d)}
                 disabled={downloading === d.id}
-                className="inline-flex min-h-[44px] shrink-0 items-center rounded-lg px-3 text-base font-bold text-emerald-800 hover:bg-emerald-50 disabled:opacity-50"
+                className="inline-flex min-h-[44px] shrink-0 items-center rounded-lg px-3 text-base font-bold text-court-800 hover:bg-court-50 disabled:opacity-50"
               >
-                {downloading === d.id ? "…" : <T en="⬇ Download" ur="⬇ ڈاؤن لوڈ" />}
+                {downloading === d.id ? "…" : <T en="Download" ur="ڈاؤن لوڈ" />}
               </button>
             </li>
           ))}
         </ul>
       ) : (
-        <p className="mt-1 text-sm font-semibold text-slate-400">
+        <p className="mt-1 text-sm font-semibold text-ink-400">
           <T en="No documents yet." ur="ابھی کوئی کاغذات نہیں۔" />
         </p>
       )}
-      <label className="mt-3 inline-flex min-h-[48px] cursor-pointer items-center gap-2 rounded-xl border-2 border-emerald-700 px-5 text-base font-bold text-emerald-800 transition hover:bg-emerald-50">
-        <span aria-hidden>📤</span>
+      <label className="mt-3 inline-flex min-h-[48px] cursor-pointer items-center gap-2 rounded-lg border border-court-700/50 px-5 text-base font-bold text-court-800 transition hover:bg-court-50">
+        <UploadIcon className="h-5 w-5" />
         <T en={uploading ? "Uploading…" : "Attach file"} ur={uploading ? "اپ لوڈ ہو رہی ہے…" : "فائل لگائیں"} />
         <input
           type="file"
@@ -155,17 +155,17 @@ function DocumentsSection({ booking, onDocs }: { booking: Booking; onDocs: (docs
         />
       </label>
       {error === "type" && (
-        <p className="mt-2 text-sm font-bold text-red-700">
+        <p className="mt-2 text-sm font-bold text-clay-700">
           <T en="Only PDF, JPG, PNG, WEBP, DOC or DOCX files." ur="صرف PDF، JPG، PNG، WEBP، DOC یا DOCX فائل۔" />
         </p>
       )}
       {error === "size" && (
-        <p className="mt-2 text-sm font-bold text-red-700">
+        <p className="mt-2 text-sm font-bold text-clay-700">
           <T en={`File must be under ${MAX_MB} MB.`} ur={`فائل ${MAX_MB} ایم بی سے چھوٹی ہو۔`} />
         </p>
       )}
       {error === "generic" && (
-        <p className="mt-2 text-sm font-bold text-red-700">
+        <p className="mt-2 text-sm font-bold text-clay-700">
           <T en="Something went wrong. Please try again." ur="کچھ غلط ہو گیا۔ دوبارہ کوشش کریں۔" />
         </p>
       )}
@@ -196,8 +196,8 @@ function ReviewSection({ bookingId, onDone }: { bookingId: string; onDone: () =>
   };
 
   return (
-    <div className="mt-3 rounded-2xl bg-amber-50 p-4 ring-1 ring-amber-200">
-      <p className="text-base font-extrabold text-slate-800">
+    <div className="mt-3 rounded-lg bg-brass-50 p-4 ring-1 ring-brass-200">
+      <p className="text-base font-bold text-ink-800">
         <T en="How was your consultation?" ur="مشاورت کیسی رہی؟" />
       </p>
       <div className="mt-2 flex gap-1" role="radiogroup" aria-label="Rating">
@@ -211,7 +211,7 @@ function ReviewSection({ bookingId, onDone }: { bookingId: string; onDone: () =>
             onClick={() => setRating(n)}
             className="min-h-[52px] min-w-[52px] text-4xl transition active:scale-90"
           >
-            <span className={n <= rating ? "text-amber-400" : "text-slate-300"}>★</span>
+            <span className={n <= rating ? "text-brass-400" : "text-ink-300"}>★</span>
           </button>
         ))}
       </div>
@@ -221,10 +221,10 @@ function ReviewSection({ bookingId, onDone }: { bookingId: string; onDone: () =>
         rows={2}
         placeholder="…"
         aria-label="Review comment"
-        className="mt-2 w-full rounded-xl border-2 border-slate-200 px-4 py-2 text-base text-slate-900 outline-none focus:border-emerald-600"
+        className="mt-2 w-full rounded-lg border border-ink-900/15 px-4 py-2 text-base text-ink-950 outline-none focus:border-court-600 focus:ring-2 focus:ring-court-600/20"
       />
       {error && (
-        <p className="mt-1 text-sm font-bold text-red-700">
+        <p className="mt-1 text-sm font-bold text-clay-700">
           <T en="Could not submit. Please try again." ur="بھیجی نہ جا سکی۔ دوبارہ کوشش کریں۔" />
         </p>
       )}
@@ -232,7 +232,7 @@ function ReviewSection({ bookingId, onDone }: { bookingId: string; onDone: () =>
         type="button"
         onClick={submit}
         disabled={rating < 1 || submitting}
-        className="mt-2 inline-flex min-h-[48px] items-center rounded-xl bg-emerald-700 px-6 text-base font-bold text-white transition hover:bg-emerald-800 disabled:cursor-not-allowed disabled:bg-slate-300"
+        className="mt-2 inline-flex min-h-[48px] items-center rounded-lg bg-court-700 px-6 text-base font-bold text-white transition hover:bg-court-800 disabled:cursor-not-allowed disabled:bg-ink-300"
       >
         <T en={submitting ? "Sending…" : "Submit review"} ur={submitting ? "بھیجی جا رہی ہے…" : "رائے بھیجیں"} />
       </button>
@@ -264,8 +264,8 @@ function RescheduleSection({
   }, [lawyerSlug]);
 
   return (
-    <div className="mt-3 rounded-2xl bg-emerald-50 p-4 ring-1 ring-emerald-200">
-      <p className="mb-3 text-base font-extrabold text-slate-800">
+    <div className="mt-3 rounded-lg bg-court-50 p-4 ring-1 ring-court-200">
+      <p className="mb-3 text-base font-bold text-ink-800">
         <T en="Pick a new time" ur="نیا وقت چنیں" />
       </p>
       <SlotPicker days={days} loading={loading} onPick={setPick} />
@@ -282,14 +282,14 @@ function RescheduleSection({
               setSaving(false);
             }
           }}
-          className="inline-flex min-h-[52px] items-center rounded-xl bg-emerald-700 px-6 text-base font-bold text-white transition hover:bg-emerald-800 disabled:cursor-not-allowed disabled:bg-slate-300"
+          className="inline-flex min-h-[52px] items-center rounded-lg bg-court-700 px-6 text-base font-bold text-white transition hover:bg-court-800 disabled:cursor-not-allowed disabled:bg-ink-300"
         >
           <T en={saving ? "Moving…" : "Move booking here"} ur={saving ? "منتقل ہو رہی ہے…" : "بکنگ یہاں منتقل کریں"} />
         </button>
         <button
           type="button"
           onClick={onClose}
-          className="inline-flex min-h-[52px] items-center rounded-xl border-2 border-slate-200 px-6 text-base font-bold text-slate-700"
+          className="inline-flex min-h-[52px] items-center rounded-lg border border-ink-900/15 px-6 text-base font-bold text-ink-700"
         >
           <T en="Cancel" ur="رہنے دیں" />
         </button>
@@ -350,27 +350,27 @@ function BookingCard({
   };
 
   return (
-    <article className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
+    <article className="rounded-lg border border-ink-900/10 bg-white p-5 shadow-sm">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
         <PhotoAvatar name={booking.lawyer.displayName} photo={photoUrl ?? undefined} size="sm" />
         <div className="min-w-0 flex-1">
-          <p className="flex flex-wrap items-center gap-2 text-lg font-extrabold text-slate-900">
+          <p className="flex flex-wrap items-center gap-2 font-display text-[1.15rem] font-semibold text-ink-950">
             {booking.lawyer.displayName}
             <span className={`rounded-full px-3 py-1 text-sm font-bold ${STATUS_STYLE[booking.status]}`}>
               <T en={st.en} ur={st.ur} />
             </span>
           </p>
-          <p className="mt-1 flex flex-wrap items-center gap-x-4 gap-y-1 text-base text-slate-600">
+          <p className="mt-1 flex flex-wrap items-center gap-x-4 gap-y-1 text-base text-ink-600">
             <span className="inline-flex items-center gap-1 font-semibold">
-              <CalendarIcon className="h-5 w-5 text-emerald-700" />{dateStr} · {timeStr}
+              <CalendarIcon className="h-5 w-5 text-court-700" />{dateStr} · {timeStr}
             </span>
             <span className="inline-flex items-center gap-1 font-semibold">
-              {booking.mode === "ONLINE_VIDEO" ? <VideoIcon className="h-5 w-5 text-emerald-700" /> : <OfficeIcon className="h-5 w-5 text-emerald-700" />}
+              {booking.mode === "ONLINE_VIDEO" ? <VideoIcon className="h-5 w-5 text-court-700" /> : <OfficeIcon className="h-5 w-5 text-court-700" />}
               <T en={md.en} ur={md.ur} />
             </span>
-            <span className="font-extrabold text-emerald-800">{fee ?? <T en="Fee on request" ur="فیس معلوم کریں" />}</span>
+            <span className="font-bold text-court-800">{fee ?? <T en="Fee on request" ur="فیس معلوم کریں" />}</span>
           </p>
-          <p className="mt-1 text-sm text-slate-400">
+          <p className="mt-1 text-sm text-ink-400">
             <T en={`Ref: ${booking.id.slice(0, 8).toUpperCase()}`} ur={`حوالہ: ${booking.id.slice(0, 8).toUpperCase()}`} />
           </p>
         </div>
@@ -378,7 +378,7 @@ function BookingCard({
           {active && booking.mode === "ONLINE_VIDEO" && (
             <a
               href={`/video/${booking.id}`}
-              className="inline-flex min-h-[48px] items-center justify-center gap-2 rounded-xl bg-emerald-700 px-5 text-base font-bold text-white hover:bg-emerald-800"
+              className="inline-flex min-h-[48px] items-center justify-center gap-2 rounded-lg bg-court-700 px-5 text-base font-bold text-white hover:bg-court-800"
             >
               <VideoIcon className="h-5 w-5" /><T en="Join video call" ur="ویڈیو کال" />
             </a>
@@ -388,14 +388,14 @@ function BookingCard({
               <button
                 type="button"
                 onClick={() => setMode("reschedule")}
-                className="inline-flex min-h-[48px] items-center justify-center gap-2 rounded-xl border-2 border-emerald-700 px-5 text-base font-bold text-emerald-800 hover:bg-emerald-50"
+                className="inline-flex min-h-[48px] items-center justify-center gap-2 rounded-lg border border-court-700/50 px-5 text-base font-bold text-court-800 hover:bg-court-50"
               >
                 <CalendarIcon className="h-5 w-5" /><T en="Reschedule" ur="وقت بدلیں" />
               </button>
               <button
                 type="button"
                 onClick={() => setMode("cancel")}
-                className="inline-flex min-h-[48px] items-center justify-center gap-2 rounded-xl border-2 border-slate-200 px-5 text-base font-bold text-slate-700 hover:border-red-300 hover:text-red-700"
+                className="inline-flex min-h-[48px] items-center justify-center gap-2 rounded-lg border border-ink-900/15 px-5 text-base font-bold text-ink-700 hover:border-clay-400 hover:text-clay-700"
               >
                 <T en="Cancel" ur="منسوخ کریں" />
               </button>
@@ -405,40 +405,40 @@ function BookingCard({
       </div>
 
       {error === "taken" && (
-        <p className="mt-3 rounded-xl bg-amber-50 px-4 py-3 text-sm font-bold text-amber-900 ring-1 ring-amber-200">
+        <p className="mt-3 rounded-lg bg-brass-50 px-4 py-3 text-sm font-bold text-brass-800 ring-1 ring-brass-200">
           <T en="That slot was just taken — pick another time." ur="یہ وقت ابھی بک ہو گیا — کوئی اور وقت چنیں۔" />
         </p>
       )}
       {error === "generic" && (
-        <p className="mt-3 rounded-xl bg-red-50 px-4 py-3 text-sm font-bold text-red-800 ring-1 ring-red-200">
+        <p className="mt-3 rounded-lg bg-clay-50 px-4 py-3 text-sm font-bold text-clay-700 ring-1 ring-clay-200">
           <T en="Something went wrong. Please try again." ur="کچھ غلط ہو گیا۔ دوبارہ کوشش کریں۔" />
         </p>
       )}
 
       {mode === "cancel" && (
-        <div className="mt-3 rounded-2xl bg-red-50 p-4 ring-1 ring-red-200">
-          <p className="text-base font-extrabold text-slate-800">
+        <div className="mt-3 rounded-lg bg-clay-50 p-4 ring-1 ring-clay-200">
+          <p className="text-base font-bold text-ink-800">
             <T en="Cancel this booking?" ur="یہ بکنگ منسوخ کریں؟" />
           </p>
           <input
             value={reason}
             onChange={(e) => setReason(e.target.value.slice(0, 200))}
             placeholder="Reason (optional)"
-            className="mt-2 w-full rounded-xl border-2 border-slate-200 px-4 py-2 text-base outline-none focus:border-red-400"
+            className="mt-2 w-full rounded-lg border border-ink-900/15 px-4 py-2 text-base outline-none focus:border-clay-200"
           />
           <div className="mt-3 flex flex-wrap gap-2">
             <button
               type="button"
               onClick={doCancel}
               disabled={working}
-              className="inline-flex min-h-[52px] items-center rounded-xl bg-red-600 px-6 text-base font-bold text-white hover:bg-red-700 disabled:opacity-60"
+              className="inline-flex min-h-[52px] items-center rounded-lg bg-clay-600 px-6 text-base font-bold text-white hover:bg-clay-700 disabled:opacity-60"
             >
               <T en={working ? "Cancelling…" : "Yes, cancel it"} ur={working ? "منسوخ ہو رہی ہے…" : "جی ہاں، منسوخ کریں"} />
             </button>
             <button
               type="button"
               onClick={() => setMode("idle")}
-              className="inline-flex min-h-[52px] items-center rounded-xl border-2 border-slate-200 px-6 text-base font-bold text-slate-700"
+              className="inline-flex min-h-[52px] items-center rounded-lg border border-ink-900/15 px-6 text-base font-bold text-ink-700"
             >
               <T en="Keep it" ur="رہنے دیں" />
             </button>
@@ -458,7 +458,7 @@ function BookingCard({
         <ReviewSection bookingId={booking.id} onDone={() => setReviewed(true)} />
       )}
       {booking.status === "COMPLETED" && reviewed && (
-        <p className="mt-3 flex items-center gap-2 rounded-2xl bg-emerald-50 px-4 py-3 text-base font-bold text-emerald-800 ring-1 ring-emerald-200">
+        <p className="mt-3 flex items-center gap-2 rounded-lg bg-court-50 px-4 py-3 text-base font-bold text-court-800 ring-1 ring-court-200">
           <CheckIcon className="h-5 w-5" />
           <T en="Thanks for your review!" ur="آپ کی رائے کا شکریہ!" />
         </p>
@@ -504,19 +504,19 @@ export default function DashboardClient() {
   }, []);
 
   if (!ready) {
-    return <div className="mx-auto max-w-5xl px-4 py-10"><p className="text-center text-lg font-bold text-slate-500">…</p></div>;
+    return <div className="mx-auto max-w-5xl px-4 py-10"><p className="text-center text-lg font-bold text-ink-500">…</p></div>;
   }
 
   if (!user) {
     return (
       <div className="mx-auto max-w-xl px-4 py-16 text-center">
-        <span className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-emerald-100">
-          <PhoneIcon className="h-10 w-10 text-emerald-700" />
+        <span className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-court-100">
+          <PhoneIcon className="h-10 w-10 text-court-700" />
         </span>
-        <h1 className="mt-6 text-3xl font-extrabold text-slate-900">
+        <h1 className="mt-6 font-display text-[2.1rem] font-semibold text-ink-950">
           <T en="Login to see your bookings" ur="بکنگز دیکھنے کے لیے لاگ اِن کریں" />
         </h1>
-        <p className="mt-2 text-lg text-slate-600">
+        <p className="mt-2 text-lg text-ink-600">
           <T en="Enter your mobile number — we'll send a code. No password needed." ur="اپنا موبائل نمبر لکھیں — کوڈ آئے گا۔ پاس ورڈ کی ضرورت نہیں۔" />
         </p>
         <div className="mt-8">
@@ -544,27 +544,27 @@ export default function DashboardClient() {
         <button
           type="button"
           onClick={() => logout()}
-          className="inline-flex min-h-[48px] items-center rounded-xl border-2 border-slate-200 px-5 text-base font-bold text-slate-700 hover:border-red-300 hover:text-red-700"
+          className="inline-flex min-h-[48px] items-center rounded-lg border border-ink-900/15 px-5 text-base font-bold text-ink-700 hover:border-clay-400 hover:text-clay-700"
         >
           <T en="Logout" ur="لاگ آؤٹ" />
         </button>
       </div>
 
       {loadError && (
-        <p className="mx-auto mb-6 max-w-3xl rounded-xl bg-red-50 px-4 py-3 text-center text-base font-bold text-red-800 ring-1 ring-red-200">
+        <p className="mx-auto mb-6 max-w-3xl rounded-lg bg-clay-50 px-4 py-3 text-center text-base font-bold text-clay-700 ring-1 ring-clay-200">
           <T en="Could not load bookings. Please refresh." ur="بکنگز لوڈ نہ ہو سکیں۔ صفحہ دوبارہ لوڈ کریں۔" />
         </p>
       )}
 
       {sorted.length === 0 ? (
-        <div className="mx-auto max-w-xl rounded-3xl border border-slate-200 bg-white p-10 text-center shadow-sm">
-          <span className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-emerald-100">
-            <CalendarIcon className="h-10 w-10 text-emerald-700" />
+        <div className="mx-auto max-w-xl rounded-lg border border-ink-900/10 bg-white p-10 text-center shadow-sm">
+          <span className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-court-100">
+            <CalendarIcon className="h-10 w-10 text-court-700" />
           </span>
-          <h2 className="mt-6 text-2xl font-extrabold text-slate-900">
+          <h2 className="mt-6 font-display text-[1.65rem] font-semibold text-ink-950">
             <T en="No bookings yet" ur="ابھی کوئی بکنگ نہیں" />
           </h2>
-          <p className="mt-2 text-lg text-slate-600">
+          <p className="mt-2 text-lg text-ink-600">
             <T en="Find a lawyer and book your first consultation in about a minute." ur="وکیل تلاش کریں اور تقریباً ایک منٹ میں پہلی مشاورت بک کریں۔" />
           </p>
           <div className="mt-8">

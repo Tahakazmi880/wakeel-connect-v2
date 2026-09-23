@@ -78,7 +78,7 @@ function OtpBoxes({ value, onChange, disabled }: { value: string; onChange: (v: 
           inputMode="numeric"
           autoComplete="one-time-code"
           aria-label={`Digit ${i + 1}`}
-          className="h-14 w-12 rounded-lg border-2 border-ink-200 text-center text-2xl font-extrabold text-ink-950 outline-none focus:border-court-600 disabled:bg-ink-100 sm:h-16 sm:w-14"
+          className="h-14 w-12 rounded-lg border border-ink-900/15 text-center font-display text-2xl font-semibold text-ink-950 outline-none transition focus:border-court-600 focus:ring-2 focus:ring-court-600/20 disabled:bg-paper-dark/60 sm:h-16 sm:w-14"
         />
       ))}
     </div>
@@ -160,15 +160,15 @@ function LoginForm() {
         sub={<T en="No password to remember — we'll send a 6-digit code to your mobile." ur="پاس ورڈ یاد رکھنے کی ضرورت نہیں — آپ کے موبائل پر ۶ ہندسوں کا کوڈ آئے گا۔" />}
       />
 
-      <section className="rounded-xl border border-ink-200 bg-white p-6 shadow-sm sm:p-8" aria-label="Login">
+      <section className="rounded-lg border border-ink-900/10 bg-white p-6 shadow-card sm:p-8" aria-label="Login">
         {step === "phone" ? (
           <>
             <label className="block">
-              <span className="mb-1 block text-base font-extrabold text-ink-700">
+              <span className="mb-1 block text-base font-bold text-ink-700">
                 <T en="Mobile number" ur="موبائل نمبر" />
               </span>
-              <span className="flex overflow-hidden rounded-lg border-2 border-ink-200 focus-within:border-court-600">
-                <span className="flex min-h-[60px] items-center bg-ink-100 px-4 text-lg font-extrabold text-ink-700">+92</span>
+              <span className="flex overflow-hidden rounded-lg border border-ink-900/15 transition focus-within:border-court-600 focus-within:ring-2 focus-within:ring-court-600/20">
+                <span className="flex min-h-[60px] items-center border-r border-ink-900/15 bg-paper-dark/40 px-4 text-lg font-bold text-ink-700">+92</span>
                 <input
                   value={phone}
                   onChange={(e) => {
@@ -184,7 +184,7 @@ function LoginForm() {
               </span>
             </label>
             {error && (
-              <p className="mt-3 rounded-xl bg-clay-50 px-4 py-3 text-center text-base font-bold text-clay-700">
+              <p className="mt-3 rounded-lg bg-clay-50 px-4 py-3 text-center text-base font-bold text-clay-700 ring-1 ring-clay-200">
                 <T en={error.en} ur={error.ur} />
               </p>
             )}
@@ -210,7 +210,7 @@ function LoginForm() {
               <T en={`Code sent to +92 ${phone}`} ur={`+92 ${phone} پر کوڈ بھیجا گیا`} />
             </p>
             {/* Honest dev-mode note: SMS_PROVIDER=log, no real SMS is sent. */}
-            <p className="mx-auto mt-2 max-w-md rounded-xl bg-brass-50 px-4 py-2 text-center text-sm font-semibold text-brass-700">
+            <p className="mx-auto mt-2 max-w-md rounded-lg bg-brass-50 px-4 py-2 text-center text-sm font-semibold text-brass-700 ring-1 ring-brass-200">
               <T
                 en="Demo mode: real SMS nahi bheja jata — OTP backend logs mein milta hai."
                 ur="ڈیمو موڈ: اصل ایس ایم ایس نہیں بھیجا جاتا — او ٹی پی بیک اینڈ لاگز میں ملتا ہے۔"
@@ -220,7 +220,7 @@ function LoginForm() {
               <OtpBoxes value={code} onChange={setCode} disabled={busy} />
             </div>
             {error && (
-              <p className="mt-4 rounded-xl bg-clay-50 px-4 py-3 text-center text-base font-bold text-clay-700">
+              <p className="mt-4 rounded-lg bg-clay-50 px-4 py-3 text-center text-base font-bold text-clay-700 ring-1 ring-clay-200">
                 <T en={error.en} ur={error.ur} />
               </p>
             )}

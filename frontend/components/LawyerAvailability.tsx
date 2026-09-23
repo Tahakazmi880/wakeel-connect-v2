@@ -36,7 +36,7 @@ export default function LawyerAvailability({ lawyerSlug }: { lawyerSlug: string 
 
   if (error) {
     return (
-      <p className="rounded-2xl bg-slate-50 p-5 text-base font-semibold text-slate-500">
+      <p className="rounded-lg bg-paper p-5 text-base font-semibold text-ink-500">
         <T en="Could not load availability right now — please try booking directly." ur="دستیابی ابھی لوڈ نہیں ہو سکی — براہِ راست بک کرنے کی کوشش کریں۔" />
       </p>
     );
@@ -55,7 +55,7 @@ export default function LawyerAvailability({ lawyerSlug }: { lawyerSlug: string 
           <T en="Book Appointment" ur="اپائنٹمنٹ بک کریں" />
         </PrimaryBtn>
         {!pick && !loading && (
-          <p className="mt-2 text-center text-sm font-semibold text-slate-500">
+          <p className="mt-2 text-center text-sm font-semibold text-ink-500">
             <T en="Pick a day and time above to continue" ur="آگے بڑھنے کے لیے اوپر دن اور وقت چنیں" />
           </p>
         )}

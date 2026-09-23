@@ -45,10 +45,10 @@ export default async function CityPage({ params }: { params: Promise<{ city: str
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-10">
-      <p className="inline-flex items-center gap-2 rounded-full bg-court-100 px-4 py-1.5 text-sm font-bold text-court-800">
+      <p className="inline-flex items-center gap-2 rounded-full bg-court-50 px-4 py-1.5 text-sm font-bold text-court-800 ring-1 ring-court-700/20">
         <PinIcon className="h-4 w-4" /> <T en={c.province} ur={c.nameUr} />
       </p>
-      <h1 className="mt-3 text-3xl font-extrabold text-ink-950 sm:text-5xl">
+      <h1 className="mt-3 font-display text-[2.5rem] font-semibold leading-tight text-ink-950 sm:text-5xl">
         <T en={<>Lawyers in <span className="text-court-700">{c.nameEn}</span></>} ur={<><span className="text-court-700">{c.nameUr}</span> میں وکیل</>} />
       </h1>
       <p className="mt-4 max-w-3xl text-lg leading-relaxed text-ink-600">
@@ -63,7 +63,7 @@ export default async function CityPage({ params }: { params: Promise<{ city: str
           {lawyers.map((l) => <LawyerCard key={l.slug} lawyer={l} />)}
         </div>
       ) : (
-        <p className="mt-8 rounded-xl bg-white p-8 text-center text-lg text-ink-600 ring-1 ring-ink-200">
+        <p className="mt-8 rounded-lg bg-white p-8 text-center text-lg text-ink-600 ring-1 ring-ink-900/10">
           <T en="No lawyers listed in this city yet — check back soon." ur="اس شہر میں ابھی کوئی وکیل درج نہیں — جلد دوبارہ دیکھیں۔" />
         </p>
       )}
@@ -74,8 +74,8 @@ export default async function CityPage({ params }: { params: Promise<{ city: str
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
             {areasHere.map((a) => (
               <Link key={a.slug} href={`/${c.slug}/${a.slug}`}
-                className="group flex min-h-[64px] items-center justify-between rounded-lg border border-ink-200 bg-white px-5 py-4 shadow-sm transition hover:border-court-300 hover:shadow-md">
-                <span className="text-base font-extrabold text-ink-950 group-hover:text-court-800"><T en={a.nameEn} ur={a.nameUr} /></span>
+                className="group flex min-h-[64px] items-center justify-between rounded-lg border border-ink-900/10 bg-white px-5 py-4 shadow-card transition hover:border-court-700/40 hover:shadow-lift">
+                <span className="text-[1.05rem] font-bold text-ink-950 transition group-hover:text-court-800"><T en={a.nameEn} ur={a.nameUr} /></span>
                 <ArrowIcon className="h-5 w-5 text-ink-300 group-hover:text-court-600" />
               </Link>
             ))}
@@ -83,15 +83,15 @@ export default async function CityPage({ params }: { params: Promise<{ city: str
         </section>
       )}
 
-      <section className="mt-14 rounded-xl bg-white p-8 ring-1 ring-ink-200">
-        <h2 className="text-2xl font-extrabold text-ink-950"><T en={`FAQs — lawyers in ${c.nameEn}`} ur={`${c.nameUr} میں وکیل — سوالات`} /></h2>
+      <section className="mt-14 rounded-lg bg-white p-8 ring-1 ring-ink-900/10">
+        <h2 className="font-display text-[1.65rem] font-semibold text-ink-950"><T en={`FAQs — lawyers in ${c.nameEn}`} ur={`${c.nameUr} میں وکیل — سوالات`} /></h2>
         <div className="mt-4 space-y-4 text-lg text-ink-700">
           <div>
-            <p className="font-extrabold text-ink-950"><T en="How do I book a lawyer in this city?" ur="اس شہر میں وکیل کیسے بک کروں؟" /></p>
+            <p className="font-bold text-ink-950"><T en="How do I book a lawyer in this city?" ur="اس شہر میں وکیل کیسے بک کروں؟" /></p>
             <p><T en="Pick a lawyer, choose a time, then verify your phone number with a code — done. Three steps." ur="وکیل چنیں، وقت منتخب کریں، پھر کوڈ سے فون نمبر تصدیق کریں — ہو گیا۔ تین مراحل۔" /></p>
           </div>
           <div>
-            <p className="font-extrabold text-ink-950"><T en="How are profiles listed?" ur="پروفائلز کیسے درج ہوتے ہیں؟" /></p>
+            <p className="font-bold text-ink-950"><T en="How are profiles listed?" ur="پروفائلز کیسے درج ہوتے ہیں؟" /></p>
             <p><T en="Every public profile is reviewed by our team before listing." ur="عوامی ہونے سے پہلے ہماری ٹیم ہر پروفائل کا جائزہ لیتی ہے۔" /></p>
           </div>
         </div>

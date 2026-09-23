@@ -88,7 +88,7 @@ export default async function CityAreaPage({ params }: { params: Promise<{ city:
         <span className="font-bold text-ink-800"><T en={a.nameEn} ur={a.nameUr} /></span>
       </nav>
 
-      <h1 className="text-3xl font-extrabold text-ink-950 sm:text-5xl">
+      <h1 className="font-display text-[2.5rem] font-semibold leading-tight text-ink-950 sm:text-5xl">
         <T
           en={<><span className="text-court-700">{a.nameEn}</span> lawyers in <span className="text-court-700">{c.nameEn}</span></>}
           ur={<><span className="text-court-700">{c.nameUr}</span> میں <span className="text-court-700">{a.nameUr}</span> کے وکیل</>}
@@ -146,7 +146,7 @@ export default async function CityAreaPage({ params }: { params: Promise<{ city:
         <section className="mt-14">
           <SectionHead eyebrowEn="Keep exploring" eyebrowUr="مزید دیکھیں" title={<T en="Keep exploring" ur="مزید دیکھیں" />} />
           <div>
-            <h3 className="mb-3 text-xl font-extrabold text-ink-950">
+            <h3 className="mb-3 font-display text-[1.3rem] font-semibold text-ink-950">
               <T en={`More in ${c.nameEn}`} ur={`${c.nameUr} میں مزید`} />
             </h3>
             <ul className="space-y-2">

@@ -14,33 +14,33 @@ export default function SeoArticle({ area, citySlug }: { area: PracticeArea; cit
   const place = citySlug ? cityName(citySlug) : "Pakistan";
 
   return (
-    <section className="mt-14 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-10">
+    <section className="mt-14 rounded-lg border border-ink-900/10 bg-white p-6 shadow-card sm:p-10">
       <SectionHead
         eyebrowUr="رہنمائی"
         title={<T en={`${area.nameEn} — what to know`} ur={`${area.nameUr} — جاننے کی باتیں`} />}
       />
-      <div className="mt-6 space-y-8 text-lg leading-relaxed text-slate-700">
+      <div className="mt-6 space-y-8 text-lg leading-relaxed text-ink-700">
         <div>
-          <h3 className="text-xl font-extrabold text-slate-900">
+          <h3 className="font-display text-[1.3rem] font-semibold text-ink-950">
             <T en={`Who is a ${area.nameEn.toLowerCase()} lawyer?`} ur={`${area.nameUr} کا وکیل کون ہوتا ہے؟`} />
           </h3>
           <p className="mt-2"><T en={guide.whoEn} ur={guide.whoUr} /></p>
         </div>
         <div>
-          <h3 className="text-xl font-extrabold text-slate-900">
+          <h3 className="font-display text-[1.3rem] font-semibold text-ink-950">
             <T en="When should you consult one?" ur="کب رجوع کرنا چاہیے؟" />
           </h3>
           <ul className="mt-2 space-y-2">
             {(guide.whenEn).map((_, i) => (
               <li key={i} className="flex gap-3">
-                <span className="mt-2 h-2 w-2 shrink-0 rounded-full bg-emerald-600" aria-hidden />
+                <span className="mt-2 h-2 w-2 shrink-0 rounded-full bg-court-600" aria-hidden />
                 <T en={guide.whenEn[i]} ur={guide.whenUr[i]} />
               </li>
             ))}
           </ul>
         </div>
         <div>
-          <h3 className="text-xl font-extrabold text-slate-900">
+          <h3 className="font-display text-[1.3rem] font-semibold text-ink-950">
             <T en="What does it cost?" ur="فیس کتنی ہوتی ہے؟" />
           </h3>
           <p className="mt-2">

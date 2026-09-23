@@ -9,6 +9,7 @@ import { PhotoAvatar } from "./PhotoAvatar";
 import {
   CalendarIcon,
   CheckIcon,
+  ClockIcon,
   OfficeIcon,
   PhoneIcon,
   ShieldIcon,
@@ -52,17 +53,17 @@ function StepDots({ step }: { step: number }) {
         return (
           <li key={l.en} className="flex items-center gap-2">
             <span
-              className={`flex h-11 w-11 items-center justify-center rounded-full text-lg font-extrabold transition ${
-                done ? "bg-emerald-600 text-white" : current ? "bg-emerald-700 text-white shadow-lg ring-4 ring-emerald-200" : "bg-slate-200 text-slate-500"
+              className={`flex h-11 w-11 items-center justify-center rounded-full text-lg font-bold transition ${
+                done ? "bg-court-700 text-white" : current ? "bg-court-700 text-white ring-2 ring-brass-500 ring-offset-2 ring-offset-paper" : "bg-ink-900/5 text-ink-500"
               }`}
               aria-current={current ? "step" : undefined}
             >
               {done ? <CheckIcon className="h-6 w-6" /> : n}
             </span>
-            <span className={`text-base font-extrabold ${current || done ? "text-emerald-800" : "text-slate-400"}`}>
+            <span className={`text-base font-bold ${current || done ? "text-court-800" : "text-ink-500"}`}>
               <T en={l.en} ur={l.ur} />
             </span>
-            {n < 3 && <span className="mx-1 h-0.5 w-8 bg-slate-200 sm:w-14" />}
+            {n < 3 && <span className="mx-1 h-0.5 w-8 bg-ink-900/15 sm:w-14" />}
           </li>
         );
       })}
@@ -129,13 +130,13 @@ export default function BookingFlow({ lawyerSlug }: { lawyerSlug: string }) {
       <div className="mx-auto max-w-3xl px-4 py-16 text-center">
         {loadError ? (
           <>
-            <p className="text-xl font-extrabold text-slate-800"><T en="Lawyer not found" ur="وکیل نہیں ملا" /></p>
-            <Link href="/lawyers" className="mt-4 inline-block font-bold text-emerald-700 hover:underline">
+            <p className="font-display text-[1.3rem] font-semibold text-ink-950"><T en="Lawyer not found" ur="وکیل نہیں ملا" /></p>
+            <Link href="/lawyers" className="mt-4 inline-block font-bold text-court-700 hover:underline">
               <T en="Back to lawyers" ur="وکیلوں کی فہرست" />
             </Link>
           </>
         ) : (
-          <p className="text-lg font-bold text-slate-500">…</p>
+          <p className="text-lg font-bold text-ink-500">…</p>
         )}
       </div>
     );
@@ -146,13 +147,13 @@ export default function BookingFlow({ lawyerSlug }: { lawyerSlug: string }) {
     const next = `/book/${lawyerSlug}${searchParams.toString() ? `?${searchParams.toString()}` : ""}`;
     return (
       <div className="mx-auto max-w-xl px-4 py-16 text-center">
-        <span className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-emerald-100">
-          <PhoneIcon className="h-10 w-10 text-emerald-700" />
+        <span className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-court-50 ring-1 ring-court-700/20">
+          <PhoneIcon className="h-10 w-10 text-court-700" />
         </span>
-        <h1 className="mt-6 text-3xl font-extrabold text-slate-900">
+        <h1 className="mt-6 font-display text-[2rem] font-semibold text-ink-950">
           <T en="Login to book" ur="بکنگ کے لیے لاگ اِن کریں" />
         </h1>
-        <p className="mt-2 text-lg text-slate-600">
+        <p className="mt-2 text-lg text-ink-600">
           <T en="Enter your mobile number — we'll send a code. No password needed." ur="اپنا موبائل نمبر لکھیں — کوڈ آئے گا۔ پاس ورڈ کی ضرورت نہیں۔" />
         </p>
         <div className="mt-8">
@@ -201,13 +202,13 @@ export default function BookingFlow({ lawyerSlug }: { lawyerSlug: string }) {
   return (
     <div className="mx-auto max-w-3xl px-4 py-10">
       {/* lawyer summary */}
-      <div className="flex items-center gap-4 rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
+      <div className="flex items-center gap-4 rounded-lg border border-ink-900/10 bg-white p-5 shadow-card">
         <PhotoAvatar name={lawyer.displayName} photo={fileUrl(lawyer.photoUrl) ?? undefined} size="sm" />
         <div className="min-w-0 flex-1">
-          <p className="text-lg font-extrabold text-slate-900">{lawyer.displayName}</p>
+          <p className="font-display text-[1.25rem] font-semibold text-ink-950">{lawyer.displayName}</p>
           <Rating rating={lawyer.ratingAvg} count={lawyer.ratingCount} />
         </div>
-        <p className="text-xl font-extrabold text-emerald-800">
+        <p className="wc-fee text-[1.4rem] text-ink-950">
           {fee ?? <T en="Fee on request" ur="فیس معلوم کریں" />}
         </p>
       </div>
@@ -215,32 +216,33 @@ export default function BookingFlow({ lawyerSlug }: { lawyerSlug: string }) {
       <div className="mt-8"><StepDots step={step} /></div>
 
       {error === "taken" && (
-        <p className="mx-auto mt-6 max-w-xl rounded-2xl bg-amber-50 px-5 py-4 text-center text-base font-bold text-amber-900 ring-1 ring-amber-200">
+        <p className="mx-auto mt-6 max-w-xl rounded-lg bg-brass-50 px-5 py-4 text-center text-base font-bold text-brass-800 ring-1 ring-brass-200">
           <T en="That slot was just taken — please pick another time." ur="یہ وقت ابھی بک ہو گیا — کوئی اور وقت چنیں۔" />
         </p>
       )}
       {error === "past" && (
-        <p className="mx-auto mt-6 max-w-xl rounded-2xl bg-amber-50 px-5 py-4 text-center text-base font-bold text-amber-900 ring-1 ring-amber-200">
+        <p className="mx-auto mt-6 max-w-xl rounded-lg bg-brass-50 px-5 py-4 text-center text-base font-bold text-brass-800 ring-1 ring-brass-200">
           <T en="Please pick a time at least 15 minutes in the future." ur="کم از کم ۱۵ منٹ بعد کا وقت چنیں۔" />
         </p>
       )}
       {error === "generic" && (
-        <p className="mx-auto mt-6 max-w-xl rounded-2xl bg-red-50 px-5 py-4 text-center text-base font-bold text-red-800 ring-1 ring-red-200">
+        <p className="mx-auto mt-6 max-w-xl rounded-lg bg-clay-50 px-5 py-4 text-center text-base font-bold text-clay-700 ring-1 ring-clay-200">
           <T en="Something went wrong. Please try again." ur="کچھ غلط ہو گیا۔ دوبارہ کوشش کریں۔" />
         </p>
       )}
 
       {/* ============ STEP 1: MODE + TIME ============ */}
       {step === 1 && (
-        <section className="mt-8 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8" aria-label="Choose time">
-          <h1 className="text-2xl font-extrabold text-slate-900">
+        <section className="mt-8 rounded-lg border border-ink-900/10 bg-white p-6 shadow-card sm:p-8" aria-label="Choose time">
+          <h1 className="font-display text-[1.75rem] font-semibold text-ink-950">
             <T en="When should we book you?" ur="کب بک کریں؟" />
           </h1>
-          <p className="mt-2 inline-flex items-center gap-2 rounded-full bg-emerald-50 px-4 py-1.5 text-sm font-bold text-emerald-800">
-            <T en="⚡ Takes about a minute" ur="⚡ تقریباً ایک منٹ" />
+          <p className="mt-2.5 inline-flex items-center gap-2 rounded-full bg-court-50 px-4 py-1.5 text-sm font-bold text-court-800 ring-1 ring-court-700/15">
+            <ClockIcon className="h-4 w-4" />
+            <T en="Takes about a minute" ur="تقریباً ایک منٹ" />
           </p>
 
-          <p className="mb-2 mt-6 text-base font-extrabold text-slate-700"><T en="How do you want to meet?" ur="ملاقات کیسے ہوگی؟" /></p>
+          <p className="mb-2 mt-6 text-base font-bold text-ink-700"><T en="How do you want to meet?" ur="ملاقات کیسے ہوگی؟" /></p>
           <div className="grid grid-cols-3 gap-3">
             {MODES.map((m) => (
               <button
@@ -248,8 +250,8 @@ export default function BookingFlow({ lawyerSlug }: { lawyerSlug: string }) {
                 type="button"
                 onClick={() => setMode(m.id)}
                 aria-pressed={mode === m.id}
-                className={`flex min-h-[72px] flex-col items-center justify-center gap-1 rounded-2xl border-2 text-base font-extrabold transition sm:flex-row sm:gap-2 sm:text-lg ${
-                  mode === m.id ? "border-emerald-700 bg-emerald-700 text-white shadow" : "border-slate-200 bg-white text-slate-700 hover:border-emerald-400"
+                className={`flex min-h-[72px] flex-col items-center justify-center gap-1 rounded-lg border text-base font-bold transition sm:flex-row sm:gap-2 sm:text-lg ${
+                  mode === m.id ? "border-court-700 bg-court-700 text-white shadow-card" : "border-ink-900/15 bg-white text-ink-700 hover:border-court-700/50"
                 }`}
               >
                 {m.icon("h-6 w-6")}
@@ -272,7 +274,7 @@ export default function BookingFlow({ lawyerSlug }: { lawyerSlug: string }) {
               <T en={pick ? "Continue" : "First pick a time above"} ur={pick ? "آگے بڑھیں" : "پہلے اوپر وقت چنیں"} />
             </PrimaryBtn>
             {!pick && (
-              <p className="mt-2 text-center text-sm font-semibold text-amber-700">
+              <p className="mt-2 text-center text-sm font-semibold text-brass-600">
                 <T en="Tap a day and a time slot to continue." ur="آگے بڑھنے کے لیے دن اور وقت چنیں۔" />
               </p>
             )}
@@ -282,22 +284,22 @@ export default function BookingFlow({ lawyerSlug }: { lawyerSlug: string }) {
 
       {/* ============ STEP 2: CONFIRM ============ */}
       {step === 2 && pick && (
-        <section className="mt-8 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8" aria-label="Confirm booking">
-          <h1 className="text-2xl font-extrabold text-slate-900">
+        <section className="mt-8 rounded-lg border border-ink-900/10 bg-white p-6 shadow-card sm:p-8" aria-label="Confirm booking">
+          <h1 className="font-display text-[1.75rem] font-semibold text-ink-950">
             <T en="Confirm your booking" ur="بکنگ کی تصدیق کریں" />
           </h1>
 
-          <div className="mt-6 rounded-2xl bg-emerald-50 p-6 ring-1 ring-emerald-200">
+          <div className="mt-6 rounded-lg bg-paper-dark/40 p-6 ring-1 ring-ink-900/10">
             <dl className="space-y-3 text-lg">
-              <div className="flex justify-between gap-4"><dt className="font-bold text-slate-500"><T en="Lawyer" ur="وکیل" /></dt><dd className="text-right font-extrabold text-slate-900">{lawyer.displayName}</dd></div>
-              <div className="flex justify-between gap-4"><dt className="font-bold text-slate-500"><T en="Meeting" ur="ملاقات" /></dt><dd className="text-right font-extrabold text-slate-900"><T en={modeInfo.en} ur={modeInfo.ur} /></dd></div>
-              <div className="flex justify-between gap-4"><dt className="font-bold text-slate-500"><T en="When" ur="کب" /></dt><dd className="text-right font-extrabold text-slate-900">{pickedDay?.label} · {pick.start}</dd></div>
-              <div className="flex justify-between gap-4"><dt className="font-bold text-slate-500"><T en="Fee" ur="فیس" /></dt><dd className="text-right font-extrabold text-emerald-800">{fee ?? <T en="On request" ur="معلوم کریں" />}</dd></div>
+              <div className="flex justify-between gap-4"><dt className="font-bold text-ink-500"><T en="Lawyer" ur="وکیل" /></dt><dd className="text-right font-bold text-ink-950">{lawyer.displayName}</dd></div>
+              <div className="flex justify-between gap-4"><dt className="font-bold text-ink-500"><T en="Meeting" ur="ملاقات" /></dt><dd className="text-right font-bold text-ink-950"><T en={modeInfo.en} ur={modeInfo.ur} /></dd></div>
+              <div className="flex justify-between gap-4"><dt className="font-bold text-ink-500"><T en="When" ur="کب" /></dt><dd className="text-right font-bold text-ink-950">{pickedDay?.label} · {pick.start}</dd></div>
+              <div className="flex justify-between gap-4"><dt className="font-bold text-ink-500"><T en="Fee" ur="فیس" /></dt><dd className="text-right font-bold text-court-800">{fee ?? <T en="On request" ur="معلوم کریں" />}</dd></div>
             </dl>
           </div>
 
           <label className="mt-6 block">
-            <span className="mb-1 block text-base font-extrabold text-slate-700">
+            <span className="mb-1 block text-base font-bold text-ink-700">
               <T en="Note for the lawyer (optional)" ur="وکیل کے لیے نوٹ (اختیاری)" />
             </span>
             <textarea
@@ -305,12 +307,12 @@ export default function BookingFlow({ lawyerSlug }: { lawyerSlug: string }) {
               onChange={(e) => setNote(e.target.value.slice(0, 500))}
               rows={3}
               placeholder="…"
-              className="w-full rounded-2xl border-2 border-slate-200 px-4 py-3 text-lg text-slate-900 outline-none focus:border-emerald-600"
+              className="w-full rounded-lg border border-ink-900/15 px-4 py-3 text-lg text-ink-950 outline-none transition placeholder:text-ink-400 focus:border-court-600 focus:ring-2 focus:ring-court-600/20"
             />
           </label>
 
-          <p className="mt-4 flex items-start gap-2 rounded-2xl bg-slate-50 p-4 text-base font-semibold text-slate-600 ring-1 ring-slate-200">
-            <ShieldIcon className="h-6 w-6 shrink-0 text-emerald-700" />
+          <p className="mt-4 flex items-start gap-2 rounded-lg bg-paper p-4 text-base font-semibold text-ink-600 ring-1 ring-ink-200">
+            <ShieldIcon className="h-6 w-6 shrink-0 text-court-700" />
             <T
               en="Your phone number is shared only with this lawyer to confirm the appointment. It is never shown publicly."
               ur="آپ کا فون نمبر صرف اس وکیل سے شیئر ہوگا تاکہ ملاقات کی تصدیق ہو سکے۔ یہ کبھی عوامی نہیں دکھایا جائے گا۔"
@@ -332,23 +334,23 @@ export default function BookingFlow({ lawyerSlug }: { lawyerSlug: string }) {
 
       {/* ============ STEP 3: DONE ============ */}
       {step === 3 && booking && (
-        <section className="mt-8 rounded-3xl border border-slate-200 bg-white p-6 text-center shadow-sm sm:p-10" aria-label="Booking confirmed">
-          <span className="mx-auto flex h-24 w-24 items-center justify-center rounded-full bg-emerald-100">
-            <CheckIcon className="h-12 w-12 text-emerald-700" />
+        <section className="mt-8 rounded-lg border border-ink-900/10 bg-white p-6 text-center shadow-card sm:p-10" aria-label="Booking confirmed">
+          <span className="mx-auto flex h-24 w-24 items-center justify-center rounded-full bg-court-50 ring-1 ring-court-700/20">
+            <CheckIcon className="h-12 w-12 text-court-700" />
           </span>
-          <h1 className="mt-6 text-3xl font-extrabold text-slate-900">
+          <h1 className="mt-6 font-display text-[2rem] font-semibold text-ink-950">
             <T en="Booking confirmed!" ur="بکنگ ہو گئی!" />
           </h1>
-          <p className="mt-2 text-lg text-slate-600">
+          <p className="mt-2 text-lg text-ink-600">
             <T en={`Reference: ${booking.id.slice(0, 8).toUpperCase()}`} ur={`حوالہ نمبر: ${booking.id.slice(0, 8).toUpperCase()}`} />
           </p>
 
-          <div className="mx-auto mt-6 max-w-md rounded-2xl bg-emerald-50 p-6 text-left ring-1 ring-emerald-200">
+          <div className="mx-auto mt-6 max-w-md rounded-lg bg-paper-dark/40 p-6 text-left ring-1 ring-ink-900/10">
             <dl className="space-y-3 text-lg">
-              <div className="flex justify-between gap-4"><dt className="font-bold text-slate-500"><T en="Lawyer" ur="وکیل" /></dt><dd className="text-right font-extrabold text-slate-900">{lawyer.displayName}</dd></div>
-              <div className="flex justify-between gap-4"><dt className="font-bold text-slate-500"><T en="Meeting" ur="ملاقات" /></dt><dd className="text-right font-extrabold text-slate-900"><T en={modeInfo.en} ur={modeInfo.ur} /></dd></div>
-              <div className="flex justify-between gap-4"><dt className="font-bold text-slate-500"><T en="When" ur="کب" /></dt><dd className="text-right font-extrabold text-slate-900">{pickedDay?.label} · {pick?.start}</dd></div>
-              <div className="flex justify-between gap-4"><dt className="font-bold text-slate-500"><T en="Fee" ur="فیس" /></dt><dd className="text-right font-extrabold text-emerald-800">{fee ?? <T en="On request" ur="معلوم کریں" />}</dd></div>
+              <div className="flex justify-between gap-4"><dt className="font-bold text-ink-500"><T en="Lawyer" ur="وکیل" /></dt><dd className="text-right font-bold text-ink-950">{lawyer.displayName}</dd></div>
+              <div className="flex justify-between gap-4"><dt className="font-bold text-ink-500"><T en="Meeting" ur="ملاقات" /></dt><dd className="text-right font-bold text-ink-950"><T en={modeInfo.en} ur={modeInfo.ur} /></dd></div>
+              <div className="flex justify-between gap-4"><dt className="font-bold text-ink-500"><T en="When" ur="کب" /></dt><dd className="text-right font-bold text-ink-950">{pickedDay?.label} · {pick?.start}</dd></div>
+              <div className="flex justify-between gap-4"><dt className="font-bold text-ink-500"><T en="Fee" ur="فیس" /></dt><dd className="text-right font-bold text-court-800">{fee ?? <T en="On request" ur="معلوم کریں" />}</dd></div>
             </dl>
           </div>
 
@@ -366,7 +368,7 @@ export default function BookingFlow({ lawyerSlug }: { lawyerSlug: string }) {
             </SecondaryBtn>
           </div>
 
-          <p className="mt-6 inline-flex items-center gap-2 text-base font-bold text-slate-500">
+          <p className="mt-6 inline-flex items-center gap-2 text-base font-bold text-ink-500">
             <WalletIcon className="h-5 w-5" />
             <T en="Pay the fee directly to the lawyer" ur="فیس وکیل کو براہِ راست ادا کریں" />
           </p>

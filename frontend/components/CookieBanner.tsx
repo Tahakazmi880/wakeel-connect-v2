@@ -35,9 +35,9 @@ export default function CookieBanner() {
       aria-label="Cookie notice"
       className="fixed inset-x-0 bottom-0 z-50 px-4 pb-4 sm:px-6 sm:pb-6"
     >
-      <div className="mx-auto flex max-w-3xl flex-col gap-3 rounded-3xl border border-slate-200 bg-white p-5 shadow-2xl sm:flex-row sm:items-center">
-        <p className="flex-1 text-base leading-relaxed text-slate-700">
-          <span aria-hidden>🍪 </span>
+      <div className="mx-auto flex max-w-3xl flex-col gap-3 rounded-lg border border-ink-900/10 bg-white p-5 shadow-2xl sm:flex-row sm:items-center">
+        <p className="flex-1 text-base leading-relaxed text-ink-700">
+          
           <T
             en="We use cookies to remember your language and keep the site working smoothly."
             ur="ہم آپ کی زبان یاد رکھنے اور سائٹ بہتر چلانے کے لیے کوکیز استعمال کرتے ہیں۔"
@@ -46,7 +46,7 @@ export default function CookieBanner() {
         <button
           type="button"
           onClick={dismiss}
-          className="inline-flex min-h-[52px] shrink-0 items-center justify-center rounded-2xl bg-emerald-700 px-6 text-base font-extrabold text-white transition hover:bg-emerald-800"
+          className="inline-flex min-h-[52px] shrink-0 items-center justify-center rounded-lg bg-court-700 px-6 text-base font-bold text-white transition hover:bg-court-800"
         >
           <T en="Got it" ur="سمجھ گیا" />
         </button>

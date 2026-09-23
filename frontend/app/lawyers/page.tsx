@@ -113,7 +113,7 @@ export default async function LawyersPage({ searchParams }: Props) {
                   <T en="Previous" ur="پچھلا" />
                 </span>
               )}
-              <span className="text-lg font-extrabold text-ink-700">
+              <span className="text-lg font-bold text-ink-700">
                 <T en={`Page ${page} of ${totalPages}`} ur={`صفحہ ${page} از ${totalPages}`} />
               </span>
               {page < totalPages ? (

@@ -45,10 +45,10 @@ export default async function AreaPage({ params }: { params: Promise<{ area: str
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-10">
-      <p className="inline-flex items-center gap-2 rounded-full bg-court-100 px-4 py-1.5 text-sm font-bold text-court-800">
+      <p className="inline-flex items-center gap-2 rounded-full bg-court-50 px-4 py-1.5 text-sm font-bold text-court-800 ring-1 ring-court-700/20">
         <BriefcaseIcon className="h-4 w-4" /> <T en={a.nameUr} ur={a.nameUr} />
       </p>
-      <h1 className="mt-3 text-3xl font-extrabold text-ink-950 sm:text-5xl">
+      <h1 className="mt-3 font-display text-[2.5rem] font-semibold leading-tight text-ink-950 sm:text-5xl">
         <T en={<><span className="text-court-700">{a.nameEn}</span> lawyers in Pakistan</>} ur={<>پاکستان میں <span className="text-court-700">{a.nameUr}</span> کے وکیل</>} />
       </h1>
       <p className="mt-4 max-w-3xl text-lg leading-relaxed text-ink-600">
@@ -59,7 +59,7 @@ export default async function AreaPage({ params }: { params: Promise<{ area: str
       </p>
 
       {lawyers.length === 0 ? (
-        <p className="mt-8 rounded-xl bg-white p-8 text-center text-lg text-ink-600 ring-1 ring-ink-200">
+        <p className="mt-8 rounded-lg bg-white p-8 text-center text-lg text-ink-600 ring-1 ring-ink-900/10">
           <T en="No lawyers listed in this practice area yet — check back soon." ur="اس شعبے میں ابھی کوئی وکیل درج نہیں — جلد دوبارہ دیکھیں۔" />
         </p>
       ) : (
@@ -74,7 +74,7 @@ export default async function AreaPage({ params }: { params: Promise<{ area: str
           <div className="flex flex-wrap justify-center gap-3">
             {citiesHere.map((c) => (
               <Link key={c.slug} href={`/${c.slug}/${a.slug}`}
-                className="inline-flex min-h-[52px] items-center rounded-full border-2 border-court-200 bg-white px-6 text-lg font-bold text-court-800 transition hover:border-court-600 hover:bg-court-700 hover:text-white">
+                className="inline-flex min-h-[52px] items-center rounded-full border border-court-700/40 bg-white px-6 text-lg font-bold text-court-800 transition hover:border-court-700 hover:bg-court-50">
                 <T en={c.nameEn} ur={c.nameUr} />
               </Link>
             ))}

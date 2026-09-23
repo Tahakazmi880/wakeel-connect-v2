@@ -73,7 +73,7 @@ export default function ReviewSection({
         {reviews.map((r) => (
           <div key={r.id} className="rounded-lg bg-paper-dark/40 p-5 ring-1 ring-ink-900/10">
             <div className="flex items-center justify-between gap-3">
-              <p className="text-lg font-extrabold text-ink-950">{r.client.fullName ?? <T en="Client" ur="کلائنٹ" />}</p>
+              <p className="text-lg font-bold text-ink-950">{r.client.fullName ?? <T en="Client" ur="کلائنٹ" />}</p>
               {r.verified && (
                 <span className="inline-flex items-center gap-1 rounded-full bg-court-100 px-3 py-1 text-sm font-bold text-court-800">
                   <CheckBadgeIcon className="h-4 w-4" /> <T en="Verified client" ur="تصدیق شدہ کلائنٹ" />
