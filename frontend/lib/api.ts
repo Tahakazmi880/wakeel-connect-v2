@@ -248,6 +248,7 @@ export interface LawyerSummary {
   photoUrl: string | null;
   yearsExperience: number;
   consultationFeePaisa: number;
+  onlineFeePaisa: number;
   courts: string[];
   barCouncil: string | null;
   ratingAvg: number;

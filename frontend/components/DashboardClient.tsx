@@ -365,7 +365,7 @@ function BookingCard({
               <CalendarIcon className="h-5 w-5 text-court-700" />{dateStr} · {timeStr}
             </span>
             <span className="inline-flex items-center gap-1 font-semibold">
-              {booking.mode === "ONLINE_VIDEO" ? <VideoIcon className="h-5 w-5 text-court-700" /> : <OfficeIcon className="h-5 w-5 text-court-700" />}
+              {booking.mode === "ONLINE_VIDEO" ? <VideoIcon className="h-5 w-5 text-court-700" /> : booking.mode === "PHONE" ? <PhoneIcon className="h-5 w-5 text-court-700" /> : <OfficeIcon className="h-5 w-5 text-court-700" />}
               <T en={md.en} ur={md.ur} />
             </span>
             <span className="font-bold text-court-800">{fee ?? <T en="Fee on request" ur="فیس معلوم کریں" />}</span>

@@ -23,7 +23,7 @@ export async function leadRoutes(app: FastifyInstance) {
   app.post(
     "/leads",
     { config: { rateLimit: { max: 10, timeWindow: "1 hour" } } },
-    async (req) => {
+    async (req, reply) => {
       const parsed = leadSchema.safeParse(req.body);
       if (!parsed.success) throw badRequest("INVALID_INPUT", "Please check the form and try again.");
       const phone = normalizePhone(parsed.data.phone);
@@ -41,7 +41,7 @@ export async function leadRoutes(app: FastifyInstance) {
         },
         select: { id: true },
       });
-      return { ok: true, lead: { id: lead.id } };
+      return reply.code(201).send({ ok: true, lead: { id: lead.id } });
     }
   );
 

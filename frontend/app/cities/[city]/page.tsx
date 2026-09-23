@@ -17,7 +17,7 @@ export async function generateMetadata({ params }: { params: Promise<{ city: str
   if (!c) return {};
   return {
     title: `Lawyers in ${c.nameEn} — wakeel.connect`,
-    description: `Find the best lawyers in ${c.nameEn} by practice area or court. Book a video consultation or chamber visit in 3 easy steps.`,
+    description: `Find the best lawyers in ${c.nameEn} by practice area or court. Book an online consultation or chamber visit in 3 easy steps.`,
   };
 }
 
@@ -54,8 +54,8 @@ export default async function CityPage({ params }: { params: Promise<{ city: str
     {
       qEn: "Can I consult a lawyer online instead of visiting?",
       qUr: "کیا میں ملاقات کے بجائے آن لائن مشورہ لے سکتا ہوں؟",
-      aEn: "Yes — many lawyers offer video consultations. Look for the video option when you book; you can join from anywhere in Pakistan with your phone or laptop.",
-      aUr: "جی ہاں — کئی وکیل ویڈیو مشاورت دیتے ہیں۔ بکنگ کے وقت ویڈیو کا آپشن دیکھیں؛ فون یا لیپ ٹاپ سے پاکستان میں کہیں سے بھی شامل ہو سکتے ہیں۔",
+      aEn: "Yes — many lawyers offer online consultations. Choose the online option when you book; the lawyer will phone you at the booked time, so no app or link is needed.",
+      aUr: "جی ہاں — کئی وکیل آن لائن مشاورت دیتے ہیں۔ بکنگ کے وقت آن لائن کا آپشن منتخب کریں؛ وکیل مقررہ وقت پر آپ کو فون کریں گے، کسی ایپ یا لنک کی ضرورت نہیں۔",
     },
     {
       qEn: "What if I need to reschedule or cancel?",

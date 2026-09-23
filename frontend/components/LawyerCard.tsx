@@ -5,11 +5,10 @@ import { PhotoAvatar } from "./PhotoAvatar";
 import { CheckBadgeIcon, OfficeIcon, PinIcon, VideoIcon } from "./icons";
 import { fileUrl, formatExperience, formatFee, type LawyerSummary } from "@/lib/api";
 
-/** Extended listing fields the directory API supplies (optional until backend lands). */
+/** Extended listing fields the directory API supplies (optional extras). */
 export interface LawyerCardData extends LawyerSummary {
   memberships?: string[];
   offersOnline?: boolean;
-  onlineFeePaisa?: number;
   nextAvailable?: { date: string; label: string } | null;
 }
 

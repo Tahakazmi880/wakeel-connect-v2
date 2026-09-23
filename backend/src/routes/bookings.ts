@@ -46,7 +46,7 @@ export async function bookingRoutes(app: FastifyInstance) {
    * future and must not overlap an existing PENDING/CONFIRMED booking for
    * the same lawyer (the DB EXCLUDE constraint is the final guard).
    */
-  app.post("/bookings", { preHandler: [requireAuth] }, async (req) => {
+  app.post("/bookings", { preHandler: [requireAuth] }, async (req, reply) => {
     const parsed = createSchema.safeParse(req.body);
     if (!parsed.success) throw badRequest("INVALID_INPUT", parsed.error.issues[0]?.message ?? "Invalid input.");
     const { lawyerId, mode, clientNote } = parsed.data;
@@ -57,7 +57,7 @@ export async function bookingRoutes(app: FastifyInstance) {
 
     const lawyer = await prisma.lawyer.findFirst({
       where: { id: lawyerId, isListed: true, verificationStatus: "APPROVED", isSeedData: false },
-      select: { id: true, consultationFeePaisa: true, displayName: true },
+      select: { id: true, consultationFeePaisa: true, onlineFeePaisa: true, displayName: true },
     });
     if (!lawyer) throw notFound("Lawyer not available for booking.");
 
@@ -81,7 +81,9 @@ export async function bookingRoutes(app: FastifyInstance) {
         endAt,
         status: "CONFIRMED",
         mode,
-        feePaisa: lawyer.consultationFeePaisa,
+        // Online consultations are priced from the lawyer's online fee (0 = on request),
+        // never the chamber fee — the profile/card online row shows "Fee on request" for 0.
+        feePaisa: mode === "ONLINE_VIDEO" ? lawyer.onlineFeePaisa : lawyer.consultationFeePaisa,
         clientPhone: req.user.phone,
         clientNote,
       },
@@ -91,7 +93,7 @@ export async function bookingRoutes(app: FastifyInstance) {
       },
     });
 
-    return { ok: true, booking };
+    return reply.code(201).send({ ok: true, booking });
   });
 
   /** My bookings — clients see their own; lawyers see their appointments. */

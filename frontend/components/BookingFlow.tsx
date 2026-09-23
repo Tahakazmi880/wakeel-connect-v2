@@ -397,7 +397,7 @@ export default function BookingFlow({ lawyerSlug }: { lawyerSlug: string }) {
     else setStep(2);
   };
 
-  const fee = formatFee(lawyer.consultationFeePaisa);
+  const fee = formatFee(mode === "ONLINE_VIDEO" ? lawyer.onlineFeePaisa : lawyer.consultationFeePaisa);
   const modeInfo = MODES.find((m) => m.id === mode)!;
   const pickedDay = pick ? days.find((d) => d.date === pick.date) : undefined;
 

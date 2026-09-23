@@ -310,14 +310,16 @@ export async function lawyerRoutes(app: FastifyInstance) {
           const isTaken = taken.some((t) => startUtc.getTime() < t.e && endUtc.getTime() > t.s);
           const hh = String(Math.floor(m / 60)).padStart(2, "0");
           const mm = String(m % 60).padStart(2, "0");
-          slots.push({ start: `${hh}:${mm}`, end: "", taken: isTaken });
+          const ehh = String(Math.floor((m + SLOT_MIN) / 60)).padStart(2, "0");
+          const emm = String((m + SLOT_MIN) % 60).padStart(2, "0");
+          slots.push({ start: `${hh}:${mm}`, end: `${ehh}:${emm}`, taken: isTaken });
         }
       }
       if (slots.length > 0) {
         days.push({
           date: dateKey,
           label: dayPkt.toLocaleDateString("en-PK", { weekday: "short", day: "numeric", month: "short" }),
-          slots: slots.map((s) => ({ ...s, end: "" })),
+          slots,
         });
       }
     }
