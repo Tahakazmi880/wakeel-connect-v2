@@ -78,7 +78,7 @@ function OtpBoxes({ value, onChange, disabled }: { value: string; onChange: (v: 
           inputMode="numeric"
           autoComplete="one-time-code"
           aria-label={`Digit ${i + 1}`}
-          className="h-14 w-12 rounded-2xl border-2 border-slate-200 text-center text-2xl font-extrabold text-slate-900 outline-none focus:border-emerald-600 disabled:bg-slate-100 sm:h-16 sm:w-14"
+          className="h-14 w-12 rounded-lg border-2 border-ink-200 text-center text-2xl font-extrabold text-ink-950 outline-none focus:border-court-600 disabled:bg-ink-100 sm:h-16 sm:w-14"
         />
       ))}
     </div>
@@ -155,20 +155,20 @@ function LoginForm() {
   return (
     <div className="mx-auto max-w-xl px-4 py-12">
       <SectionHead
-        eyebrowUr="لاگ اِن"
+        eyebrowEn="Login" eyebrowUr="لاگ اِن"
         title={<T en="Login with your phone" ur="فون سے لاگ اِن کریں" />}
         sub={<T en="No password to remember — we'll send a 6-digit code to your mobile." ur="پاس ورڈ یاد رکھنے کی ضرورت نہیں — آپ کے موبائل پر ۶ ہندسوں کا کوڈ آئے گا۔" />}
       />
 
-      <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8" aria-label="Login">
+      <section className="rounded-xl border border-ink-200 bg-white p-6 shadow-sm sm:p-8" aria-label="Login">
         {step === "phone" ? (
           <>
             <label className="block">
-              <span className="mb-1 block text-base font-extrabold text-slate-700">
+              <span className="mb-1 block text-base font-extrabold text-ink-700">
                 <T en="Mobile number" ur="موبائل نمبر" />
               </span>
-              <span className="flex overflow-hidden rounded-2xl border-2 border-slate-200 focus-within:border-emerald-600">
-                <span className="flex min-h-[60px] items-center bg-slate-100 px-4 text-lg font-extrabold text-slate-700">+92</span>
+              <span className="flex overflow-hidden rounded-lg border-2 border-ink-200 focus-within:border-court-600">
+                <span className="flex min-h-[60px] items-center bg-ink-100 px-4 text-lg font-extrabold text-ink-700">+92</span>
                 <input
                   value={phone}
                   onChange={(e) => {
@@ -177,14 +177,14 @@ function LoginForm() {
                   }}
                   inputMode="numeric"
                   placeholder="300 1234567"
-                  className="min-h-[60px] w-full px-4 text-xl font-bold tracking-wider text-slate-900 outline-none"
+                  className="min-h-[60px] w-full px-4 text-xl font-bold tracking-wider text-ink-950 outline-none"
                   aria-label="Mobile number"
                   autoFocus
                 />
               </span>
             </label>
             {error && (
-              <p className="mt-3 rounded-xl bg-red-50 px-4 py-3 text-center text-base font-bold text-red-700">
+              <p className="mt-3 rounded-xl bg-clay-50 px-4 py-3 text-center text-base font-bold text-clay-700">
                 <T en={error.en} ur={error.ur} />
               </p>
             )}
@@ -198,7 +198,7 @@ function LoginForm() {
                 <T en={busy ? "Sending…" : "Send login code"} ur={busy ? "بھیجا جا رہا ہے…" : "لاگ اِن کوڈ بھیجیں"} />
               </PrimaryBtn>
               {phone.length > 0 && !phoneValid && (
-                <p className="mt-2 text-center text-sm font-semibold text-amber-700">
+                <p className="mt-2 text-center text-sm font-semibold text-brass-600">
                   <T en="Please enter a full 10-digit mobile number (e.g. 300 1234567)." ur="پورا ۱۰ ہندسوں کا موبائل نمبر لکھیں (مثلاً 300 1234567)۔" />
                 </p>
               )}
@@ -206,11 +206,11 @@ function LoginForm() {
           </>
         ) : (
           <>
-            <p className="text-center text-base font-bold text-slate-700">
+            <p className="text-center text-base font-bold text-ink-700">
               <T en={`Code sent to +92 ${phone}`} ur={`+92 ${phone} پر کوڈ بھیجا گیا`} />
             </p>
             {/* Honest dev-mode note: SMS_PROVIDER=log, no real SMS is sent. */}
-            <p className="mx-auto mt-2 max-w-md rounded-xl bg-amber-50 px-4 py-2 text-center text-sm font-semibold text-amber-800">
+            <p className="mx-auto mt-2 max-w-md rounded-xl bg-brass-50 px-4 py-2 text-center text-sm font-semibold text-brass-700">
               <T
                 en="Demo mode: real SMS nahi bheja jata — OTP backend logs mein milta hai."
                 ur="ڈیمو موڈ: اصل ایس ایم ایس نہیں بھیجا جاتا — او ٹی پی بیک اینڈ لاگز میں ملتا ہے۔"
@@ -220,7 +220,7 @@ function LoginForm() {
               <OtpBoxes value={code} onChange={setCode} disabled={busy} />
             </div>
             {error && (
-              <p className="mt-4 rounded-xl bg-red-50 px-4 py-3 text-center text-base font-bold text-red-700">
+              <p className="mt-4 rounded-xl bg-clay-50 px-4 py-3 text-center text-base font-bold text-clay-700">
                 <T en={error.en} ur={error.ur} />
               </p>
             )}
@@ -236,7 +236,7 @@ function LoginForm() {
             </div>
             <div className="mt-4 text-center">
               {ttl > 0 ? (
-                <p className="text-base font-bold text-slate-500">
+                <p className="text-base font-bold text-ink-500">
                   <T en={`Resend code in ${fmtCountdown(ttl)}`} ur={`${fmtCountdown(ttl)} میں دوبارہ بھیجیں`} />
                 </p>
               ) : (
@@ -260,7 +260,7 @@ function LoginForm() {
           </>
         )}
 
-        <p className="mt-6 text-center text-sm font-semibold text-slate-500">
+        <p className="mt-6 text-center text-sm font-semibold text-ink-500">
           <T
             en="This number becomes your account — your bookings will be linked to it."
             ur="یہی نمبر آپ کا اکاؤنٹ ہے — آپ کی بکنگز اسی سے جڑیں گی۔"
@@ -269,7 +269,7 @@ function LoginForm() {
       </section>
 
       <p className="mt-6 text-center">
-        <Link href="/" className="text-base font-bold text-emerald-700 hover:underline">
+        <Link href="/" className="text-base font-bold text-court-700 hover:underline">
           <T en="← Back to home" ur="← ہوم پر واپس" />
         </Link>
       </p>

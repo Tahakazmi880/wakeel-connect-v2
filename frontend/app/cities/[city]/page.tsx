@@ -45,13 +45,13 @@ export default async function CityPage({ params }: { params: Promise<{ city: str
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-10">
-      <p className="inline-flex items-center gap-2 rounded-full bg-emerald-100 px-4 py-1.5 text-sm font-bold text-emerald-800">
+      <p className="inline-flex items-center gap-2 rounded-full bg-court-100 px-4 py-1.5 text-sm font-bold text-court-800">
         <PinIcon className="h-4 w-4" /> <T en={c.province} ur={c.nameUr} />
       </p>
-      <h1 className="mt-3 text-3xl font-extrabold text-slate-900 sm:text-5xl">
-        <T en={<>Lawyers in <span className="text-emerald-700">{c.nameEn}</span></>} ur={<><span className="text-emerald-700">{c.nameUr}</span> میں وکیل</>} />
+      <h1 className="mt-3 text-3xl font-extrabold text-ink-950 sm:text-5xl">
+        <T en={<>Lawyers in <span className="text-court-700">{c.nameEn}</span></>} ur={<><span className="text-court-700">{c.nameUr}</span> میں وکیل</>} />
       </h1>
-      <p className="mt-4 max-w-3xl text-lg leading-relaxed text-slate-600">
+      <p className="mt-4 max-w-3xl text-lg leading-relaxed text-ink-600">
         <T
           en={`Looking for a wakeel in ${c.nameEn}? Compare ${lawyers.length} ${lawyers.length === 1 ? "lawyer" : "lawyers"} below — check their experience, fees and client reviews, then book a video call or chamber visit in 3 easy steps.`}
           ur={`${c.nameUr} میں وکیل تلاش کر رہے ہیں؟ نیچے ${lawyers.length} وکیلوں کا موازنہ کریں — تجربہ، فیس اور آراء دیکھیں، پھر صرف ۳ مراحل میں ویڈیو کال یا ملاقات بک کریں۔`}
@@ -63,35 +63,35 @@ export default async function CityPage({ params }: { params: Promise<{ city: str
           {lawyers.map((l) => <LawyerCard key={l.slug} lawyer={l} />)}
         </div>
       ) : (
-        <p className="mt-8 rounded-3xl bg-white p-8 text-center text-lg text-slate-600 ring-1 ring-slate-200">
+        <p className="mt-8 rounded-xl bg-white p-8 text-center text-lg text-ink-600 ring-1 ring-ink-200">
           <T en="No lawyers listed in this city yet — check back soon." ur="اس شہر میں ابھی کوئی وکیل درج نہیں — جلد دوبارہ دیکھیں۔" />
         </p>
       )}
 
       {areasHere.length > 0 && (
         <section className="mt-14">
-          <SectionHead eyebrowUr="شعبے" title={<T en={`Legal help in ${c.nameEn}`} ur={`${c.nameUr} میں قانونی مدد`} />} />
+          <SectionHead eyebrowEn="Browse" eyebrowUr="شعبے" title={<T en={`Legal help in ${c.nameEn}`} ur={`${c.nameUr} میں قانونی مدد`} />} />
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
             {areasHere.map((a) => (
               <Link key={a.slug} href={`/${c.slug}/${a.slug}`}
-                className="group flex min-h-[64px] items-center justify-between rounded-2xl border border-slate-200 bg-white px-5 py-4 shadow-sm transition hover:border-emerald-300 hover:shadow-md">
-                <span className="text-base font-extrabold text-slate-900 group-hover:text-emerald-800"><T en={a.nameEn} ur={a.nameUr} /></span>
-                <ArrowIcon className="h-5 w-5 text-slate-300 group-hover:text-emerald-600" />
+                className="group flex min-h-[64px] items-center justify-between rounded-lg border border-ink-200 bg-white px-5 py-4 shadow-sm transition hover:border-court-300 hover:shadow-md">
+                <span className="text-base font-extrabold text-ink-950 group-hover:text-court-800"><T en={a.nameEn} ur={a.nameUr} /></span>
+                <ArrowIcon className="h-5 w-5 text-ink-300 group-hover:text-court-600" />
               </Link>
             ))}
           </div>
         </section>
       )}
 
-      <section className="mt-14 rounded-3xl bg-white p-8 ring-1 ring-slate-200">
-        <h2 className="text-2xl font-extrabold text-slate-900"><T en={`FAQs — lawyers in ${c.nameEn}`} ur={`${c.nameUr} میں وکیل — سوالات`} /></h2>
-        <div className="mt-4 space-y-4 text-lg text-slate-700">
+      <section className="mt-14 rounded-xl bg-white p-8 ring-1 ring-ink-200">
+        <h2 className="text-2xl font-extrabold text-ink-950"><T en={`FAQs — lawyers in ${c.nameEn}`} ur={`${c.nameUr} میں وکیل — سوالات`} /></h2>
+        <div className="mt-4 space-y-4 text-lg text-ink-700">
           <div>
-            <p className="font-extrabold text-slate-900"><T en="How do I book a lawyer in this city?" ur="اس شہر میں وکیل کیسے بک کروں؟" /></p>
+            <p className="font-extrabold text-ink-950"><T en="How do I book a lawyer in this city?" ur="اس شہر میں وکیل کیسے بک کروں؟" /></p>
             <p><T en="Pick a lawyer, choose a time, then verify your phone number with a code — done. Three steps." ur="وکیل چنیں، وقت منتخب کریں، پھر کوڈ سے فون نمبر تصدیق کریں — ہو گیا۔ تین مراحل۔" /></p>
           </div>
           <div>
-            <p className="font-extrabold text-slate-900"><T en="How are profiles listed?" ur="پروفائلز کیسے درج ہوتے ہیں؟" /></p>
+            <p className="font-extrabold text-ink-950"><T en="How are profiles listed?" ur="پروفائلز کیسے درج ہوتے ہیں؟" /></p>
             <p><T en="Every public profile is reviewed by our team before listing." ur="عوامی ہونے سے پہلے ہماری ٹیم ہر پروفائل کا جائزہ لیتی ہے۔" /></p>
           </div>
         </div>

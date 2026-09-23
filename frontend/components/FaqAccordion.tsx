@@ -64,18 +64,18 @@ export default function FaqAccordion({ items = FAQS, wide = false }: { items?: F
       {items.map((f, i) => {
         const isOpen = open === i;
         return (
-          <div key={i} className="mb-3 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+          <div key={i} className="mb-3 overflow-hidden rounded-lg border border-ink-900/10 bg-white">
             <button
               type="button"
               onClick={() => setOpen(isOpen ? null : i)}
               aria-expanded={isOpen}
-              className="flex min-h-[56px] w-full items-center justify-between gap-4 px-5 py-4 text-left"
+              className="flex min-h-[60px] w-full items-center justify-between gap-4 px-5 py-4 text-left transition hover:bg-paper"
             >
-              <span className="text-lg font-extrabold text-slate-900">
+              <span className="text-[1.08rem] font-bold text-ink-950">
                 <T en={f.qEn} ur={f.qUr} />
               </span>
               <span
-                className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-emerald-100 text-emerald-800 transition-transform duration-300 ${
+                className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-court-50 text-court-800 ring-1 ring-court-700/20 transition-transform duration-300 ${
                   isOpen ? "rotate-45" : ""
                 }`}
                 aria-hidden
@@ -91,7 +91,7 @@ export default function FaqAccordion({ items = FAQS, wide = false }: { items?: F
               }`}
             >
               <div className="overflow-hidden">
-                <p className="px-5 pb-5 text-base leading-relaxed text-slate-600">
+                <p className="px-5 pb-5 text-base leading-relaxed text-ink-600">
                   <T en={f.aEn} ur={f.aUr} />
                 </p>
               </div>

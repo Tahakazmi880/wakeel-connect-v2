@@ -38,7 +38,7 @@ function Counter({ target }: { target: number }) {
   return <span ref={ref}>{value}</span>;
 }
 
-/** Dark emerald animated stats band. Lawyer count comes from the real API. */
+/** Ink band of serif numerals separated by hairline dividers. Lawyer count comes from the real API. */
 export default function StatsBand({ lawyerCount }: { lawyerCount: number }) {
   const stats = [
     { target: lawyerCount, en: "Lawyers", ur: "وکیل" },
@@ -48,15 +48,15 @@ export default function StatsBand({ lawyerCount }: { lawyerCount: number }) {
   ];
 
   return (
-    <section className="bg-emerald-950 py-12">
-      <div className="mx-auto max-w-7xl px-4">
-        <div className="grid grid-cols-2 gap-6 text-center lg:grid-cols-4">
+    <section className="bg-ink-950 py-14">
+      <div className="mx-auto max-w-5xl px-4">
+        <div className="grid grid-cols-2 gap-y-10 text-center lg:grid-cols-4 lg:divide-x lg:divide-white/10">
           {stats.map((s) => (
-            <div key={s.en} className="rounded-3xl bg-emerald-900/60 p-6 ring-1 ring-emerald-800">
-              <p className="text-5xl font-extrabold text-amber-300">
+            <div key={s.en} className="px-6">
+              <p className="font-display text-5xl font-semibold text-brass-300">
                 <Counter target={s.target} />
               </p>
-              <p className="mt-2 text-lg font-bold text-emerald-100">
+              <p className="mt-2 text-[1.02rem] font-semibold text-ink-300">
                 <T en={s.en} ur={s.ur} />
               </p>
             </div>

@@ -80,21 +80,21 @@ export default async function CityAreaPage({ params }: { params: Promise<{ city:
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-10">
-      <nav className="mb-6 text-base text-slate-500" aria-label="Breadcrumb">
-        <Link href="/" className="hover:text-emerald-700">wakeel.connect</Link>
+      <nav className="mb-6 text-base text-ink-500" aria-label="Breadcrumb">
+        <Link href="/" className="hover:text-court-700">wakeel.connect</Link>
         {" / "}
-        <Link href={`/cities/${c.slug}`} className="hover:text-emerald-700"><T en={c.nameEn} ur={c.nameUr} /></Link>
+        <Link href={`/cities/${c.slug}`} className="hover:text-court-700"><T en={c.nameEn} ur={c.nameUr} /></Link>
         {" / "}
-        <span className="font-bold text-slate-800"><T en={a.nameEn} ur={a.nameUr} /></span>
+        <span className="font-bold text-ink-800"><T en={a.nameEn} ur={a.nameUr} /></span>
       </nav>
 
-      <h1 className="text-3xl font-extrabold text-slate-900 sm:text-5xl">
+      <h1 className="text-3xl font-extrabold text-ink-950 sm:text-5xl">
         <T
-          en={<><span className="text-emerald-700">{a.nameEn}</span> lawyers in <span className="text-emerald-700">{c.nameEn}</span></>}
-          ur={<><span className="text-emerald-700">{c.nameUr}</span> میں <span className="text-emerald-700">{a.nameUr}</span> کے وکیل</>}
+          en={<><span className="text-court-700">{a.nameEn}</span> lawyers in <span className="text-court-700">{c.nameEn}</span></>}
+          ur={<><span className="text-court-700">{c.nameUr}</span> میں <span className="text-court-700">{a.nameUr}</span> کے وکیل</>}
         />
       </h1>
-      <p className="mt-4 max-w-3xl text-lg leading-relaxed text-slate-600">
+      <p className="mt-4 max-w-3xl text-lg leading-relaxed text-ink-600">
         <T
           en={`${lawyers.length} ${a.nameEn.toLowerCase()} ${lawyers.length === 1 ? "lawyer" : "lawyers"} practising in ${c.nameEn}. ${a.description} Compare profiles below — experience, fees in PKR and client reviews — then book a video consultation or chamber visit in 3 easy steps.`}
           ur={`${c.nameUr} میں ${a.nameUr} کے ${lawyers.length} وکیل۔ ${a.description} نیچے پروفائلز کا موازنہ کریں — تجربہ، فیس اور آراء — پھر ۳ آسان مراحل میں بک کریں۔`}
@@ -108,9 +108,9 @@ export default async function CityAreaPage({ params }: { params: Promise<{ city:
           { icon: <CalendarIcon className="h-6 w-6" />, en: "Book in 3 easy steps", ur: "۳ آسان مراحل میں بکنگ" },
           { icon: <PhoneIcon className="h-6 w-6" />, en: "Phone-number login only", ur: "صرف فون نمبر سے لاگ اِن" },
         ].map((t) => (
-          <div key={t.en} className="flex items-center gap-3 rounded-2xl bg-white p-4 ring-1 ring-emerald-100">
-            <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-emerald-100 text-emerald-700">{t.icon}</span>
-            <span className="text-base font-extrabold text-slate-800"><T en={t.en} ur={t.ur} /></span>
+          <div key={t.en} className="flex items-center gap-3 rounded-lg bg-white p-4 ring-1 ring-court-100">
+            <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-court-100 text-court-700">{t.icon}</span>
+            <span className="text-base font-extrabold text-ink-800"><T en={t.en} ur={t.ur} /></span>
           </div>
         ))}
       </div>
@@ -122,8 +122,8 @@ export default async function CityAreaPage({ params }: { params: Promise<{ city:
       <SeoArticle area={a} citySlug={c.slug} />
 
       {/* How booking works — tiny */}
-      <section className="mt-14 rounded-3xl bg-emerald-50 p-8 ring-1 ring-emerald-100">
-        <h2 className="text-2xl font-extrabold text-slate-900 text-center">
+      <section className="mt-14 rounded-xl bg-court-50 p-8 ring-1 ring-court-100">
+        <h2 className="text-2xl font-extrabold text-ink-950 text-center">
           <T en="How booking works" ur="بکنگ کیسے ہوتی ہے" />
         </h2>
         <div className="mx-auto mt-6 grid max-w-3xl gap-4 sm:grid-cols-3">
@@ -132,9 +132,9 @@ export default async function CityAreaPage({ params }: { params: Promise<{ city:
             { icon: <CalendarIcon className="h-7 w-7" />, en: "2. Pick a time", ur: "۲۔ وقت منتخب کریں" },
             { icon: <PhoneIcon className="h-7 w-7" />, en: "3. Verify phone — done", ur: "۳۔ فون تصدیق — ہو گیا" },
           ].map((s) => (
-            <div key={s.en} className="flex items-center gap-3 rounded-2xl bg-white p-4 shadow-sm">
-              <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-emerald-700 text-white">{s.icon}</span>
-              <span className="text-base font-extrabold text-slate-800"><T en={s.en} ur={s.ur} /></span>
+            <div key={s.en} className="flex items-center gap-3 rounded-lg bg-white p-4 shadow-sm">
+              <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-court-700 text-white">{s.icon}</span>
+              <span className="text-base font-extrabold text-ink-800"><T en={s.en} ur={s.ur} /></span>
             </div>
           ))}
         </div>
@@ -143,16 +143,16 @@ export default async function CityAreaPage({ params }: { params: Promise<{ city:
       {/* internal links */}
       {otherAreas.length > 0 && (
         <section className="mt-14">
-          <SectionHead eyebrowUr="مزید دیکھیں" title={<T en="Keep exploring" ur="مزید دیکھیں" />} />
+          <SectionHead eyebrowEn="Keep exploring" eyebrowUr="مزید دیکھیں" title={<T en="Keep exploring" ur="مزید دیکھیں" />} />
           <div>
-            <h3 className="mb-3 text-xl font-extrabold text-slate-900">
+            <h3 className="mb-3 text-xl font-extrabold text-ink-950">
               <T en={`More in ${c.nameEn}`} ur={`${c.nameUr} میں مزید`} />
             </h3>
             <ul className="space-y-2">
               {otherAreas.map((x) => (
                 <li key={x.slug}>
-                  <Link href={`/lawyers?city=${c.slug}&area=${x.slug}`} className="inline-flex min-h-[48px] items-center gap-2 text-lg font-bold text-emerald-800 hover:underline">
-                    <CheckBadgeIcon className="h-5 w-5 text-emerald-600" />
+                  <Link href={`/lawyers?city=${c.slug}&area=${x.slug}`} className="inline-flex min-h-[48px] items-center gap-2 text-lg font-bold text-court-800 hover:underline">
+                    <CheckBadgeIcon className="h-5 w-5 text-court-600" />
                     <T en={`${x.nameEn} lawyers in ${c.nameEn}`} ur={`${c.nameUr} میں ${x.nameUr} کے وکیل`} />
                   </Link>
                 </li>
