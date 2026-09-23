@@ -1,44 +1,99 @@
 import "dotenv/config";
 import Fastify from "fastify";
-import cors from "@fastify/cors";
+import { ZodError } from "zod";
+import { env, isProd } from "./lib/env.js";
 import { prisma } from "./lib/prisma.js";
+import { AppError } from "./lib/errors.js";
+import { registerSecurity } from "./plugins/security.js";
+import { authRoutes } from "./routes/auth.js";
+import { lawyerRoutes } from "./routes/lawyers.js";
+import { bookingRoutes } from "./routes/bookings.js";
+import { reviewRoutes } from "./routes/reviews.js";
+import { questionRoutes } from "./routes/questions.js";
+import { applicationRoutes } from "./routes/applications.js";
 
-const PORT = Number(process.env.PORT ?? 4000);
+const PORT = env.PORT;
 
-async function buildApp() {
-  const app = Fastify({ logger: true });
-
-  await app.register(cors, { origin: true });
-
-  // Liveness probe
-  app.get("/health", async () => ({
-    ok: true,
-    service: "wakeel-connect-backend",
-    time: new Date().toISOString(),
-  }));
-
-  // Versioned API health (also verifies DB connectivity)
-  app.get("/api/v1/health", async () => {
-    await prisma.$queryRaw`SELECT 1`;
-    return {
-      ok: true,
-      service: "wakeel-connect-backend",
-      api: "v1",
-      db: "up",
-      time: new Date().toISOString(),
-    };
+export async function buildApp() {
+  const app = Fastify({
+    logger: { level: isProd ? "info" : "debug" },
+    trustProxy: true,
   });
+
+  await registerSecurity(app);
+
+  // ---- Global error handler: AppError → clean JSON, everything else → 500
+  // ---- without leaking stack traces in production.
+  app.setErrorHandler((err, req, reply) => {
+    if (err instanceof AppError) {
+      return reply.code(err.statusCode).send({ ok: false, error: { code: err.code, message: err.message } });
+    }
+    if (err instanceof ZodError) {
+      return reply.code(400).send({ ok: false, error: { code: "VALIDATION", message: err.issues[0]?.message ?? "Invalid input." } });
+    }
+    // Fastify validation / rate-limit errors carry statusCode already.
+    const status = typeof (err as { statusCode?: unknown }).statusCode === "number"
+      ? (err as { statusCode: number }).statusCode
+      : 500;
+    req.log.error({ err, url: req.url }, "Unhandled error");
+    return reply.code(status).send({
+      ok: false,
+      error: {
+        code: status === 429 ? "RATE_LIMITED" : "INTERNAL",
+        message: status === 429 ? "Too many requests. Please slow down." : "Something went wrong. Please try again.",
+      },
+    });
+  });
+
+  app.setNotFoundHandler((_req, reply) => {
+    return reply.code(404).send({ ok: false, error: { code: "NOT_FOUND", message: "Not found." } });
+  });
+
+  // ---- Routes (all versioned under /api/v1)
+  app.get("/health", async () => ({ ok: true, service: "wakeel-connect-backend", time: new Date().toISOString() }));
+
+  await app.register(
+    async (api) => {
+      api.get("/health", async () => {
+        await prisma.$queryRaw`SELECT 1`;
+        return { ok: true, service: "wakeel-connect-backend", api: "v1", db: "up", time: new Date().toISOString() };
+      });
+      await api.register(authRoutes);
+      await api.register(lawyerRoutes);
+      await api.register(bookingRoutes);
+      await api.register(reviewRoutes);
+      await api.register(questionRoutes);
+      await api.register(applicationRoutes);
+    },
+    { prefix: "/api/v1" }
+  );
 
   return app;
 }
 
 async function main() {
   const app = await buildApp();
+  // Graceful shutdown: finish in-flight requests, close DB pool.
+  for (const sig of ["SIGINT", "SIGTERM"] as const) {
+    process.on(sig, async () => {
+      app.log.info({ sig }, "Shutting down");
+      await app.close();
+      await prisma.$disconnect();
+      process.exit(0);
+    });
+  }
   await app.listen({ port: PORT, host: "0.0.0.0" });
 }
 
-main().catch((err) => {
-  // eslint-disable-next-line no-console
-  console.error(err);
-  process.exit(1);
-});
+// Works both under tsx (src/server.ts) and compiled node (dist/server.js).
+const invokedDirectly =
+  typeof process.argv[1] === "string" &&
+  (process.argv[1].endsWith("server.ts") || process.argv[1].endsWith("server.js"));
+
+if (invokedDirectly) {
+  main().catch((err) => {
+    // eslint-disable-next-line no-console
+    console.error(err);
+    process.exit(1);
+  });
+}

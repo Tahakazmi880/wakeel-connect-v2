@@ -1,12 +1,21 @@
 {
   "dependencies": {
+    "@fastify/cookie": "^11.1.2",
     "@fastify/cors": "^10.0.1",
+    "@fastify/helmet": "^13.1.1",
+    "@fastify/multipart": "^10.1.2",
+    "@fastify/rate-limit": "^11.2.0",
     "@prisma/client": "^6.0.0",
+    "bcryptjs": "^3.0.3",
     "dotenv": "^16.4.5",
-    "fastify": "^5.2.0"
+    "fastify": "^5.2.0",
+    "jsonwebtoken": "^9.0.3",
+    "zod": "^4.6.5"
   },
   "description": "Wakeel Connect API — Fastify + Prisma + PostgreSQL",
   "devDependencies": {
+    "@types/bcryptjs": "^2.4.6",
+    "@types/jsonwebtoken": "^9.0.10",
     "@types/node": "^20.14.0",
     "prisma": "^6.0.0",
     "tsx": "^4.16.2",

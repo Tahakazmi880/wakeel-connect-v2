@@ -114,8 +114,42 @@ model User {
   reviews       Review[]       @relation("ClientReviews")
   reviewedDocs  VerificationDocument[] @relation("DocReviewer")
   decisions     VerificationDecision[] @relation("DecisionAdmin")
+  refreshSessions RefreshSession[]
+  forumQuestions  ForumQuestion[]  @relation("QuestionAuthor")
+  forumAnswers    ForumAnswer[]    @relation("AnswerAuthor")
+  uploadedBookingDocs BookingDocument[] @relation("DocUploader")
 
   @@index([role, status])
+}
+
+// ---------------- OTP auth & sessions ----------------
+
+model OtpCode {
+  id          String    @id @default(cuid())
+  phone       String // E.164 — not unique; history of attempts is kept
+  codeHash    String // SHA-256(code + server pepper); never plaintext
+  purpose     String    @default("login") // login
+  expiresAt   DateTime
+  attempts    Int       @default(0)
+  maxAttempts Int       @default(5)
+  consumedAt  DateTime?
+  createdAt   DateTime  @default(now())
+
+  @@index([phone, createdAt])
+}
+
+model RefreshSession {
+  id        String    @id @default(cuid())
+  userId    String
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tokenHash String    @unique // SHA-256 of the opaque token; the raw token only lives in the cookie
+  userAgent String?
+  ip        String?
+  expiresAt DateTime
+  revokedAt DateTime?
+  createdAt DateTime  @default(now())
+
+  @@index([userId, revokedAt])
 }
 
 // ---------------- Reference data (seed) ----------------
@@ -146,8 +180,42 @@ model PracticeArea {
   isActive    Boolean @default(true)
 
   lawyers LawyerPracticeArea[]
+  forumQuestions ForumQuestion[]
 
   @@index([isActive, sortOrder])
+}
+
+model ForumQuestion {
+  id         String        @id @default(cuid())
+  authorId   String?
+  author     User?         @relation("QuestionAuthor", fields: [authorId], references: [id], onDelete: SetNull)
+  authorName String // display-name snapshot (guests allowed)
+  areaId     String?
+  area       PracticeArea? @relation(fields: [areaId], references: [id], onDelete: SetNull)
+  title      String
+  body       String        @db.Text
+  isSeed     Boolean       @default(false)
+  isLocked   Boolean       @default(false) // seed rows: answers open after launch
+  createdAt  DateTime      @default(now())
+  updatedAt  DateTime      @updatedAt
+
+  answers ForumAnswer[]
+
+  @@index([areaId, createdAt])
+}
+
+model ForumAnswer {
+  id         String        @id @default(cuid())
+  questionId String
+  question   ForumQuestion @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  authorId   String?
+  author     User?         @relation("AnswerAuthor", fields: [authorId], references: [id], onDelete: SetNull)
+  authorName String
+  body       String        @db.Text
+  isSeed     Boolean       @default(false)
+  createdAt  DateTime      @default(now())
+
+  @@index([questionId, createdAt])
 }
 
 model Language {
@@ -345,9 +413,25 @@ model Booking {
 
   payment Payment?
   review  Review?
+  documents BookingDocument[]
 
   @@index([lawyerId, startAt])
   @@index([clientId, status])
+}
+
+model BookingDocument {
+  id           String   @id @default(cuid())
+  bookingId    String
+  booking      Booking  @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  uploadedById String?
+  uploadedBy   User?    @relation("DocUploader", fields: [uploadedById], references: [id], onDelete: SetNull)
+  fileName     String // original name (sanitized for display)
+  storageKey   String // private on-disk key; served only through the download route
+  mimeType     String
+  sizeBytes    Int
+  createdAt    DateTime @default(now())
+
+  @@index([bookingId])
 }
 
 model Payment {

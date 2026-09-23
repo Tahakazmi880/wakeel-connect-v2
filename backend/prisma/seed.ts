@@ -174,6 +174,63 @@ async function main() {
   }
   console.log(`seeded ${LANGUAGES.length} languages`);
 
+  // ---- Community Q&A seed (matches the frontend's sample questions) ----
+  const SEED_QA: { title: string; body: string; authorName: string; areaSlug: string; answer: string }[] = [
+    {
+      title: "Khula lene ka tareeqa kya hai Pakistan mein?",
+      body: "Main apne shohar se khula lena chahti hun. Court ka process kya hai, kitna time lagta hai, aur kya kharcha aata hai?",
+      authorName: "Ayesha K.",
+      areaSlug: "family-law",
+      answer:
+        "Khula family court mein case file karke li jati hai. Aap ko apna nikahnama, CNIC aur wajah bayan karke plaint file karna hota hai. Court reconciliation ki koshish karta hai; nakaami par khula ka decree jari hota hai, jo Union Council mein 90 din ke baad effective hota hai. Aam tor par 3–6 mahine lagte hain. Yeh aam maloomat hai, qanooni mashwara nahi — apne case ke liye kisi wakeel se raabta karein.",
+    },
+    {
+      title: "Property par qabza ho gaya hai, kya karun?",
+      body: "Mere plot par kisi ne qabza kar liya hai. Registry mere naam par hai. Fori kya action le sakta hun?",
+      authorName: "Bilal M.",
+      areaSlug: "property-law",
+      answer:
+        "Registry aap ke naam par hai to aap civil court mein possession ka dawa (suit for possession) file kar sakte hain, aur urgent relief ke liye stay order / interim injunction ki darkhwast de sakte hain. Qabze ke saboot (registry, fard, photos) sambhal kar rakhein aur police report bhi darj karwayein. Yeh aam maloomat hai, qanooni mashwara nahi.",
+    },
+    {
+      title: "Bail ka process kya hai criminal case mein?",
+      body: "Mere bhai ko police ne giraftar kiya hai. Zamanat kaise hogi aur kitna kharcha aayega?",
+      authorName: "Imran S.",
+      areaSlug: "criminal-law",
+      answer:
+        "Zamanat (bail) ka case sessions court mein bail petition file karke lara jata hai. Wakeel FIR, giraftari ki wajah aur saboot dekh kar petition tayyar karta hai. Fees case ki noiyat par hoti hai — wakeel.connect par criminal lawyers ki fees profile par likhi hoti hai. Fori tor par kisi criminal wakeel se raabta karein. Yeh aam maloomat hai, qanooni mashwara nahi.",
+    },
+    {
+      title: "Bank loan default par kya ho sakta hai?",
+      body: "Maine bank se loan liya tha, ab ada nahi kar pa raha. Bank ne notice bheja hai. Kya ghar nilam ho sakta hai?",
+      authorName: "Farhan A.",
+      areaSlug: "banking-finance",
+      answer:
+        "Banking court mein recovery suit file ho sakta hai, aur agar property mortgage hai to us ki nilami ka khatra hota hai. Notice ka jawab waqt par dena zaroori hai — aksar bank settlement ya rescheduling par raazi ho jata hai. Apne loan documents le kar banking ke wakeel se fori mashwara lein. Yeh aam maloomat hai, qanooni mashwara nahi.",
+    },
+  ];
+
+  for (const s of SEED_QA) {
+    const area = await prisma.practiceArea.findUnique({ where: { slug: s.areaSlug } });
+    const existing = await prisma.forumQuestion.findFirst({ where: { title: s.title, isSeed: true } });
+    if (!existing && area) {
+      await prisma.forumQuestion.create({
+        data: {
+          authorName: s.authorName,
+          areaId: area.id,
+          title: s.title,
+          body: s.body,
+          isSeed: true,
+          isLocked: true,
+          answers: {
+            create: { authorName: "wakeel.connect Legal Team", body: s.answer, isSeed: true },
+          },
+        },
+      });
+    }
+  }
+  console.log(`seeded ${SEED_QA.length} forum Q&A samples`);
+
   for (const d of DEMO_LAWYERS) {
     const city = await prisma.city.findUniqueOrThrow({ where: { slug: d.citySlug } });
 
