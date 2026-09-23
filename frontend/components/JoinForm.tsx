@@ -12,7 +12,7 @@ import {
   ShieldIcon,
   UserIcon,
 } from "./icons";
-import { CITIES, PRACTICE_AREAS } from "@/lib/data";
+import { CITIES, PRACTICE_AREAS, COURTS, LANGUAGES } from "@/lib/data";
 import {
   submitApplication,
   uploadApplicationDocument,
@@ -76,13 +76,32 @@ export default function JoinForm() {
   const [fullName, setFullName] = useState("");
   const [phone, setPhone] = useState("");
   const [citySlug, setCitySlug] = useState("");
+  const [headline, setHeadline] = useState("");
   const [barCouncil, setBarCouncil] = useState("");
   const [barCouncilNo, setBarCouncilNo] = useState("");
+  const [enrolmentYear, setEnrolmentYear] = useState("");
   const [years, setYears] = useState("");
   const [feePkr, setFeePkr] = useState("");
   const [areas, setAreas] = useState<string[]>([]);
+  const [courts, setCourts] = useState<string[]>([]);
+  const [langCodes, setLangCodes] = useState<string[]>(["ur"]);
+  const [education, setEducation] = useState<{ degree: string; institution: string; year: string }[]>([
+    { degree: "", institution: "", year: "" },
+  ]);
+  const [chamberName, setChamberName] = useState("");
+  const [chamberAddress, setChamberAddress] = useState("");
   const [bio, setBio] = useState("");
   const [errors, setErrors] = useState<Errors>({});
+
+  const toggleCourt = (nameEn: string) =>
+    setCourts((c) => (c.includes(nameEn) ? c.filter((x) => x !== nameEn) : c.length < 8 ? [...c, nameEn] : c));
+  const toggleLang = (code: string) =>
+    setLangCodes((c) => (c.includes(code) ? c.filter((x) => x !== code) : [...c, code]));
+  const updateEdu = (i: number, k: "degree" | "institution" | "year", v: string) =>
+    setEducation((es) => es.map((e, j) => (j === i ? { ...e, [k]: v } : e)));
+  const addEdu = () =>
+    setEducation((es) => (es.length < 5 ? [...es, { degree: "", institution: "", year: "" }] : es));
+  const removeEdu = (i: number) => setEducation((es) => es.filter((_, j) => j !== i));
 
   // Step 4: document upload — credentials issued once by the application response.
   const [appCreds, setAppCreds] = useState<{ applicationId: string; uploadToken: string } | null>(null);
@@ -116,6 +135,18 @@ export default function JoinForm() {
       e.feePkr = { en: "Fee must be between Rs. 0 and Rs. 1,000,000.", ur: "فیس 0 سے 10 لاکھ روپے کے درمیان ہونی چاہیے۔" };
     if (barCouncilNo.trim().length > 40)
       e.barCouncilNo = { en: "Enrolment number is too long (max 40 characters).", ur: "انرولمنٹ نمبر بہت لمبا ہے (زیادہ سے زیادہ 40 حروف)۔" };
+    if (headline.trim().length > 120)
+      e.headline = { en: "Title is too long (max 120 characters).", ur: "خطاب بہت لمبا ہے (زیادہ سے زیادہ 120 حروف)۔" };
+    const ey = enrolmentYear.trim();
+    if (ey !== "" && (!/^\d{4}$/.test(ey) || Number(ey) < 1950 || Number(ey) > 2026))
+      e.enrolmentYear = { en: "Enter a valid enrolment year (e.g. 2015).", ur: "درست انرولمنٹ سال لکھیں (مثلاً 2015)۔" };
+    education.forEach((row, i) => {
+      const started = row.degree.trim() || row.institution.trim() || row.year.trim();
+      if (started && (row.degree.trim().length < 2 || row.institution.trim().length < 2))
+        e[`edu${i}`] = { en: "Each qualification needs a degree and institution.", ur: "ہر تعلیمی سند کے لیے ڈگری اور ادارہ ضروری ہے۔" };
+      if (row.year.trim() !== "" && (!/^\d{4}$/.test(row.year.trim()) || Number(row.year) < 1950 || Number(row.year) > 2026))
+        e[`eduYear${i}`] = { en: "Enter a valid year (e.g. 2010).", ur: "درست سال لکھیں (مثلاً 2010)۔" };
+    });
     if (areas.length < 1)
       e.areas = { en: "Please pick at least one practice area (up to 6).", ur: "براہ کرم کم از کم ایک قانونی شعبہ چنیں (زیادہ سے زیادہ 6)۔" };
     if (bio.trim().length > 2000)
@@ -190,14 +221,28 @@ export default function JoinForm() {
     setSubmitting(true);
     setServerError(null);
     try {
+      const eduPayload = education
+        .filter((r) => r.degree.trim() && r.institution.trim())
+        .map((r) => ({
+          degree: r.degree.trim(),
+          institution: r.institution.trim(),
+          ...(r.year.trim() ? { year: Number(r.year.trim()) } : {}),
+        }));
       const res = await submitApplication({
         fullName: fullName.trim(),
         phone: phone.trim(),
         citySlug,
+        headline: headline.trim() || undefined,
         yearsExperience: Number(years),
         consultationFeePaisa: Math.round(Number(feePkr) * 100),
         barCouncil: barCouncil || undefined,
         barCouncilNo: barCouncilNo.trim() || undefined,
+        enrolmentYear: enrolmentYear.trim() ? Number(enrolmentYear.trim()) : undefined,
+        courts: courts.length ? courts : undefined,
+        languageCodes: langCodes.length ? langCodes : undefined,
+        education: eduPayload.length ? eduPayload : undefined,
+        chamberName: chamberName.trim() || undefined,
+        chamberAddress: chamberAddress.trim() || undefined,
         practiceAreaSlugs: areas,
         bio: bio.trim() || undefined,
       });
@@ -307,6 +352,11 @@ export default function JoinForm() {
           <div className="space-y-4">
             <h2 className="font-display text-[1.65rem] font-semibold text-ink-950"><T en="Professional details" ur="پیشہ ورانہ معلومات" /></h2>
             <label className="block">
+              <span className="mb-1 block text-base font-bold text-ink-700"><T en="Professional title (optional)" ur="پیشہ ورانہ خطاب (اختیاری)" /></span>
+              <input value={headline} onChange={(e) => setHeadline(e.target.value)} maxLength={120} className={inputCls} placeholder="e.g. Advocate High Court" />
+              {err("headline")}
+            </label>
+            <label className="block">
               <span className="mb-1 block text-base font-bold text-ink-700"><T en="Bar Council (optional)" ur="بار کونسل (اختیاری)" /></span>
               <select value={barCouncil} onChange={(e) => setBarCouncil(e.target.value)} className={inputCls}>
                 <option value=""><T en="Select Bar Council" ur="بار کونسل چنیں" /></option>
@@ -320,16 +370,23 @@ export default function JoinForm() {
                 {err("barCouncilNo")}
               </label>
               <label className="block">
+                <span className="mb-1 block text-base font-bold text-ink-700"><T en="Enrolment year (optional)" ur="انرولمنٹ سال (اختیاری)" /></span>
+                <input value={enrolmentYear} onChange={(e) => setEnrolmentYear(e.target.value)} className={inputCls} inputMode="numeric" maxLength={4} placeholder="2015" />
+                {err("enrolmentYear")}
+              </label>
+            </div>
+            <div className="grid gap-4 sm:grid-cols-2">
+              <label className="block">
                 <span className="mb-1 block text-base font-bold text-ink-700"><T en="Years of experience" ur="تجربے کے سال" /></span>
                 <input value={years} onChange={(e) => setYears(e.target.value)} className={inputCls} type="number" min={0} max={60} placeholder="8" />
                 {err("years")}
               </label>
+              <label className="block">
+                <span className="mb-1 block text-base font-bold text-ink-700"><T en="Consultation fee (PKR)" ur="مشاورت کی فیس (روپے)" /></span>
+                <input value={feePkr} onChange={(e) => setFeePkr(e.target.value)} className={inputCls} type="number" min={0} max={1000000} placeholder="3000" />
+                {err("feePkr")}
+              </label>
             </div>
-            <label className="block">
-              <span className="mb-1 block text-base font-bold text-ink-700"><T en="Consultation fee (PKR)" ur="مشاورت کی فیس (روپے)" /></span>
-              <input value={feePkr} onChange={(e) => setFeePkr(e.target.value)} className={inputCls} type="number" min={0} max={1000000} placeholder="3000" />
-              {err("feePkr")}
-            </label>
             <div>
               <span className="mb-2 block text-base font-bold text-ink-700">
                 <T en={`Practice areas (pick 1–6) — ${areas.length} selected`} ur={`قانونی شعبے (1 تا 6 چنیں) — ${areas.length} منتخب`} />
@@ -351,6 +408,84 @@ export default function JoinForm() {
               </div>
               {err("areas")}
             </div>
+            <div>
+              <span className="mb-2 block text-base font-bold text-ink-700">
+                <T en="Education (optional)" ur="تعلیم (اختیاری)" />
+              </span>
+              <div className="space-y-3">
+                {education.map((row, i) => (
+                  <div key={i} className="rounded-lg border border-ink-900/10 bg-paper-dark/30 p-3">
+                    <div className="grid gap-3 sm:grid-cols-[1fr_1fr_110px_auto]">
+                      <input value={row.degree} onChange={(e) => updateEdu(i, "degree", e.target.value)} maxLength={80} className={inputCls} placeholder="LL.B (Hons)" />
+                      <input value={row.institution} onChange={(e) => updateEdu(i, "institution", e.target.value)} maxLength={120} className={inputCls} placeholder="University of London" />
+                      <input value={row.year} onChange={(e) => updateEdu(i, "year", e.target.value)} className={inputCls} inputMode="numeric" maxLength={4} placeholder="2010" />
+                      {education.length > 1 && (
+                        <button type="button" onClick={() => removeEdu(i)} className="min-h-[56px] rounded-lg px-3 text-base font-bold text-clay-600 hover:bg-clay-50">
+                          <T en="Remove" ur="ہٹائیں" />
+                        </button>
+                      )}
+                    </div>
+                    {err(`edu${i}`)}
+                    {err(`eduYear${i}`)}
+                  </div>
+                ))}
+              </div>
+              {education.length < 5 && (
+                <button type="button" onClick={addEdu} className="mt-2 min-h-[48px] rounded-full border border-dashed border-court-700/50 px-4 text-base font-bold text-court-700">
+                  <T en="+ Add another degree" ur="+ مزید ڈگری شامل کریں" />
+                </button>
+              )}
+            </div>
+            <div>
+              <span className="mb-2 block text-base font-bold text-ink-700">
+                <T en="Courts you appear in (optional)" ur="عدالتیں جہاں پیش ہوتے ہیں (اختیاری)" />
+              </span>
+              <div className="flex flex-wrap gap-2">
+                {COURTS.map((c) => (
+                  <button
+                    key={c.slug}
+                    type="button"
+                    onClick={() => toggleCourt(c.nameEn)}
+                    aria-pressed={courts.includes(c.nameEn)}
+                    className={`min-h-[48px] rounded-full border px-4 text-base font-bold transition ${
+                      courts.includes(c.nameEn) ? "border-court-700 bg-court-700 text-white" : "border-ink-900/15 bg-white text-ink-700 hover:border-court-700/50"
+                    }`}
+                  >
+                    <T en={c.nameEn} ur={c.nameUr} />
+                  </button>
+                ))}
+              </div>
+            </div>
+            <div>
+              <span className="mb-2 block text-base font-bold text-ink-700">
+                <T en="Languages you speak" ur="جو زبانیں بولتے ہیں" />
+              </span>
+              <div className="flex flex-wrap gap-2">
+                {LANGUAGES.map((l) => (
+                  <button
+                    key={l.code}
+                    type="button"
+                    onClick={() => toggleLang(l.code)}
+                    aria-pressed={langCodes.includes(l.code)}
+                    className={`min-h-[48px] rounded-full border px-4 text-base font-bold transition ${
+                      langCodes.includes(l.code) ? "border-court-700 bg-court-700 text-white" : "border-ink-900/15 bg-white text-ink-700 hover:border-court-700/50"
+                    }`}
+                  >
+                    <T en={l.nameEn} ur={l.nameUr} />
+                  </button>
+                ))}
+              </div>
+            </div>
+            <div className="grid gap-4 sm:grid-cols-2">
+              <label className="block">
+                <span className="mb-1 block text-base font-bold text-ink-700"><T en="Chamber / office name (optional)" ur="چیمبر / دفتر کا نام (اختیاری)" /></span>
+                <input value={chamberName} onChange={(e) => setChamberName(e.target.value)} maxLength={120} className={inputCls} placeholder="e.g. Karachi Legal House" />
+              </label>
+              <label className="block">
+                <span className="mb-1 block text-base font-bold text-ink-700"><T en="Chamber address (optional)" ur="چیمبر کا پتہ (اختیاری)" /></span>
+                <input value={chamberAddress} onChange={(e) => setChamberAddress(e.target.value)} maxLength={300} className={inputCls} placeholder="DHA Phase 2, Karachi" />
+              </label>
+            </div>
             <label className="block">
               <span className="mb-1 flex items-baseline justify-between text-base font-bold text-ink-700">
                 <T en="Short bio (optional)" ur="مختصر تعارف (اختیاری)" />
@@ -369,16 +504,33 @@ export default function JoinForm() {
             <dl className="divide-y divide-ink-900/10 rounded-lg border border-ink-900/10">
               {[
                 { en: "Name", ur: "نام", v: fullName.trim() },
+                ...(headline.trim() ? [{ en: "Title", ur: "خطاب", v: headline.trim() }] : []),
                 { en: "Mobile", ur: "موبائل", v: normalizePhone(phone) },
                 { en: "City", ur: "شہر", v: cityName },
                 ...(barCouncil ? [{ en: "Bar Council", ur: "بار کونسل", v: barCouncil }] : []),
                 ...(barCouncilNo.trim() ? [{ en: "Enrolment no.", ur: "انرولمنٹ نمبر", v: barCouncilNo.trim() }] : []),
+                ...(enrolmentYear.trim() ? [{ en: "Enrolment year", ur: "انرولمنٹ سال", v: enrolmentYear.trim() }] : []),
                 { en: "Experience", ur: "تجربہ", v: `${years} yrs` },
                 { en: "Fee", ur: "فیس", v: `Rs. ${Number(feePkr).toLocaleString("en-PK")}` },
                 {
                   en: "Practice areas", ur: "قانونی شعبے",
                   v: areas.map((s) => PRACTICE_AREAS.find((a) => a.slug === s)?.nameEn ?? s).join(", "),
                 },
+                ...(education.some((r) => r.degree.trim() && r.institution.trim())
+                  ? [{
+                      en: "Education", ur: "تعلیم",
+                      v: education.filter((r) => r.degree.trim() && r.institution.trim())
+                        .map((r) => `${r.degree.trim()} — ${r.institution.trim()}${r.year.trim() ? ` (${r.year.trim()})` : ""}`).join("; "),
+                    }]
+                  : []),
+                ...(courts.length ? [{ en: "Courts", ur: "عدالتیں", v: courts.join(", ") }] : []),
+                ...(langCodes.length ? [{
+                  en: "Languages", ur: "زبانیں",
+                  v: langCodes.map((c) => LANGUAGES.find((l) => l.code === c)?.nameEn ?? c).join(", "),
+                }] : []),
+                ...(chamberName.trim() || chamberAddress.trim()
+                  ? [{ en: "Chamber", ur: "چیمبر", v: [chamberName.trim(), chamberAddress.trim()].filter(Boolean).join(", ") }]
+                  : []),
               ].map((row) => (
                 <div key={row.en} className="flex gap-4 px-4 py-3">
                   <dt className="w-32 shrink-0 text-base font-bold text-ink-600"><T en={row.en} ur={row.ur} /></dt>

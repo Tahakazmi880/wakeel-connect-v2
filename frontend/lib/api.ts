@@ -431,10 +431,17 @@ export interface LawyerApplicationInput {
   fullName: string;
   phone: string;
   citySlug: string;
+  headline?: string;
   yearsExperience: number;
   consultationFeePaisa: number;
   barCouncil?: string;
   barCouncilNo?: string;
+  enrolmentYear?: number;
+  courts?: string[];
+  languageCodes?: string[];
+  education?: { degree: string; institution: string; year?: number }[];
+  chamberName?: string;
+  chamberAddress?: string;
   practiceAreaSlugs: string[];
   bio?: string;
 }
