@@ -54,7 +54,7 @@ function LogoRow({ hidden }: { hidden?: boolean }) {
 export default function PartnersMarquee() {
   const [paused, setPaused] = useState(false);
   return (
-    <section className="mt-12 bg-paper-dark/60 py-12 sm:mt-16 sm:py-16" aria-label="Institutional clients">
+    <section className="mt-12 bg-paper-dark py-12 sm:mt-16 sm:py-16" aria-label="Institutional clients">
       <div className="mx-auto max-w-7xl px-4">
         <p className="wc-kicker text-brass-700">
           <T en="Institutional retainers & corporate clients" ur="ادارہ جاتی موکلین و کارپوریٹ کلائنٹس" />

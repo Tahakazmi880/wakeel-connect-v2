@@ -80,7 +80,7 @@ function ViewAllModal({ open, onClose }: { open: boolean; onClose: () => void })
           <button
             onClick={onClose}
             aria-label="Close"
-            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-ink-900/5 text-[1.2rem] font-bold text-ink-700 transition hover:bg-ink-900/10"
+            className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-ink-900/5 text-[1.2rem] font-bold text-ink-700 transition hover:bg-ink-900/10"
           >
             ×
           </button>

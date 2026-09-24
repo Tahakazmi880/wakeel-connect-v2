@@ -196,17 +196,17 @@ export default async function Home() {
           <div className="absolute inset-0 bg-gradient-to-l from-court-800 via-court-900 to-ink-950" aria-hidden />
           <div className="absolute -right-24 -top-24 h-[26rem] w-[26rem] rounded-full bg-brass-500/25 blur-3xl" aria-hidden />
           <div className="absolute -bottom-32 -left-16 h-80 w-80 rounded-full bg-court-500/20 blur-3xl" aria-hidden />
-          <div className="relative grid grid-cols-[1.05fr_.95fr] items-center gap-x-4 gap-y-6 p-5 sm:p-10 lg:grid-cols-[1.15fr_0.85fr] lg:gap-10 lg:p-14">
+          <div className="relative grid grid-cols-[1.3fr_.7fr] items-center gap-x-4 gap-y-6 p-5 sm:grid-cols-[1.05fr_.95fr] sm:p-10 lg:grid-cols-[1.15fr_0.85fr] lg:gap-10 lg:p-14">
             <div className="contents lg:col-start-1 lg:row-start-1 lg:block">
               <div>
-              <p className="inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1.5 text-[0.8rem] font-bold text-paper ring-1 ring-white/20 sm:px-4 sm:py-2 sm:text-[0.95rem]">
+              <p className="inline-flex items-center gap-2 rounded-2xl bg-white/10 px-3 py-1.5 text-[0.72rem] font-bold text-paper ring-1 ring-white/20 sm:rounded-full sm:px-4 sm:py-2 sm:text-[0.95rem]">
                 <CheckBadgeIcon className="h-5 w-5 text-brass-300" />
                 <T
                   en={`${lawyerCount} reviewed lawyer profiles`}
                   ur={`${lawyerCount} جانچی ہوئی وکیل پروفائلز`}
                 />
               </p>
-              <h1 className="mt-4 font-display text-[1.7rem] font-semibold leading-[1.12] text-white sm:mt-6 sm:text-[2.6rem] sm:leading-[1.1] lg:text-[3.4rem]">
+              <h1 className="mt-4 font-display text-[1.55rem] font-semibold leading-[1.12] text-white sm:mt-6 sm:text-[2.6rem] sm:leading-[1.1] lg:text-[3.4rem]">
                 <T
                   en={<>Find and Book the <span className="text-brass-300">Best Wakeel</span> near you</>}
                   ur={<>اپنے قریب <span className="text-brass-300">بہترین وکیل</span> تلاش کریں اور بک کریں</>}
@@ -281,7 +281,7 @@ export default async function Home() {
 
       {/* ============ SERVICES — 5 image cards, oladoc-style row ============ */}
       <section className="mx-auto max-w-7xl px-4 pt-8 sm:pt-10">
-        <div className="grid grid-cols-2 gap-4 sm:gap-5 lg:grid-cols-5">
+        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 sm:gap-5 lg:grid-cols-5">
           {SERVICES.map((s, i) => (
             <Link
               key={s.titleEn}
@@ -484,7 +484,7 @@ export default async function Home() {
             linkEn="View All"
             linkUr="سب دیکھیں"
           />
-          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
             {COURTS.map((c) => {
               const city = getCity(c.citySlug);
               return (

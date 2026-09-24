@@ -29,7 +29,7 @@ function ColHeading({ children }: { children: React.ReactNode }) {
   );
 }
 
-const LINK_CLS = "text-ink-300 transition hover:text-white";
+const LINK_CLS = "inline-flex items-center py-2 text-ink-300 transition hover:text-white";
 
 export default function Footer() {
   return (
@@ -37,7 +37,7 @@ export default function Footer() {
       <div className="mx-auto max-w-7xl px-4 pb-10 pt-14">
         <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-6">
           {/* Brand block */}
-          <div className="lg:col-span-2">
+          <div className="sm:col-span-2 lg:col-span-2">
             <div className="flex items-center gap-2.5">
               <img
                 src="/logo-mark.png"
@@ -65,7 +65,7 @@ export default function Footer() {
           {/* Top Cities */}
           <div>
             <ColHeading><T en="Top Cities" ur="بڑے شہر" /></ColHeading>
-            <ul className="space-y-3 text-[1.02rem]">
+            <ul className="space-y-0 text-[1.02rem]">
               {CITIES.slice(0, 6).map((c) => (
                 <li key={c.slug}>
                   <Link className={LINK_CLS} href={`/cities/${c.slug}`}>
@@ -79,7 +79,7 @@ export default function Footer() {
           {/* Practice Areas */}
           <div>
             <ColHeading><T en="Practice Areas" ur="قانونی شعبے" /></ColHeading>
-            <ul className="space-y-3 text-[1.02rem]">
+            <ul className="space-y-0 text-[1.02rem]">
               {PRACTICE_AREAS.slice(0, 6).map((a) => (
                 <li key={a.slug}>
                   <Link className={LINK_CLS} href={`/practice-areas/${a.slug}`}>
@@ -93,7 +93,7 @@ export default function Footer() {
           {/* Courts */}
           <div>
             <ColHeading><T en="High Courts" ur="ہائی کورٹس" /></ColHeading>
-            <ul className="space-y-3 text-[1.02rem]">
+            <ul className="space-y-0 text-[1.02rem]">
               {COURTS.map((c) => {
                 const city = getCity(c.citySlug);
                 return (
@@ -115,7 +115,7 @@ export default function Footer() {
           {/* Legal Guides + Company */}
           <div>
             <ColHeading><T en="Legal Guides" ur="قانونی رہنمائی" /></ColHeading>
-            <ul className="space-y-3 text-[1.02rem]">
+            <ul className="space-y-0 text-[1.02rem]">
               {GUIDES.map((g) => (
                 <li key={g.slug}>
                   <Link className={`${LINK_CLS} inline-flex items-center gap-2`} href={g.slug}>
@@ -125,14 +125,14 @@ export default function Footer() {
                 </li>
               ))}
               <li>
-                <Link className="font-bold text-court-300 transition hover:text-white" href="/guides">
+                <Link className="inline-block py-2 font-bold text-court-300 transition hover:text-white" href="/guides">
                   <T en="All guides →" ur="تمام گائیڈز ←" />
                 </Link>
               </li>
             </ul>
             <div className="mt-9">
               <ColHeading><T en="Company" ur="کمپنی" /></ColHeading>
-              <ul className="space-y-3 text-[1.02rem]">
+              <ul className="space-y-0 text-[1.02rem]">
                 <li>
                   <Link className={LINK_CLS} href="/lawyers">
                     <T en="Find a Lawyer" ur="وکیل تلاش کریں" />

@@ -77,7 +77,7 @@ export default function NearMeButton({
         onClick={detect}
         disabled={state === "detecting"}
         className={`inline-flex items-center gap-1.5 whitespace-nowrap font-bold text-court-800 transition hover:text-court-600 disabled:opacity-60 ${
-          small ? "min-h-[36px] px-2 text-[0.85rem]" : "min-h-[44px] px-3 text-[0.95rem]"
+          small ? "min-h-[44px] px-2 text-[0.85rem]" : "min-h-[44px] px-3 text-[0.95rem]"
         }`}
       >
         <PinIcon className={small ? "h-4 w-4" : "h-5 w-5"} />
