@@ -18,12 +18,16 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
     setLangState(initial);
     // Drives the Urdu typography rules in globals.css ([data-lang="ur"]).
     document.documentElement.dataset.lang = initial;
+    // Urdu reads right-to-left — flip the document direction so layout,
+    // chevrons, and text alignment mirror correctly.
+    document.documentElement.dir = initial === "ur" ? "rtl" : "ltr";
   }, []);
 
   const setLang = (l: Lang) => {
     setLangState(l);
     localStorage.setItem("wc-lang", l);
     document.documentElement.dataset.lang = l;
+    document.documentElement.dir = l === "ur" ? "rtl" : "ltr";
   };
 
   return <LangContext.Provider value={{ lang, setLang }}>{children}</LangContext.Provider>;

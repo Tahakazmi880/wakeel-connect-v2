@@ -199,7 +199,7 @@ export default async function Home() {
               location → full-width search; portrait absolute right ~35%,
               full card height, edge-bleed with face visible. */}
           <div className="relative md:hidden">
-            <div className="absolute bottom-0 right-0 h-[88%] w-[35%] overflow-hidden rounded-tl-[1.25rem]">
+            <div className="absolute bottom-0 right-0 h-[88%] w-[35%] overflow-hidden rounded-tl-[1.25rem] rtl:left-0 rtl:right-auto rtl:rounded-tl-none rtl:rounded-tr-[1.25rem]">
               <SafeImage
                 src={heroPortrait}
                 alt="Shamsuddin Rajper — Founder & Senior Advocate"
