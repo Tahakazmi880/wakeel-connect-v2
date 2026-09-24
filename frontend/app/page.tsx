@@ -221,13 +221,13 @@ export default async function Home() {
                 <SearchHero />
               </div>
             </div>
-            <div className="relative mx-auto hidden w-full max-w-sm lg:block">
+            <div className="relative mx-auto w-full max-w-sm">
               <SafeImage
                 src={heroPortrait}
-                alt="Experienced wakeel"
+                alt="Shamsuddin Rajper — Founder & Senior Advocate"
                 eager
-                className="aspect-[4/5] w-full rounded-[1.5rem] object-cover object-top shadow-lift ring-1 ring-white/25"
-                fallback={<div className="aspect-[4/5] w-full rounded-[1.5rem] bg-court-800 ring-1 ring-white/25" aria-hidden />}
+                className="aspect-[16/10] w-full rounded-[1.5rem] object-cover object-top shadow-lift ring-1 ring-white/25 lg:aspect-[4/5]"
+                fallback={<div className="aspect-[16/10] w-full rounded-[1.5rem] bg-court-800 ring-1 ring-white/25 lg:aspect-[4/5]" aria-hidden />}
               />
               <div className="absolute -bottom-5 left-1/2 w-max -translate-x-1/2 rounded-full bg-white px-5 py-2.5 text-[0.95rem] font-bold text-ink-900 shadow-lift">
                 <T en="3-step booking · No account needed" ur="۳ مراحل میں بکنگ · اکاؤنٹ کی ضرورت نہیں" />
