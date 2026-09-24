@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { T } from "./LanguageContext";
 import { PinIcon, SearchIcon } from "./icons";
@@ -17,6 +17,7 @@ export default function SearchHero() {
   const [city, setCity] = useState("");
   const [q, setQ] = useState("");
   const [autoCity, setAutoCity] = useState(false);
+  const citySelectRef = useRef<HTMLSelectElement>(null);
 
   // Preselect the city detected on a previous visit — no re-prompt needed.
   useEffect(() => {
@@ -26,6 +27,19 @@ export default function SearchHero() {
       setAutoCity(true);
     }
   }, []);
+
+  /** Location detection failed — open the city picker so "pick your city" is one tap away. */
+  const handleDetectError = () => {
+    const el = citySelectRef.current;
+    if (!el) return;
+    try {
+      // Opens the native dropdown where the browser allows it (Chrome/Edge/Safari).
+      (el as HTMLSelectElement & { showPicker?: () => void }).showPicker?.();
+    } catch {
+      /* user-activation-gated on some browsers — fall through to focus */
+    }
+    el.focus();
+  };
 
   const submit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -47,6 +61,7 @@ export default function SearchHero() {
         <PinIcon className="h-6 w-6 shrink-0 text-court-700" />
         <span className="sr-only"><T en="City" ur="شہر" /></span>
         <select
+          ref={citySelectRef}
           value={city}
           onChange={(e) => { setCity(e.target.value); setAutoCity(false); }}
           className="w-full cursor-pointer bg-transparent text-[1.05rem] font-semibold text-ink-900 outline-none"
@@ -62,6 +77,7 @@ export default function SearchHero() {
         <NearMeButton
           small
           onDetected={(slug) => { setCity(slug); setAutoCity(true); }}
+          onDetectError={handleDetectError}
         />
       </label>
       <label className="flex min-h-[58px] flex-[1.5] items-center gap-3 border-t border-ink-900/10 px-4 sm:border-t-0">

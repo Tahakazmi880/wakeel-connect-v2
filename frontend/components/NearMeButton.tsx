@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { T } from "./LanguageContext";
 import { PinIcon } from "./icons";
 import { detectCitySlug, rememberCitySlug, type DetectError } from "@/lib/geo";
@@ -34,15 +34,27 @@ const ERROR_TEXT: Record<DetectError, { en: string; ur: string }> = {
  */
 export default function NearMeButton({
   onDetected,
+  onDetectError,
   small,
 }: {
   onDetected: (slug: string) => void;
+  /** Called when detection fails so the parent can offer a manual fallback (e.g. open the city picker). */
+  onDetectError?: (err: DetectError) => void;
   small?: boolean;
 }) {
   const [state, setState] = useState<"idle" | "detecting" | DetectError>("idle");
+  const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(
+    () => () => {
+      if (timer.current) clearTimeout(timer.current);
+    },
+    []
+  );
 
   const detect = async () => {
     if (state === "detecting") return;
+    if (timer.current) clearTimeout(timer.current);
     setState("detecting");
     try {
       const slug = await detectCitySlug();
@@ -50,7 +62,11 @@ export default function NearMeButton({
       setState("idle");
       onDetected(slug);
     } catch (e) {
-      setState(e as DetectError);
+      const err = e as DetectError;
+      setState(err);
+      onDetectError?.(err);
+      // Transient notice only — never leave a stuck red error sitting in the hero.
+      timer.current = setTimeout(() => setState("idle"), 4500);
     }
   };
 
