@@ -185,7 +185,7 @@ function RowHead({ title, href, linkEn, linkUr }: { title: React.ReactNode; href
 export default async function Home() {
   const { lawyers: featured, total: lawyerCount } = await fetchFeatured();
   const onlineCount = await fetchOnlineCount();
-  const heroPortrait = fileUrl("/lawyers/shamsuddin-rajper.jpg");
+  const heroPortrait = "/hero-portrait.png";
 
   return (
     <>
