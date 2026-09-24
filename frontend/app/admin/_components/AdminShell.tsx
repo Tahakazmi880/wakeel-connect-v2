@@ -207,8 +207,8 @@ export default function AdminShell({ children }: { children: ReactNode }) {
               </h1>
               <p className="mt-2 text-lg text-ink-600">
                 <T
-                  en="This portal is restricted to wakeel.connect administrators. Log in with an admin account to continue."
-                  ur="یہ پورٹل صرف wakeel.connect ایڈمنز کے لیے ہے۔ جاری رکھنے کے لیے ایڈمن اکاؤنٹ سے لاگ اِن کریں۔"
+                  en="This portal is restricted to WakeelConnect administrators. Log in with an admin account to continue."
+                  ur="یہ پورٹل صرف WakeelConnect ایڈمنز کے لیے ہے۔ جاری رکھنے کے لیے ایڈمن اکاؤنٹ سے لاگ اِن کریں۔"
                 />
               </p>
               <div className="mt-6 flex flex-wrap justify-center gap-3">

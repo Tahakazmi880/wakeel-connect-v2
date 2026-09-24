@@ -81,8 +81,8 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const fee = formatFee(l.consultationFeePaisa);
   const exp = formatExperience(l.yearsExperience);
   return {
-    title: `${l.displayName} — ${l.headline ?? "Lawyer"} | wakeel.connect`,
-    description: `Book ${l.displayName}${exp ? `, ${exp} experience` : ""}, ${l.city.nameEn}.${fee ? ` Fee ${fee}.` : ""} Lawyer profile on wakeel.connect.`,
+    title: `${l.displayName} — ${l.headline ?? "Lawyer"} | WakeelConnect`,
+    description: `Book ${l.displayName}${exp ? `, ${exp} experience` : ""}, ${l.city.nameEn}.${fee ? ` Fee ${fee}.` : ""} Lawyer profile on WakeelConnect.`,
   };
 }
 
@@ -156,7 +156,7 @@ export default async function LawyerProfile({ params }: { params: Promise<{ slug
     <div className="mx-auto max-w-7xl px-4 py-8">
       {/* Breadcrumb */}
       <nav className="mb-6 text-[0.98rem] font-medium text-ink-500" aria-label="Breadcrumb">
-        <Link href="/" className="transition hover:text-court-700">wakeel.connect</Link>
+        <Link href="/" className="transition hover:text-court-700">WakeelConnect</Link>
         <span className="mx-2 text-ink-300">/</span>
         <Link href="/lawyers" className="transition hover:text-court-700"><T en="Lawyers" ur="وکیل" /></Link>
         <span className="mx-2 text-ink-300">/</span>

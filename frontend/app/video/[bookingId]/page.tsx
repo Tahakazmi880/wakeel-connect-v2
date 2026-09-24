@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import VideoRoom from "@/components/VideoRoom";
 
 export const metadata: Metadata = {
-  title: "Online Consultation — wakeel.connect",
+  title: "Online Consultation — WakeelConnect",
   description: "Your online consultation details — the lawyer will phone you at the booked time.",
 };
 

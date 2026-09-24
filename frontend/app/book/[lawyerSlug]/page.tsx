@@ -4,7 +4,7 @@ import BookingFlow from "@/components/BookingFlow";
 import { ProfileSkeleton } from "@/components/Skeletons";
 
 export const metadata: Metadata = {
-  title: "Book a Lawyer — wakeel.connect",
+  title: "Book a Lawyer — WakeelConnect",
   description: "Book a verified lawyer in 3 easy steps: pick a time, enter your phone number, done.",
 };
 

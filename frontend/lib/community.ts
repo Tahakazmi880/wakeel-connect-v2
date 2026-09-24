@@ -89,7 +89,7 @@ const SEED_QUESTIONS: ForumQuestion[] = [
     answers: [
       {
         id: "seed-a1",
-        authorName: "wakeel.connect Legal Team",
+        authorName: "WakeelConnect Legal Team",
         text: "Custody ka faisla hamesha bachon ki welfare (bhalai) ko dekh kar hota hai — umar, dekh-bhaal ka intezam aur mustaqbil. Chhote bachon ki custody aam tor pe maan ko milti hai, jabke baap ko milne (visitation) ka schedule adaalat muqarrar karti hai. Har case ke halaat mukhtalif hote hain, is liye family lawyer se apne case ki tafseel pe mashwara zaroor lein.",
         createdAt: Date.now() - 5 * 86400000,
         isSeed: true,
@@ -107,7 +107,7 @@ const SEED_QUESTIONS: ForumQuestion[] = [
     answers: [
       {
         id: "seed-a2",
-        authorName: "wakeel.connect Legal Team",
+        authorName: "WakeelConnect Legal Team",
         text: "Registry aap ke naam pe hai to aap mazboot position mein hain. Aam rasta: possession ka daawa (suit for possession) ke saath stay order ki darkhwast, taake qabza karne wala tameer na barha sake. Sath hi police mein qabze ki complaint bhi darj karwayein. Kagzat (registry, mutation, tax receipts) sambhal ke rakhein aur property lawyer se foran rabta karein — der se nuksan hota hai.",
         createdAt: Date.now() - 4 * 86400000 + 3600000,
         isSeed: true,
@@ -125,7 +125,7 @@ const SEED_QUESTIONS: ForumQuestion[] = [
     answers: [
       {
         id: "seed-a3",
-        authorName: "wakeel.connect Legal Team",
+        authorName: "WakeelConnect Legal Team",
         text: "Ji haan — agar FIR se hi koi jurm banta nazar na aaye ya dafa ka itlaq ghalat ho to High Court CrPC ki dafa 561-A ke tehat FIR quash kar sakti hai. Lekin adaalat aam tor pe tafteesh mukammal hone ka intezar karti hai. Criminal lawyer FIR, challan aur gawahon ke bayanaat dekh kar behtar bata sakta hai.",
         createdAt: Date.now() - 2 * 86400000,
         isSeed: true,

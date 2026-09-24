@@ -8,7 +8,7 @@ import { PracticeAreaIcon, LegalIssueIcon, LEGAL_ISSUES } from "./PracticeAreaIc
 /**
  * oladoc-style specialty browse: "Find best wakeels online" 4-column circle
  * grid on mobile with a View All link, and a "Search lawyer by legal issue"
- * circle row. All artwork is original wakeel.connect SVG.
+ * circle row. All artwork is original WakeelConnect SVG.
  */
 
 function CircleItem({

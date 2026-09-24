@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import AdminShell from "./_components/AdminShell";
 
 export const metadata: Metadata = {
-  title: "Admin Portal | wakeel.connect",
-  description: "wakeel.connect administration — applications, leads, bookings, moderation.",
+  title: "Admin Portal | WakeelConnect",
+  description: "WakeelConnect administration — applications, leads, bookings, moderation.",
   robots: { index: false, follow: false },
 };
 

@@ -3,7 +3,7 @@ import QuestionsClient from "@/components/QuestionsClient";
 import { listQuestions, type ForumQuestion } from "@/lib/api";
 
 export const metadata: Metadata = {
-  title: "Ask a Legal Question — wakeel.connect",
+  title: "Ask a Legal Question — WakeelConnect",
   description:
     "Ask your legal question for free — lawyers and the community answer. Family, criminal, property, corporate law and more.",
 };

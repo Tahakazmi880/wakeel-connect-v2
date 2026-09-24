@@ -16,7 +16,7 @@ export async function generateMetadata({ params }: { params: Promise<{ city: str
   const c = getCity(city);
   if (!c) return {};
   return {
-    title: `Lawyers in ${c.nameEn} — wakeel.connect`,
+    title: `Lawyers in ${c.nameEn} — WakeelConnect`,
     description: `Find the best lawyers in ${c.nameEn} by practice area or court. Book an online consultation or chamber visit in 3 easy steps.`,
   };
 }

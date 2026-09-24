@@ -3,7 +3,7 @@ import { T } from "@/components/LanguageContext";
 import CallbackForm from "@/components/CallbackForm";
 
 export const metadata = {
-  title: "Request a Callback — wakeel.connect",
+  title: "Request a Callback — WakeelConnect",
   description:
     "Tell us about your legal matter and our team will call you back within 24 hours.",
 };

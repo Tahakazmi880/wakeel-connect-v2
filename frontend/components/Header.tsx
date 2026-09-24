@@ -1,5 +1,5 @@
 /**
- * wakeel.connect global header — oladoc-depth nested navigation,
+ * WakeelConnect global header — oladoc-depth nested navigation,
  * adapted to a legal marketplace (navy/brass theme).
  *
  * Desktop (lg+): logo · Practice Areas ▾ · Courts ▾ · Cities ▾ ·
@@ -51,10 +51,10 @@ export function ChevronIcon({ className }: { className?: string }) {
 
 export function Logo({ compact = false }: { compact?: boolean }) {
   return (
-    <Link href="/" className={`flex shrink-0 items-center ${compact ? "gap-2" : "gap-2.5"}`} aria-label="wakeel.connect home">
+    <Link href="/" className={`flex shrink-0 items-center ${compact ? "gap-2" : "gap-2.5"}`} aria-label="WakeelConnect home">
       <img
         src="/logo-mark.png"
-        alt="wakeel.connect logo"
+        alt="WakeelConnect logo"
         width={compact ? 32 : 40}
         height={compact ? 32 : 40}
         className={`${compact ? "h-8 w-8" : "h-10 w-10"} rounded-lg object-cover`}
@@ -64,7 +64,7 @@ export function Logo({ compact = false }: { compact?: boolean }) {
           compact ? "text-[1.05rem]" : "text-[1.45rem]"
         }`}
       >
-        wakeel<span className="text-brass-600">.connect</span>
+        Wakeel<span className="text-brass-600">Connect</span>
       </span>
     </Link>
   );

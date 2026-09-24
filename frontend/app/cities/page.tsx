@@ -7,7 +7,7 @@ import { CITIES } from "@/lib/data";
 import { API_V1 } from "@/lib/api";
 
 export const metadata: Metadata = {
-  title: "Lawyers by City — wakeel.connect",
+  title: "Lawyers by City — WakeelConnect",
   description: "Find verified lawyers in Karachi, Lahore, Islamabad, Rawalpindi and more cities across Pakistan.",
 };
 

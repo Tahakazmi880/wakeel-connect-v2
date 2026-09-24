@@ -4,9 +4,9 @@ import { SecondaryBtn } from "@/components/ui";
 import { OfficeIcon, PhoneIcon, DocIcon, ChatIcon } from "@/components/icons";
 
 export const metadata = {
-  title: "Contact Us — wakeel.connect",
+  title: "Contact Us — WakeelConnect",
   description:
-    "Visit the wakeel.connect office in DHA Phase 2, Karachi, or reach us through a callback request.",
+    "Visit the WakeelConnect office in DHA Phase 2, Karachi, or reach us through a callback request.",
 };
 
 const ADDRESS_QUERY = encodeURIComponent(
@@ -90,7 +90,7 @@ export default function ContactPage() {
               className="flex items-center gap-3 rounded-xl p-2 text-[1.05rem] font-semibold text-ink-800 transition hover:bg-ink-900/5"
             >
               <DocIcon className="h-6 w-6 shrink-0 text-court-700" />
-              <T en="Are you a lawyer? Join wakeel.connect" ur="کیا آپ وکیل ہیں؟ wakeel.connect جوائن کریں" />
+              <T en="Are you a lawyer? Join WakeelConnect" ur="کیا آپ وکیل ہیں؟ WakeelConnect جوائن کریں" />
             </Link>
           </div>
         </div>
@@ -98,7 +98,7 @@ export default function ContactPage() {
         {/* Map */}
         <div className="overflow-hidden rounded-2xl border border-ink-900/10 bg-white shadow-sm">
           <iframe
-            title="wakeel.connect office map — Building 28C, Old Sunset Boulevard, Phase 2, DHA, Karachi"
+            title="WakeelConnect office map — Building 28C, Old Sunset Boulevard, Phase 2, DHA, Karachi"
             src={`https://maps.google.com/maps?q=${ADDRESS_QUERY}&z=16&output=embed`}
             className="h-[320px] w-full border-0 sm:h-[420px] lg:h-full lg:min-h-[520px]"
             loading="lazy"

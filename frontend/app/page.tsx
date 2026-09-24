@@ -437,8 +437,8 @@ export default async function Home() {
               </h2>
               <p className="mt-3 text-[1.05rem] leading-relaxed text-court-100">
                 <T
-                  en="Talk to us about partnering with wakeel.connect — a trusted legal resource for your team and clients."
-                  ur="اپنی ٹیم اور کلائنٹس کے لیے قابلِ اعتماد قانونی وسیلہ — wakeel.connect کے ساتھ شراکت کے بارے میں ہم سے بات کریں۔"
+                  en="Talk to us about partnering with WakeelConnect — a trusted legal resource for your team and clients."
+                  ur="اپنی ٹیم اور کلائنٹس کے لیے قابلِ اعتماد قانونی وسیلہ — WakeelConnect کے ساتھ شراکت کے بارے میں ہم سے بات کریں۔"
                 />
               </p>
             </div>
@@ -499,11 +499,11 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* ============ WHY WAKEEL.CONNECT ============ */}
+      {/* ============ WHY WAKEELCONNECT ============ */}
       <section className="mx-auto max-w-7xl px-4 py-14 sm:py-20">
         <div className="mb-8 text-center">
           <h2 className="font-display text-[1.7rem] font-semibold text-ink-950 sm:text-[2rem]">
-            <T en="Why wakeel.connect?" ur="wakeel.connect کیوں؟" />
+            <T en="Why WakeelConnect?" ur="WakeelConnect کیوں؟" />
           </h2>
           <p className="mt-2 text-[1.05rem] text-ink-600">
             <T en="Built for Pakistan — simple, honest, and in your language." ur="پاکستان کے لیے بنا — آسان، ایماندار، اور آپ کی زبان میں۔" />
@@ -691,8 +691,8 @@ export default async function Home() {
           </h2>
           <p className="mx-auto mt-4 max-w-xl text-[1.08rem] leading-relaxed text-court-100">
             <T
-              en="Join wakeel.connect — our team reviews every profile before it goes public."
-              ur="wakeel.connect سے جڑیں — ہماری ٹیم ہر پروفائل کا عوامی ہونے سے پہلے جائزہ لیتی ہے۔"
+              en="Join WakeelConnect — our team reviews every profile before it goes public."
+              ur="WakeelConnect سے جڑیں — ہماری ٹیم ہر پروفائل کا عوامی ہونے سے پہلے جائزہ لیتی ہے۔"
             />
           </p>
           <div className="mt-9">

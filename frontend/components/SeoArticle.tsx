@@ -55,8 +55,8 @@ export default function SeoArticle({
           <p className="mt-2">
             {range ? (
               <T
-                en={`On wakeel.connect, ${area.nameEn.toLowerCase()} lawyers in ${place} currently list consultation fees of ${range}. Every profile shows its fee upfront — you pay the lawyer directly, never more than listed.`}
-                ur={`wakeel.connect پر ${place} میں ${area.nameUr} کے وکیل اس وقت ${range} مشاورت فیس درج کر رہے ہیں۔ ہر پروفائل پر فیس پہلے سے واضح ہوتی ہے — آپ فیس براہ راست وکیل کو ادا کرتے ہیں۔`}
+                en={`On WakeelConnect, ${area.nameEn.toLowerCase()} lawyers in ${place} currently list consultation fees of ${range}. Every profile shows its fee upfront — you pay the lawyer directly, never more than listed.`}
+                ur={`WakeelConnect پر ${place} میں ${area.nameUr} کے وکیل اس وقت ${range} مشاورت فیس درج کر رہے ہیں۔ ہر پروفائل پر فیس پہلے سے واضح ہوتی ہے — آپ فیس براہ راست وکیل کو ادا کرتے ہیں۔`}
               />
             ) : (
               <T

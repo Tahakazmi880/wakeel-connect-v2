@@ -11,7 +11,7 @@ import { API_V1, type LawyerSummary } from "@/lib/api";
 import { PRACTICE_AREAS, getCity, getCourt } from "@/lib/data";
 
 export const metadata: Metadata = {
-  title: "Find a Lawyer — wakeel.connect",
+  title: "Find a Lawyer — WakeelConnect",
   description: "Browse lawyers in Pakistan. Filter by city, legal problem or name, compare fees and experience, then book in 3 easy steps.",
 };
 

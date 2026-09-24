@@ -1,5 +1,5 @@
 /**
- * wakeel.connect API client.
+ * WakeelConnect API client.
  *
  * - Base URL from NEXT_PUBLIC_API_URL (default http://localhost:4000), all
  *   calls go to <base>/api/v1.

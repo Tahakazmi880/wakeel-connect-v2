@@ -307,7 +307,7 @@ export default function JoinForm() {
   return (
     <div className="mx-auto max-w-3xl px-4 py-10">
       <h1 className="text-center font-display text-[2.1rem] font-semibold text-ink-950 sm:text-4xl">
-        <T en="Join wakeel.connect as a lawyer" ur="وکیل کے طور پر wakeel.connect سے جڑیں" />
+        <T en="Join WakeelConnect as a lawyer" ur="وکیل کے طور پر WakeelConnect سے جڑیں" />
       </h1>
       <p className="mx-auto mt-2 max-w-xl text-center text-lg text-ink-600">
         <T en="Free to join. Verified lawyers get real client bookings." ur="شمولیت مفت۔ تصدیق شدہ وکیلوں کو حقیقی کلائنٹ ملتے ہیں۔" />

@@ -1,5 +1,5 @@
 // ============================================================
-// wakeel.connect — /guides data (legal information articles)
+// WakeelConnect — /guides data (legal information articles)
 // All articles are ORIGINAL, general legal information about
 // Pakistan, written for this site. They are not legal advice.
 // relatedAreaSlugs must be valid slugs from PRACTICE_AREAS.

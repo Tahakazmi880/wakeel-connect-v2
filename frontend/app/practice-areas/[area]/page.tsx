@@ -29,7 +29,7 @@ export async function generateMetadata({ params }: { params: Promise<{ area: str
   const a = getPracticeArea(area);
   if (!a) return {};
   return {
-    title: `${a.nameEn} Lawyers in Pakistan — wakeel.connect`,
+    title: `${a.nameEn} Lawyers in Pakistan — WakeelConnect`,
     description: `${a.description} Compare ${a.nameEn.toLowerCase()} lawyers across Pakistan and book in 3 easy steps.`,
   };
 }

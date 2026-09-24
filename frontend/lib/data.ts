@@ -1,5 +1,5 @@
 // ============================================================
-// wakeel.connect — frontend mock data (Phase 1: UI first)
+// WakeelConnect — frontend mock data (Phase 1: UI first)
 // Typed to mirror backend/prisma/schema.prisma. Every lawyer
 // here is flagged isDemo: true and carries "(Demo)" in the
 // display name — this data must NEVER be presented as real

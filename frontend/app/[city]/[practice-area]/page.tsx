@@ -68,8 +68,8 @@ export async function generateMetadata({ params }: { params: Promise<{ city: str
   const a = getPracticeArea(area);
   if (!c || !a) return {};
   return {
-    title: `${a.nameEn} Lawyers in ${c.nameEn} — wakeel.connect`,
-    description: `Compare ${a.nameEn.toLowerCase()} lawyers in ${c.nameEn}. Fees in PKR, client reviews, 3-step booking on wakeel.connect.`,
+    title: `${a.nameEn} Lawyers in ${c.nameEn} — WakeelConnect`,
+    description: `Compare ${a.nameEn.toLowerCase()} lawyers in ${c.nameEn}. Fees in PKR, client reviews, 3-step booking on WakeelConnect.`,
   };
 }
 
@@ -94,7 +94,7 @@ export default async function CityAreaPage({ params }: { params: Promise<{ city:
   return (
     <div className="mx-auto max-w-7xl px-4 py-10">
       <nav className="mb-6 text-base text-ink-500" aria-label="Breadcrumb">
-        <Link href="/" className="hover:text-court-700">wakeel.connect</Link>
+        <Link href="/" className="hover:text-court-700">WakeelConnect</Link>
         {" / "}
         <Link href={`/cities/${c.slug}`} className="hover:text-court-700"><T en={c.nameEn} ur={c.nameUr} /></Link>
         {" / "}

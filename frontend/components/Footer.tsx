@@ -41,13 +41,13 @@ export default function Footer() {
             <div className="flex items-center gap-2.5">
               <img
                 src="/logo-mark.png"
-                alt="wakeel.connect logo"
+                alt="WakeelConnect logo"
                 width={40}
                 height={40}
                 className="h-10 w-10 rounded-lg bg-white object-cover p-0.5"
               />
               <span className="font-display text-[1.45rem] font-semibold tracking-tight text-white">
-                wakeel<span className="text-brass-400">.connect</span>
+                Wakeel<span className="text-brass-400">Connect</span>
               </span>
             </div>
             <p className="mt-5 max-w-sm text-[1.02rem] leading-relaxed">
@@ -183,7 +183,7 @@ export default function Footer() {
 
         {/* Bottom bar: © — helpline number goes here once the real one is provided */}
         <div className="mt-12 flex flex-col items-center justify-between gap-3 border-t border-white/10 pt-6 text-[0.95rem] text-ink-400 sm:flex-row">
-          <p>© 2026 wakeel.connect — <T en="All rights reserved." ur="جملہ حقوق محفوظ ہیں۔" /></p>
+          <p>© 2026 WakeelConnect — <T en="All rights reserved." ur="جملہ حقوق محفوظ ہیں۔" /></p>
           <p className="font-display italic text-ink-300">
             <T en="Insaaf, within everyone's reach." ur="انصاف، سب کی پہنچ میں۔" />
           </p>

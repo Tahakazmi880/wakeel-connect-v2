@@ -1,5 +1,5 @@
 /**
- * Original illustrated practice-area / legal-issue icons for wakeel.connect.
+ * Original illustrated practice-area / legal-issue icons for WakeelConnect.
  * Flat-illustration style (light circle backdrop + simple shapes) drawn from
  * scratch — no third-party or oladoc artwork. Each icon is self-contained SVG.
  */

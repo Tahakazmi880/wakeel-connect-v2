@@ -4,7 +4,7 @@ import { PrimaryBtn, SecondaryBtn } from "@/components/ui";
 import { BriefcaseIcon, CalendarIcon, UserIcon } from "@/components/icons";
 
 export const metadata: Metadata = {
-  title: "Lawyer Dashboard — wakeel.connect",
+  title: "Lawyer Dashboard — WakeelConnect",
   description: "Lawyer portal: profile and booking management.",
 };
 

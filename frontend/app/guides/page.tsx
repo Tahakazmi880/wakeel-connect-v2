@@ -3,7 +3,7 @@ import { Suspense } from "react";
 import GuidesList from "./GuidesList";
 
 export const metadata: Metadata = {
-  title: "Legal Guides — wakeel.connect",
+  title: "Legal Guides — WakeelConnect",
   description:
     "Simple, plain-language legal guides for Pakistan — khula, FIR, property transfer, tenant rights, bail, custody and more.",
 };

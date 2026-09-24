@@ -17,7 +17,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const g = getGuide(slug);
   if (!g) return {};
   return {
-    title: `${g.titleEn} — wakeel.connect`,
+    title: `${g.titleEn} — WakeelConnect`,
     description: g.excerptEn,
   };
 }
@@ -47,7 +47,7 @@ export default async function GuidePage({ params }: { params: Promise<{ slug: st
       {/* Breadcrumb */}
       <nav aria-label="Breadcrumb" className="mb-6 flex flex-wrap items-center gap-2 text-base text-ink-500">
         <Link href="/" className="font-semibold text-court-700 hover:underline">
-          wakeel.connect
+          WakeelConnect
         </Link>
         <span aria-hidden>/</span>
         <Link href="/guides" className="font-semibold text-court-700 hover:underline">

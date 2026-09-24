@@ -7,7 +7,7 @@ import { PRACTICE_AREAS } from "@/lib/data";
 import { API_V1 } from "@/lib/api";
 
 export const metadata: Metadata = {
-  title: "Practice Areas — wakeel.connect",
+  title: "Practice Areas — WakeelConnect",
   description: "Family, criminal, property, corporate, tax, immigration and more — find a verified lawyer for your legal problem.",
 };
 

@@ -3,7 +3,7 @@ import QuestionDetailClient from "@/components/QuestionDetailClient";
 import { getQuestion } from "@/lib/api";
 
 export const metadata: Metadata = {
-  title: "Legal Question — wakeel.connect",
+  title: "Legal Question — WakeelConnect",
   description: "Read answers to a legal question from lawyers and the community.",
 };
 
