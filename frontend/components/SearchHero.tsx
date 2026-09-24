@@ -34,10 +34,11 @@ export default function SearchHero({ compact = false }: { compact?: boolean }) {
     }
   }, []);
 
-  /** Location detection failed — open the city picker so "pick your city" is one tap away. */
+  /** Location detection failed — open the city picker so "pick your city" is one tap away. No error text: the open picker is the message. */
   const handleDetectError = () => {
     const el = citySelectRef.current;
     if (!el) return;
+    el.scrollIntoView({ behavior: "smooth", block: "nearest" });
     try {
       // Opens the native dropdown where the browser allows it (Chrome/Edge/Safari).
       (el as HTMLSelectElement & { showPicker?: () => void }).showPicker?.();
