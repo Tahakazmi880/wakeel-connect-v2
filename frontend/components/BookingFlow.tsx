@@ -397,7 +397,12 @@ export default function BookingFlow({ lawyerSlug }: { lawyerSlug: string }) {
     else setStep(2);
   };
 
-  const fee = formatFee(mode === "ONLINE_VIDEO" ? lawyer.onlineFeePaisa : lawyer.consultationFeePaisa);
+  // Fee for the selected mode. Falls back to the general consultation fee when
+  // the mode-specific fee isn't specified — avoids showing "Fee on request"
+  // on the booking page for a lawyer whose confirmed fee is known.
+  const modeFeePaisa =
+    mode === "ONLINE_VIDEO" ? lawyer.onlineFeePaisa || lawyer.consultationFeePaisa : lawyer.consultationFeePaisa;
+  const fee = formatFee(modeFeePaisa);
   const modeInfo = MODES.find((m) => m.id === mode)!;
   const pickedDay = pick ? days.find((d) => d.date === pick.date) : undefined;
 
