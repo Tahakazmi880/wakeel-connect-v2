@@ -168,7 +168,7 @@ export default function Footer() {
           <h3 className="mb-5 text-[0.8rem] font-bold uppercase tracking-[0.16em] text-ink-400">
             <T en="Find lawyers by city & practice area" ur="شہر اور شعبے کے حساب سے وکیل تلاش کریں" />
           </h3>
-          <ul className="grid gap-x-6 gap-y-2.5 text-[0.95rem] sm:grid-cols-2 lg:grid-cols-4">
+          <ul className="grid grid-cols-2 gap-x-4 gap-y-2.5 text-[0.85rem] sm:gap-x-6 sm:text-[0.95rem] lg:grid-cols-4">
             {CITIES.slice(0, 6).flatMap((c) =>
               PRACTICE_AREAS.slice(0, 6).map((a) => (
                 <li key={`${c.slug}-${a.slug}`}>

@@ -169,7 +169,7 @@ const GUIDES = [
 function RowHead({ title, href, linkEn, linkUr }: { title: React.ReactNode; href: string; linkEn: string; linkUr: string }) {
   return (
     <div className="mb-7 flex items-end justify-between gap-4">
-      <h2 className="font-display text-[1.7rem] font-semibold leading-tight text-ink-950 sm:text-[2rem]">
+      <h2 className="font-display text-[1.4rem] font-semibold leading-snug text-ink-950 sm:text-[1.7rem] sm:leading-tight">
         {title}
       </h2>
       <Link

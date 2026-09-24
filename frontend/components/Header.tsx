@@ -175,7 +175,7 @@ export default function Header() {
         scrolled ? "shadow-[0_2px_16px_rgba(16,28,58,0.10)]" : ""
       }`}
     >
-      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-2 px-4">
+      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-1 px-3 sm:gap-2 sm:px-4">
         <span className="shrink-0 sm:hidden">
           <Logo compact />
         </span>
@@ -349,7 +349,7 @@ export default function Header() {
           </div>
         </nav>
 
-        <div className="flex shrink-0 items-center gap-1.5">
+        <div className="flex shrink-0 items-center gap-1 sm:gap-1.5">
           <div className="hidden xl:block">
             <HeaderSearch />
           </div>
