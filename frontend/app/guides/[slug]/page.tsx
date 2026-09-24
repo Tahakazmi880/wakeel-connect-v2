@@ -100,7 +100,7 @@ export default async function GuidePage({ params }: { params: Promise<{ slug: st
             ur="یہ وکیل اس مضمون جیسے معاملات دیکھتے ہیں۔"
           />
         </p>
-        <div className="mx-auto mt-6 max-w-4xl space-y-5">
+        <div className="mx-auto mt-6 max-w-4xl border-b border-ink-900/10 sm:space-y-5 sm:border-b-0">
           {related.map((l) => (
             <LawyerCard key={l.slug} lawyer={l} />
           ))}

@@ -369,7 +369,7 @@ export default async function Home() {
             linkEn="View All"
             linkUr="سب دیکھیں"
           />
-          <div className="mx-auto max-w-4xl space-y-5">
+          <div className="mx-auto max-w-4xl border-b border-ink-900/10 sm:space-y-5 sm:border-b-0">
             {featured.map((l) => (
               <LawyerCard key={l.slug} lawyer={l} />
             ))}

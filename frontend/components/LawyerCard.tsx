@@ -27,7 +27,7 @@ export default function LawyerCard({ lawyer }: { lawyer: LawyerCardData }) {
   const hasChamber = lawyer.chambers.length > 0;
 
   return (
-    <article className="flex flex-col gap-5 rounded-2xl border border-ink-900/10 bg-white p-5 shadow-card transition hover:shadow-lift sm:flex-row sm:gap-6">
+    <article className="flex flex-col gap-5 -mx-4 rounded-none border-t border-ink-900/10 bg-white p-5 transition sm:mx-0 sm:flex-row sm:gap-6 sm:rounded-2xl sm:border sm:shadow-card sm:hover:shadow-lift">
       {/* Photo + details — compact avatar on phones, full size on sm+ */}
       <div className="flex min-w-0 flex-1 items-start gap-3 sm:gap-4">
         <Link href={`/lawyer/${lawyer.slug}`} aria-label={lawyer.displayName} className="shrink-0">

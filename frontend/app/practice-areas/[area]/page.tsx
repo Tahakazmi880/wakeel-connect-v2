@@ -74,7 +74,7 @@ export default async function AreaPage({ params }: { params: Promise<{ area: str
           <T en="No lawyers listed in this practice area yet — check back soon." ur="اس شعبے میں ابھی کوئی وکیل درج نہیں — جلد دوبارہ دیکھیں۔" />
         </p>
       ) : (
-        <div className="mt-8 grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+        <div className="mt-8 grid border-b border-ink-900/10 sm:gap-6 sm:border-b-0 md:grid-cols-2 xl:grid-cols-3">
           {lawyers.map((l) => <LawyerCard key={l.slug} lawyer={l} />)}
         </div>
       )}

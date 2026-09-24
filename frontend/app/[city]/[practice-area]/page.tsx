@@ -136,7 +136,7 @@ export default async function CityAreaPage({ params }: { params: Promise<{ city:
       </div>
 
       {lawyers.length > 0 ? (
-        <div className="mx-auto mt-8 max-w-4xl space-y-5">
+        <div className="mx-auto mt-8 max-w-4xl border-b border-ink-900/10 sm:space-y-5 sm:border-b-0">
           {lawyers.map((l) => <LawyerCard key={l.slug} lawyer={l} />)}
         </div>
       ) : (
