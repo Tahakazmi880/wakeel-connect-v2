@@ -4,8 +4,9 @@ import Link from "next/link";
 import { T } from "@/components/LanguageContext";
 import { FilterSearchPanel } from "@/components/FilterBar";
 import FilterChips from "@/components/FilterChips";
-import LawyerCard from "@/components/LawyerCard";
-import { ArrowIcon, SearchIcon } from "@/components/icons";
+import DirectoryResults from "@/components/DirectoryResults";
+import { RefineForm } from "@/components/DirectoryFilters";
+import { ArrowIcon } from "@/components/icons";
 import { API_V1, type LawyerSummary } from "@/lib/api";
 import { PRACTICE_AREAS, getCity, getCourt } from "@/lib/data";
 
@@ -47,19 +48,20 @@ function withPage(sp: Record<string, string | string[] | undefined>, page: numbe
 }
 
 /**
- * Dynamic H1 (oladoc pattern) — the heading and result count reflect the
- * active filters, e.g. "23 lawyers", "4 female lawyers in Lahore".
+ * Dynamic H1 — the heading reflects the active filters, e.g.
+ * "Lawyers", "Female lawyers in Lahore — Family Law". The live result
+ * count is rendered by <DirectoryResults /> (it also reflects the
+ * client-side refinements like fee/experience/language/rating).
  */
-function DirectoryHeading({ total, sp }: { total: number; sp: Record<string, string | string[] | undefined> }) {
+function DirectoryHeading({ sp }: { sp: Record<string, string | string[] | undefined> }) {
   const female = pick(sp.gender) === "female";
   const city = pick(sp.city) ? getCity(pick(sp.city)!) : undefined;
   const area = pick(sp.area) ? PRACTICE_AREAS.find((a) => a.slug === pick(sp.area)) : undefined;
   const q = pick(sp.q)?.trim();
   const court = pick(sp.court) ? getCourt(pick(sp.court)!) : undefined;
 
-  const nounEn = `${female ? "female " : ""}${total === 1 ? "lawyer" : "lawyers"}`;
-  const en = `${total} ${nounEn}${city ? ` in ${city.nameEn}` : ""}${area ? ` — ${area.nameEn}` : ""}${court ? ` — ${court.nameEn}` : ""}${q ? ` for "${q}"` : ""}`;
-  const ur = `${city ? `${city.nameUr} میں ` : ""}${total} ${female ? "خاتون " : ""}وکیل${area ? ` — ${area.nameUr}` : ""}${court ? ` — ${court.nameUr}` : ""}${q ? ` — "${q}"` : ""}`;
+  const en = `${female ? "Female lawyers" : "Lawyers"}${city ? ` in ${city.nameEn}` : ""}${area ? ` — ${area.nameEn}` : ""}${court ? ` — ${court.nameEn}` : ""}${q ? ` for "${q}"` : ""}`;
+  const ur = `${city ? `${city.nameUr} میں ` : ""}${female ? "خاتون " : ""}وکیل${area ? ` — ${area.nameUr}` : ""}${court ? ` — ${court.nameUr}` : ""}${q ? ` — "${q}"` : ""}`;
 
   return (
     <h1 className="font-display text-[2rem] font-semibold text-ink-950 sm:text-4xl">
@@ -94,6 +96,18 @@ export default async function LawyersPage({ searchParams }: Props) {
   const { total, lawyers } = await fetchLawyers(q.toString());
   const totalPages = Math.max(1, Math.ceil(total / LIMIT));
 
+  // Client-side refinements (fee/experience/language/rating) come from the
+  // URL too; pagination links would be misleading while they're active, so
+  // pagination only renders when they're off. (Moot today: 21 profiles fit
+  // on one page.)
+  const clientFiltersActive = !!(
+    pick(sp.feeMin) ||
+    pick(sp.feeMax) ||
+    pick(sp.exp) ||
+    pick(sp.lang) ||
+    pick(sp.minRating)
+  );
+
   return (
     <div className="mx-auto max-w-7xl px-4 py-10">
       <nav aria-label="Breadcrumb" className="text-[0.95rem] font-semibold text-ink-500">
@@ -106,14 +120,12 @@ export default async function LawyersPage({ searchParams }: Props) {
         </span>
       </nav>
 
-      {/* Dynamic heading: the count announces through aria-live so filter
-          changes never shift the layout or leave the count stale. */}
       <div className="mt-3 min-h-[4.5rem] sm:min-h-[5rem]" aria-live="polite">
-        <DirectoryHeading total={total} sp={sp} />
+        <DirectoryHeading sp={sp} />
         <span aria-hidden className="mt-4 block h-[3px] w-12 bg-brass-500" />
       </div>
 
-      {/* Search panel scrolls away; chips stick under the header (oladoc pattern). */}
+      {/* Search panel scrolls away; chips stick under the header. */}
       <div className="mt-6">
         <Suspense fallback={null}>
           <FilterSearchPanel />
@@ -125,25 +137,27 @@ export default async function LawyersPage({ searchParams }: Props) {
         </Suspense>
       </div>
 
-      {lawyers.length === 0 ? (
-        <div className="mx-auto mt-10 max-w-2xl rounded-lg border border-dashed border-ink-900/20 bg-white p-12 text-center">
-          <SearchIcon className="mx-auto h-12 w-12 text-ink-300" />
-          <p className="mt-4 font-display text-[1.5rem] font-semibold text-ink-950">
-            <T en="No lawyers match your filters" ur="آپ کے فلٹر سے کوئی وکیل نہیں ملا" />
-          </p>
-          <p className="mt-2 text-[1.02rem] text-ink-600">
-            <T en="Try removing a filter or two." ur="کوئی فلٹر ہٹا کر دوبارہ کوشش کریں۔" />
-          </p>
-        </div>
-      ) : (
-        <>
-          <div className="mx-auto mt-8 max-w-4xl border-b border-ink-900/10 sm:space-y-5 sm:border-b-0">
-            {lawyers.map((l) => (
-              <LawyerCard key={l.slug} lawyer={l} />
-            ))}
+      {/* Two-column directory: sticky "Refine" sidebar + results. On mobile
+          the sidebar is replaced by the Filters bottom-sheet button in the
+          results toolbar. */}
+      <div className="mt-8 grid gap-8 lg:grid-cols-[17.5rem_minmax(0,1fr)]">
+        <aside className="hidden lg:block">
+          <div className="sticky top-32 rounded-2xl border border-ink-900/10 bg-white p-6 shadow-card">
+            <h2 className="mb-1 font-display text-xl font-semibold text-ink-950">
+              <T en="Refine" ur="فلٹرز" />
+            </h2>
+            <Suspense fallback={null}>
+              <RefineForm />
+            </Suspense>
           </div>
+        </aside>
 
-          {totalPages > 1 && (
+        <div className="min-w-0">
+          <Suspense fallback={null}>
+            <DirectoryResults lawyers={lawyers} />
+          </Suspense>
+
+          {totalPages > 1 && !clientFiltersActive && (
             <nav className="mt-10 flex flex-wrap items-center justify-center gap-3" aria-label="Pagination">
               {page > 1 ? (
                 <Link
@@ -178,8 +192,8 @@ export default async function LawyersPage({ searchParams }: Props) {
               )}
             </nav>
           )}
-        </>
-      )}
+        </div>
+      </div>
     </div>
   );
 }
