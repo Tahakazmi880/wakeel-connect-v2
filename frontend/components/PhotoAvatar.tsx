@@ -35,7 +35,7 @@ export function PhotoAvatar({
         ? "h-28 w-28"
         : size === "sm"
           ? "h-12 w-12"
-          : "h-20 w-20";
+          : "h-24 w-24";
   const plainName = name.replace(" (Demo)", "");
 
   if (!photo || failed) {

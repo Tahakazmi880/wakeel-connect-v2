@@ -137,14 +137,14 @@ export default async function LawyersPage({ searchParams }: Props) {
         </div>
       ) : (
         <>
-          <div className="mx-auto mt-8 max-w-4xl space-y-5">
+          <div className="mx-auto mt-8 max-w-4xl border-b border-ink-900/10 sm:space-y-5 sm:border-b-0">
             {lawyers.map((l) => (
               <LawyerCard key={l.slug} lawyer={l} />
             ))}
           </div>
 
           {totalPages > 1 && (
-            <nav className="mt-10 flex items-center justify-center gap-3" aria-label="Pagination">
+            <nav className="mt-10 flex flex-wrap items-center justify-center gap-3" aria-label="Pagination">
               {page > 1 ? (
                 <Link
                   href={withPage(sp, page - 1)}

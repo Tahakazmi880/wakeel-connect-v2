@@ -48,7 +48,7 @@ export default function StickyProfileTabs() {
   };
 
   const tabCls = (id: string) =>
-    `shrink-0 whitespace-nowrap rounded-full px-4 py-2 text-[0.98rem] font-bold transition ${
+    `inline-flex min-h-[44px] shrink-0 items-center whitespace-nowrap rounded-full px-4 text-[0.98rem] font-bold transition ${
       active === id
         ? "bg-court-700 text-white shadow-card"
         : "text-ink-600 hover:bg-court-50 hover:text-court-800"

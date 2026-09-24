@@ -172,7 +172,7 @@ export default async function LawyerProfile({ params }: { params: Promise<{ slug
           {/* Header card */}
           <section id="overview" className="scroll-mt-36 rounded-lg border border-ink-900/10 bg-white p-6 shadow-card sm:p-8">
             <div className="flex flex-col gap-5 sm:flex-row">
-              <PhotoAvatar name={lawyer.displayName} photo={fileUrl(lawyer.photoUrl) ?? undefined} gender={lawyer.gender} size="3xl" />
+              <PhotoAvatar name={lawyer.displayName} photo={fileUrl(lawyer.photoUrl) ?? undefined} gender={lawyer.gender} size="3xl" className="self-center sm:self-start" />
               <div className="min-w-0 flex-1">
                 <h1 className="font-display text-[2rem] font-semibold leading-tight text-ink-950 sm:text-[2.1rem]">{lawyer.displayName}</h1>
                 {lawyer.headline && <p className="mt-2 text-[1.08rem] text-ink-600">{lawyer.headline}</p>}
@@ -420,7 +420,7 @@ export default async function LawyerProfile({ params }: { params: Promise<{ slug
               <T en="More lawyers for your legal problem." ur="آپ کے قانونی مسئلے کے لیے مزید وکیل۔" />
             </p>
           </div>
-          <div className="mx-auto max-w-4xl space-y-5">
+          <div className="mx-auto max-w-4xl border-b border-ink-900/10 sm:space-y-5 sm:border-b-0">
             {similar.map((l) => (
               <LawyerCard key={l.slug} lawyer={l} />
             ))}
@@ -429,12 +429,12 @@ export default async function LawyerProfile({ params }: { params: Promise<{ slug
       )}
 
       {/* Sticky mobile CTA — one primary action */}
-      <div className="fixed inset-x-0 bottom-0 z-30 border-t border-ink-900/10 bg-paper/95 p-3 backdrop-blur lg:hidden">
+      <div className="fixed inset-x-0 bottom-0 z-30 border-t border-ink-900/10 bg-paper/95 p-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] backdrop-blur lg:hidden">
         <PrimaryBtn href={`/book/${lawyer.slug}?mode=online`} icon={<VideoIcon className="h-6 w-6" />} className="w-full">
           <T en={fee ? `Book Now — ${fee}` : "Book Now"} ur={fee ? `ابھی بک کریں — ${fee}` : "ابھی بک کریں"} />
         </PrimaryBtn>
       </div>
-      <div className="h-16 lg:hidden" />
+      <div className="h-20 lg:hidden" />
     </div>
   );
 }

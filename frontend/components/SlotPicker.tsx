@@ -99,7 +99,7 @@ export default function SlotPicker({
       </p>
 
       {/* ---- month-grouped horizontal date carousel ---- */}
-      <div className="flex gap-4 overflow-x-auto pb-2" role="radiogroup" aria-label="Day">
+      <div className="flex gap-4 overflow-x-auto pb-2 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden" role="radiogroup" aria-label="Day">
         {monthGroups.map((g) => (
           <div key={g.key} className="shrink-0">
             <p className="mb-1.5 text-sm font-bold uppercase tracking-wide text-ink-500">
