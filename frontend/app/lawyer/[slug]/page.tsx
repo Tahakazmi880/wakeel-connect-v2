@@ -165,7 +165,9 @@ export default async function LawyerProfile({ params }: { params: Promise<{ slug
 
       <div className="grid gap-8 lg:grid-cols-3">
         {/* ===== Main column ===== */}
-        <div className="lg:col-span-2">
+        {/* min-w-0: lets the sticky tab strip's overflow-x-auto work instead of
+            blowing the grid track wider than the viewport on mobile. */}
+        <div className="min-w-0 lg:col-span-2">
           {/* Sticky in-page section tabs (oladoc pattern) */}
           <StickyProfileTabs />
 
