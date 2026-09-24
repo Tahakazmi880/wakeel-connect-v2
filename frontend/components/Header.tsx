@@ -18,7 +18,6 @@ import { T, useLang } from "./LanguageContext";
 import {
   BriefcaseIcon,
   CalendarIcon,
-  CloseIcon,
   MenuIcon,
   ShieldIcon,
   UserIcon,
@@ -407,7 +406,7 @@ export default function Header() {
                 {/* Mobile pill (oladoc pattern) — desktop keeps the SOLID_BTN below. */}
                 <Link
                   href="/join"
-                  className="inline-flex min-h-[36px] items-center whitespace-nowrap rounded-full bg-court-700 px-4 text-[0.78rem] font-bold text-white shadow-card transition hover:bg-court-800 md:hidden"
+                  className="inline-flex min-h-[28px] items-center whitespace-nowrap rounded-full bg-court-700 px-2.5 text-[0.65rem] font-bold text-white shadow-card transition hover:bg-court-800 md:hidden"
                 >
                   <T en="Join as Lawyer" ur="وکیل بنیں" />
                 </Link>
@@ -485,7 +484,10 @@ export default function Header() {
             aria-expanded={drawerOpen}
             aria-label="Menu"
           >
-            {drawerOpen ? <CloseIcon className="h-7 w-7" /> : <MenuIcon className="h-7 w-7" />}
+            {/* Keep the hamburger even when open — the drawer panel has its own
+                close button; swapping to an X here shows a duplicate X peeking
+                from behind the 86%-width drawer. */}
+            <MenuIcon className="h-7 w-7" />
           </button>
         </div>
       </div>

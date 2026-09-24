@@ -432,7 +432,7 @@ export default function MobileDrawer({ open, onClose }: { open: boolean; onClose
           <Link
             href="/join"
             onClick={onClose}
-            className="flex min-h-[52px] items-center justify-center gap-2 rounded-xl bg-court-700 text-[1.05rem] font-bold text-white shadow-card transition hover:bg-court-800"
+            className="flex min-h-[52px] items-center justify-center gap-2 rounded-xl bg-court-700 text-[1rem] font-bold text-white shadow-card transition hover:bg-court-800"
           >
             <BriefcaseIcon className="h-5 w-5" />
             <T en="Join as Lawyer" ur="وکیل بنیں" />
