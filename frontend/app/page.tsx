@@ -185,7 +185,7 @@ function RowHead({ title, href, linkEn, linkUr }: { title: React.ReactNode; href
 export default async function Home() {
   const { lawyers: featured, total: lawyerCount } = await fetchFeatured();
   const onlineCount = await fetchOnlineCount();
-  const heroPortrait = fileUrl("/lawyers/shamsuddin-rajper.jpg");
+  const heroPortrait = "/hero-portrait.svg";
 
   return (
     <>
@@ -204,7 +204,7 @@ export default async function Home() {
                 src={heroPortrait}
                 alt="Shamsuddin Rajper — Founder & Senior Advocate"
                 eager
-                className="h-full w-full object-cover object-[72%_top]"
+                className="h-full w-full object-cover object-[50%_top]"
                 fallback={<div className="h-full w-full bg-court-800" aria-hidden />}
               />
             </div>
