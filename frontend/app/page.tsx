@@ -112,8 +112,8 @@ const WHY_WAKEEL = [
   {
     en: "Reviewed profiles",
     ur: "جانچی ہوئی پروفائلز",
-    enSub: "Every public profile is reviewed by our team before listing.",
-    urSub: "عوامی ہونے سے پہلے ہماری ٹیم ہر پروفائل کا جائزہ لیتی ہے۔",
+    enSub: "Every lawyer uploads their CNIC and Bar Council documents — our team checks them before the profile is listed.",
+    urSub: "ہر وکیل اپنا شناختی کارڈ اور بار کونسل دستاویزات اپ لوڈ کرتا ہے — ہماری ٹیم انہیں جانچتی ہے، اس کے بعد پروفائل عوامی ہوتی ہے۔",
   },
   {
     en: "Transparent fees",
@@ -209,7 +209,10 @@ export default async function Home() {
               />
             </div>
             <div className="relative z-10 px-4 pb-3 pt-4">
-              <h1 className="max-w-[62%] font-display text-[1.35rem] font-semibold leading-[1.25] text-white">
+              <p className="max-w-[62%] text-[0.72rem] font-bold uppercase tracking-[0.18em] text-brass-300">
+                <T en="For everyday Pakistanis" ur="عام پاکستانیوں کے لیے" />
+              </p>
+              <h1 className="mt-1.5 max-w-[62%] font-display text-[1.35rem] font-semibold leading-[1.25] text-white">
                 <T
                   en={<>Find and Book the <span className="text-brass-300">Best Wakeel</span> near you</>}
                   ur={<>اپنے قریب <span className="text-brass-300">بہترین وکیل</span> تلاش کریں اور بک کریں</>}
@@ -235,7 +238,10 @@ export default async function Home() {
                   ur={`${lawyerCount} جانچی ہوئی وکیل پروفائلز`}
                 />
               </p>
-              <h1 className="mt-3 font-display text-[1.4rem] font-semibold leading-[1.15] text-white md:mt-6 md:text-[2.6rem] md:leading-[1.1] lg:text-[3.4rem]">
+              <p className="text-[0.85rem] font-bold uppercase tracking-[0.22em] text-brass-300">
+                <T en="For everyday Pakistanis" ur="عام پاکستانیوں کے لیے" />
+              </p>
+              <h1 className="mt-3 font-display text-[1.4rem] font-semibold leading-[1.15] text-white md:mt-4 md:text-[2.6rem] md:leading-[1.1] lg:text-[3.4rem]">
                 <T
                   en={<>Find and Book the <span className="text-brass-300">Best Wakeel</span> near you</>}
                   ur={<>اپنے قریب <span className="text-brass-300">بہترین وکیل</span> تلاش کریں اور بک کریں</>}
@@ -243,8 +249,8 @@ export default async function Home() {
               </h1>
               <p className="mt-3 hidden max-w-xl text-[1.12rem] leading-relaxed text-ink-200 md:mt-4 md:block">
                 <T
-                  en="Online consultation or chamber visit — booked in 3 easy steps. Transparent fees, honest reviews."
-                  ur="آن لائن مشاورت یا چیمبر ملاقات — صرف ۳ آسان مراحل میں۔ واضح فیس، ایماندار آراء۔"
+                  en="No touts, no middlemen — every profile is reviewed by our team before it goes public, and the fee is shown up front."
+                  ur="نہ دلال، نہ مڈل مین — عوامی ہونے سے پہلے ہماری ٹیم ہر پروفائل کا جائزہ لیتی ہے، اور فیس پہلے سے واضح لکھی ہوتی ہے۔"
                 />
               </p>
               <div className="mt-4 md:hidden">
@@ -650,6 +656,26 @@ export default async function Home() {
             </h2>
           </div>
           <FaqAccordion />
+        </div>
+      </section>
+
+      {/* ============ NOT SURE WHERE TO START — callback strip ============ */}
+      <section className="mx-auto max-w-7xl px-4 pb-14 sm:pb-20">
+        <div className="rounded-[2rem] bg-white px-6 py-10 text-center shadow-card ring-1 ring-ink-900/10 sm:py-12">
+          <h2 className="font-display text-[1.6rem] font-semibold leading-snug text-ink-950 sm:text-[2rem]">
+            <T en="Not sure where to start?" ur="سمجھ نہیں آ رہا کہاں سے شروع کریں؟" />
+          </h2>
+          <p className="mx-auto mt-3 max-w-xl text-[1.05rem] leading-relaxed text-ink-600">
+            <T
+              en="Describe your problem in your own words — our team will call you back within 24 hours and match you with the right reviewed lawyer."
+              ur="اپنا مسئلہ اپنے الفاظ میں لکھیں — ہماری ٹیم ۲۴ گھنٹوں کے اندر آپ کو کال کرے گی اور آپ کے لیے صحیح جانچی ہوئی وکیل تلاش کرے گی۔"
+            />
+          </p>
+          <div className="mt-7">
+            <PrimaryBtn href="/callback" icon={<ChatIcon className="h-6 w-6" />}>
+              <T en="Request a callback" ur="کال بیک کی درخواست" />
+            </PrimaryBtn>
+          </div>
         </div>
       </section>
 
