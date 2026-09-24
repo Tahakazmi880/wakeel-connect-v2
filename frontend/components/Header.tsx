@@ -177,7 +177,7 @@ export default function Header() {
     >
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-2 px-4">
         <Logo />
-        <nav className="hidden items-center lg:flex" aria-label="Main">
+        <nav className="hidden items-center xl:flex" aria-label="Main">
           <div ref={navRef} className="flex items-center">
             {/* Practice Areas mega-menu: area rows → city deep-links */}
             <div className="relative">
@@ -345,7 +345,7 @@ export default function Header() {
         </nav>
 
         <div className="flex items-center gap-1.5">
-          <div className="hidden lg:block">
+          <div className="hidden xl:block">
             <HeaderSearch />
           </div>
           <LangSwitch />
@@ -468,7 +468,7 @@ export default function Header() {
             ))}
           <button
             type="button"
-            className="inline-flex min-h-[48px] min-w-[48px] items-center justify-center rounded-lg text-ink-800 transition hover:bg-ink-900/5 lg:hidden"
+            className="inline-flex min-h-[48px] min-w-[48px] items-center justify-center rounded-lg text-ink-800 transition hover:bg-ink-900/5 xl:hidden"
             onClick={() => setDrawerOpen(true)}
             aria-expanded={drawerOpen}
             aria-label="Menu"

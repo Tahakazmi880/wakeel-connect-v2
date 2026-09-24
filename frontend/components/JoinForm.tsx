@@ -45,7 +45,7 @@ function StepDots({ step }: { step: number }) {
   ];
   return (
     <div className="wc-scroll-x -mx-1 px-1 pb-1">
-      <ol className="flex w-max min-w-full items-center justify-start gap-1 sm:justify-center sm:gap-2" aria-label="Application progress">
+      <ol className="flex flex-wrap items-center justify-start gap-1.5 sm:flex-nowrap sm:justify-center sm:gap-2" aria-label="Application progress">
         {labels.map((l, i) => {
           const n = i + 1;
           const active = n === step;
@@ -536,7 +536,7 @@ export default function JoinForm() {
               ].map((row) => (
                 <div key={row.en} className="flex gap-4 px-4 py-3">
                   <dt className="w-32 shrink-0 text-base font-bold text-ink-600"><T en={row.en} ur={row.ur} /></dt>
-                  <dd className="text-base font-bold text-ink-950">{row.v}</dd>
+                  <dd className="min-w-0 break-words text-base font-bold text-ink-950">{row.v}</dd>
                 </div>
               ))}
             </dl>

@@ -54,7 +54,7 @@ export default async function GuidePage({ params }: { params: Promise<{ slug: st
           <T en="Guides" ur="رہنمائی" />
         </Link>
         <span aria-hidden>/</span>
-        <span className="truncate font-medium text-ink-700">
+        <span className="min-w-0 max-w-full truncate font-medium text-ink-700">
           <T en={guide.titleEn} ur={guide.titleUr} />
         </span>
       </nav>

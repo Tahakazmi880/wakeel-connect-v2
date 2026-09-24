@@ -195,7 +195,7 @@ export default function MobileDrawer({ open, onClose }: { open: boolean; onClose
       <div
         aria-hidden="true"
         onClick={onClose}
-        className={`fixed inset-0 z-[60] bg-ink-950/45 transition-opacity lg:hidden ${
+        className={`fixed inset-0 z-[60] bg-ink-950/45 transition-opacity xl:hidden ${
           open ? "opacity-100" : "pointer-events-none opacity-0"
         }`}
       />
@@ -204,7 +204,7 @@ export default function MobileDrawer({ open, onClose }: { open: boolean; onClose
         role="dialog"
         aria-modal="true"
         aria-label={lang === "ur" ? "مینیو" : "Menu"}
-        className={`fixed inset-y-0 left-0 z-[70] flex w-[86%] max-w-sm flex-col bg-white shadow-2xl transition-transform duration-300 lg:hidden ${
+        className={`fixed inset-y-0 left-0 z-[70] flex w-[86%] max-w-sm flex-col bg-white shadow-2xl transition-transform duration-300 xl:hidden ${
           open ? "translate-x-0" : "-translate-x-full"
         }`}
       >

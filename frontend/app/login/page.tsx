@@ -48,7 +48,7 @@ function OtpBoxes({ value, onChange, disabled }: { value: string; onChange: (v: 
   };
 
   return (
-    <div className="flex justify-center gap-2" dir="ltr">
+    <div className="flex justify-center gap-1.5" dir="ltr">
       {Array.from({ length: 6 }).map((_, i) => (
         <input
           key={i}
@@ -78,7 +78,7 @@ function OtpBoxes({ value, onChange, disabled }: { value: string; onChange: (v: 
           inputMode="numeric"
           autoComplete="one-time-code"
           aria-label={`Digit ${i + 1}`}
-          className="h-14 w-12 rounded-lg border border-ink-900/15 text-center font-display text-2xl font-semibold text-ink-950 outline-none transition focus:border-court-600 focus:ring-2 focus:ring-court-600/20 disabled:bg-paper-dark/60 sm:h-16 sm:w-14"
+          className="h-14 w-12 min-w-0 rounded-lg border border-ink-900/15 text-center font-display text-2xl font-semibold text-ink-950 outline-none transition focus:border-court-600 focus:ring-2 focus:ring-court-600/20 disabled:bg-paper-dark/60 sm:h-16 sm:w-14"
         />
       ))}
     </div>

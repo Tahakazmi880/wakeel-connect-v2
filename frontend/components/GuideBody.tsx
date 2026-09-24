@@ -9,11 +9,13 @@ export default function GuideBody({ guide }: { guide: Guide }) {
   const paragraphs = lang === "ur" ? guide.bodyUr : guide.bodyEn;
   return (
     <div className={lang === "ur" ? "text-right" : "text-left"}>
+      <div className="max-w-2xl">
       {paragraphs.map((p, i) => (
         <p key={i} className="mb-5 text-lg leading-8 text-ink-700">
           {p}
         </p>
       ))}
+      </div>
     </div>
   );
 }
