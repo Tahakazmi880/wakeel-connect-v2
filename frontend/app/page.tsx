@@ -196,40 +196,42 @@ export default async function Home() {
           <div className="absolute inset-0 bg-gradient-to-l from-court-800 via-court-900 to-ink-950" aria-hidden />
           <div className="absolute -right-24 -top-24 h-[26rem] w-[26rem] rounded-full bg-brass-500/25 blur-3xl" aria-hidden />
           <div className="absolute -bottom-32 -left-16 h-80 w-80 rounded-full bg-court-500/20 blur-3xl" aria-hidden />
-          <div className="relative grid items-center gap-10 p-7 sm:p-10 lg:grid-cols-[1.15fr_0.85fr] lg:p-14">
-            <div className="order-2 lg:order-1">
-              <p className="inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-2 text-[0.95rem] font-bold text-paper ring-1 ring-white/20">
+          <div className="relative grid grid-cols-[1.05fr_.95fr] items-center gap-x-4 gap-y-6 p-5 sm:p-10 lg:grid-cols-[1.15fr_0.85fr] lg:gap-10 lg:p-14">
+            <div className="contents lg:col-start-1 lg:row-start-1 lg:block">
+              <div>
+              <p className="inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1.5 text-[0.8rem] font-bold text-paper ring-1 ring-white/20 sm:px-4 sm:py-2 sm:text-[0.95rem]">
                 <CheckBadgeIcon className="h-5 w-5 text-brass-300" />
                 <T
                   en={`${lawyerCount} reviewed lawyer profiles`}
                   ur={`${lawyerCount} جانچی ہوئی وکیل پروفائلز`}
                 />
               </p>
-              <h1 className="mt-6 font-display text-[2.6rem] font-semibold leading-[1.1] text-white sm:text-[3.4rem]">
+              <h1 className="mt-4 font-display text-[1.7rem] font-semibold leading-[1.12] text-white sm:mt-6 sm:text-[2.6rem] sm:leading-[1.1] lg:text-[3.4rem]">
                 <T
                   en={<>Find and Book the <span className="text-brass-300">Best Wakeel</span> near you</>}
                   ur={<>اپنے قریب <span className="text-brass-300">بہترین وکیل</span> تلاش کریں اور بک کریں</>}
                 />
               </h1>
-              <p className="mt-4 max-w-xl text-[1.12rem] leading-relaxed text-ink-200">
+              <p className="mt-3 hidden max-w-xl text-[1.12rem] leading-relaxed text-ink-200 sm:mt-4 sm:block">
                 <T
                   en="Online consultation or chamber visit — booked in 3 easy steps. Transparent fees, honest reviews."
                   ur="آن لائن مشاورت یا چیمبر ملاقات — صرف ۳ آسان مراحل میں۔ واضح فیس، ایماندار آراء۔"
                 />
               </p>
-              <div className="[&_form]:mx-0 [&_form]:mt-8">
+              </div>
+              <div className="col-span-2 row-start-2 [&_form]:mx-0 [&_form]:mt-0 lg:[&_form]:mt-8">
                 <SearchHero />
               </div>
             </div>
-            <div className="relative order-1 mx-auto w-full max-w-sm lg:order-2">
+            <div className="relative col-start-2 row-start-1 -mr-5 -mt-5 w-full sm:-mr-10 sm:-mt-10 lg:m-0 lg:mx-auto lg:max-w-sm">
               <SafeImage
                 src={heroPortrait}
                 alt="Shamsuddin Rajper — Founder & Senior Advocate"
                 eager
-                className="aspect-[16/10] w-full rounded-[1.5rem] object-cover object-top shadow-lift ring-1 ring-white/25 lg:aspect-[4/5]"
-                fallback={<div className="aspect-[16/10] w-full rounded-[1.5rem] bg-court-800 ring-1 ring-white/25 lg:aspect-[4/5]" aria-hidden />}
+                className="aspect-[3/4] w-full rounded-l-[1.5rem] object-cover object-top lg:aspect-[4/5] lg:rounded-[1.5rem] lg:shadow-lift lg:ring-1 lg:ring-white/25"
+                fallback={<div className="aspect-[3/4] w-full rounded-l-[1.5rem] bg-court-800 lg:aspect-[4/5] lg:rounded-[1.5rem] lg:ring-1 lg:ring-white/25" aria-hidden />}
               />
-              <div className="absolute -bottom-5 left-1/2 w-max -translate-x-1/2 rounded-full bg-white px-5 py-2.5 text-[0.95rem] font-bold text-ink-900 shadow-lift">
+              <div className="absolute -bottom-5 left-1/2 hidden w-max -translate-x-1/2 rounded-full bg-white px-5 py-2.5 text-[0.95rem] font-bold text-ink-900 shadow-lift lg:block">
                 <T en="3-step booking · No account needed" ur="۳ مراحل میں بکنگ · اکاؤنٹ کی ضرورت نہیں" />
               </div>
             </div>
