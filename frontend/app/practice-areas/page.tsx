@@ -49,7 +49,7 @@ export default async function AreasHub() {
               <p className="font-display text-[1.3rem] font-semibold text-ink-950 transition group-hover:text-court-800"><T en={a.nameEn} ur={a.nameUr} /></p>
               <p className="mt-2 text-base text-ink-500">{a.description}</p>
               <span className="mt-4 inline-flex items-center gap-1 text-base font-bold text-court-700">
-                <T en={n == null ? "View" : `${n} lawyers — view`} ur={n == null ? "دیکھیں" : `${n} وکیل — دیکھیں`} /> <ArrowIcon className="h-5 w-5 transition group-hover:translate-x-1" />
+                <T en={n == null ? "View" : `${n} ${n === 1 ? "lawyer" : "lawyers"} — view`} ur={n == null ? "دیکھیں" : `${n} وکیل — دیکھیں`} /> <ArrowIcon className="h-5 w-5 transition group-hover:translate-x-1" />
               </span>
             </Link>
           );

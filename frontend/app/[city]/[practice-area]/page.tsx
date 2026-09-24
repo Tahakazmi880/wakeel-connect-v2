@@ -110,7 +110,7 @@ export default async function CityAreaPage({ params }: { params: Promise<{ city:
       <p className="mt-4 max-w-3xl text-lg leading-relaxed text-ink-600">
         {lawyers.length > 0 ? (
           <T
-            en={`${lawyers.length} ${a.nameEn.toLowerCase()} ${lawyers.length === 1 ? "lawyer" : "lawyers"} practising in ${c.nameEn}. ${a.description} Compare profiles below — experience, fees in PKR and client reviews — then book a video consultation or chamber visit in 3 easy steps.`}
+            en={`${lawyers.length} ${a.nameEn.toLowerCase()} ${lawyers.length === 1 ? "lawyer" : "lawyers"} practising in ${c.nameEn}. ${a.description} Compare profiles below — experience, fees in PKR and client reviews — then book an online consultation or chamber visit in 3 easy steps.`}
             ur={`${c.nameUr} میں ${a.nameUr} کے ${lawyers.length} وکیل۔ ${a.description} نیچے پروفائلز کا موازنہ کریں — تجربہ، فیس اور آراء — پھر ۳ آسان مراحل میں بک کریں۔`}
           />
         ) : (

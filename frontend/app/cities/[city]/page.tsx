@@ -90,7 +90,7 @@ export default async function CityPage({ params }: { params: Promise<{ city: str
           </h1>
           <p className="mt-4 max-w-2xl text-[1.1rem] leading-relaxed text-ink-200">
             <T
-              en={`Browse ${c.nameEn}'s lawyers by the legal problem you have — family, criminal, property, corporate and more. Video consultation or chamber visit, booked in 3 easy steps.`}
+              en={`Browse ${c.nameEn}'s lawyers by the legal problem you have — family, criminal, property, corporate and more. Online consultation or chamber visit, booked in 3 easy steps.`}
               ur={`اپنے قانونی مسئلے کے حساب سے ${c.nameUr} کے وکیل دیکھیں — خاندانی، فوجداری، جائیداد، کاروباری اور مزید۔ ویڈیو مشاورت یا چیمبر ملاقات، صرف ۳ آسان مراحل میں۔`}
             />
           </p>
