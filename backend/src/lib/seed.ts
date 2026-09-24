@@ -1,5 +1,5 @@
 // ============================================================
-// wakeel.connect — database seed (reference data + demo lawyers)
+// WakeelConnect — database seed (reference data + demo lawyers)
 // Shared by the local tsx script (prisma/seed.ts) and the
 // production bootstrapper (src/lib/bootstrap.ts).
 //
@@ -171,7 +171,7 @@ const SEED_QA: { title: string; body: string; authorName: string; areaSlug: stri
     authorName: "Imran S.",
     areaSlug: "criminal-law",
     answer:
-      "Zamanat (bail) ka case sessions court mein bail petition file karke lara jata hai. Wakeel FIR, giraftari ki wajah aur saboot dekh kar petition tayyar karta hai. Fees case ki noiyat par hoti hai — wakeel.connect par criminal lawyers ki fees profile par likhi hoti hai. Fori tor par kisi criminal wakeel se raabta karein. Yeh aam maloomat hai, qanooni mashwara nahi.",
+      "Zamanat (bail) ka case sessions court mein bail petition file karke lara jata hai. Wakeel FIR, giraftari ki wajah aur saboot dekh kar petition tayyar karta hai. Fees case ki noiyat par hoti hai — WakeelConnect par criminal lawyers ki fees profile par likhi hoti hai. Fori tor par kisi criminal wakeel se raabta karein. Yeh aam maloomat hai, qanooni mashwara nahi.",
   },
   {
     title: "Bank loan default par kya ho sakta hai?",
@@ -244,8 +244,8 @@ const FAQS: {
     sortOrder: 5,
   },
   {
-    question: "How are lawyers verified on wakeel.connect?",
-    questionUr: "wakeel.connect پر وکلا کی تصدیق کیسے ہوتی ہے؟",
+    question: "How are lawyers verified on WakeelConnect?",
+    questionUr: "WakeelConnect پر وکلا کی تصدیق کیسے ہوتی ہے؟",
     answer:
       "Lawyers sign up on the platform and submit their CNIC and Bar Council documents. Our team reviews the documents and only then is the profile listed publicly as a reviewed profile.",
     answerUr:
@@ -329,7 +329,7 @@ export async function seedDatabase(prisma: PrismaClient): Promise<void> {
           isSeed: true,
           isLocked: true,
           answers: {
-            create: { authorName: "wakeel.connect Legal Team", body: s.answer, isSeed: true },
+            create: { authorName: "WakeelConnect Legal Team", body: s.answer, isSeed: true },
           },
         },
       });

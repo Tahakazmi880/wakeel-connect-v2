@@ -32,7 +32,7 @@ class TwilioSmsProvider implements SmsProvider {
     const body = new URLSearchParams({
       To: phone,
       From: TWILIO_FROM,
-      Body: `wakeel.connect code: ${code}. Valid for ${env.OTP_TTL_MIN} minutes. Never share this code.`,
+      Body: `WakeelConnect code: ${code}. Valid for ${env.OTP_TTL_MIN} minutes. Never share this code.`,
     });
     const res = await fetch(`https://api.twilio.com/2010-04-01/Accounts/${TWILIO_ACCOUNT_SID}/Messages.json`, {
       method: "POST",
