@@ -70,7 +70,7 @@ export default async function GuidePage({ params }: { params: Promise<{ slug: st
           </span>
         </div>
 
-        <h1 className="font-display text-[2.25rem] font-semibold leading-tight text-ink-950 sm:text-4xl">
+        <h1 className="font-display text-[2rem] font-semibold leading-tight text-ink-950 sm:text-4xl">
           <T en={guide.titleEn} ur={guide.titleUr} />
         </h1>
         <span aria-hidden className="mt-5 block h-[3px] w-12 bg-brass-500" />

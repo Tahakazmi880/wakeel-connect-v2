@@ -174,7 +174,7 @@ export default async function LawyerProfile({ params }: { params: Promise<{ slug
             <div className="flex flex-col gap-5 sm:flex-row">
               <PhotoAvatar name={lawyer.displayName} photo={fileUrl(lawyer.photoUrl) ?? undefined} gender={lawyer.gender} size="3xl" />
               <div className="min-w-0 flex-1">
-                <h1 className="font-display text-[2.1rem] font-semibold leading-tight text-ink-950">{lawyer.displayName}</h1>
+                <h1 className="font-display text-[2rem] font-semibold leading-tight text-ink-950 sm:text-[2.1rem]">{lawyer.displayName}</h1>
                 {lawyer.headline && <p className="mt-2 text-[1.08rem] text-ink-600">{lawyer.headline}</p>}
                 <div className="mt-3.5 flex flex-wrap items-center gap-x-5 gap-y-2">
                   <Rating rating={lawyer.ratingAvg} count={lawyer.ratingCount} />

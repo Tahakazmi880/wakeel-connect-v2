@@ -82,7 +82,7 @@ export default async function CityPage({ params }: { params: Promise<{ city: str
             <PinIcon className="h-5 w-5 text-brass-300" />
             <T en={c.province} ur={c.nameUr} />
           </p>
-          <h1 className="mt-5 max-w-3xl font-display text-[2.4rem] font-semibold leading-[1.12] text-white sm:text-[3rem]">
+          <h1 className="mt-5 max-w-3xl font-display text-[2rem] font-semibold leading-[1.12] text-white sm:text-[3rem]">
             <T
               en={<>Find and book the <span className="text-brass-300">best lawyers</span> in {c.nameEn}</>}
               ur={<>{c.nameUr} میں <span className="text-brass-300">بہترین وکیل</span> تلاش کریں اور بک کریں</>}

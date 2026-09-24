@@ -18,7 +18,7 @@ export default function LawyerDashboard() {
       <span className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-court-100">
         <BriefcaseIcon className="h-10 w-10 text-court-700" />
       </span>
-      <h1 className="mt-6 font-display text-[2.1rem] font-semibold text-ink-950">
+      <h1 className="mt-6 font-display text-[2rem] font-semibold text-ink-950">
         <T en="Lawyer portal" ur="وکیل پورٹل" />
       </h1>
       <p className="mx-auto mt-3 max-w-xl text-lg text-ink-600">

@@ -62,7 +62,7 @@ function DirectoryHeading({ total, sp }: { total: number; sp: Record<string, str
   const ur = `${city ? `${city.nameUr} میں ` : ""}${total} ${female ? "خاتون " : ""}وکیل${area ? ` — ${area.nameUr}` : ""}${court ? ` — ${court.nameUr}` : ""}${q ? ` — "${q}"` : ""}`;
 
   return (
-    <h1 className="font-display text-[2.25rem] font-semibold text-ink-950 sm:text-4xl">
+    <h1 className="font-display text-[2rem] font-semibold text-ink-950 sm:text-4xl">
       <T en={en} ur={ur} />
     </h1>
   );

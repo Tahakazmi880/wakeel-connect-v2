@@ -59,7 +59,7 @@ export default async function AreaPage({ params }: { params: Promise<{ area: str
       <p className="inline-flex items-center gap-2 rounded-full bg-court-50 px-4 py-1.5 text-sm font-bold text-court-800 ring-1 ring-court-700/20">
         <BriefcaseIcon className="h-4 w-4" /> <T en={a.nameUr} ur={a.nameUr} />
       </p>
-      <h1 className="mt-3 font-display text-[2.5rem] font-semibold leading-tight text-ink-950 sm:text-5xl">
+      <h1 className="mt-3 font-display text-[2rem] font-semibold leading-tight text-ink-950 sm:text-5xl">
         <T en={<><span className="text-court-700">{a.nameEn}</span> lawyers in Pakistan</>} ur={<>پاکستان میں <span className="text-court-700">{a.nameUr}</span> کے وکیل</>} />
       </h1>
       <p className="mt-4 max-w-3xl text-lg leading-relaxed text-ink-600">
