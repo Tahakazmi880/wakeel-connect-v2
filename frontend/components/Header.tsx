@@ -51,17 +51,17 @@ export function ChevronIcon({ className }: { className?: string }) {
 
 export function Logo({ compact = false }: { compact?: boolean }) {
   return (
-    <Link href="/" className="flex shrink-0 items-center gap-2.5" aria-label="wakeel.connect home">
+    <Link href="/" className={`flex shrink-0 items-center ${compact ? "gap-2" : "gap-2.5"}`} aria-label="wakeel.connect home">
       <img
         src="/logo-mark.png"
         alt="wakeel.connect logo"
-        width={compact ? 36 : 40}
-        height={compact ? 36 : 40}
-        className={`${compact ? "h-9 w-9" : "h-10 w-10"} rounded-lg object-cover`}
+        width={compact ? 32 : 40}
+        height={compact ? 32 : 40}
+        className={`${compact ? "h-8 w-8" : "h-10 w-10"} rounded-lg object-cover`}
       />
       <span
         className={`font-display font-semibold tracking-tight text-ink-950 ${
-          compact ? "text-[1.2rem]" : "text-[1.45rem]"
+          compact ? "text-[1.05rem]" : "text-[1.45rem]"
         }`}
       >
         wakeel<span className="text-brass-600">.connect</span>
@@ -176,7 +176,12 @@ export default function Header() {
       }`}
     >
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-2 px-4">
-        <Logo />
+        <span className="shrink-0 sm:hidden">
+          <Logo compact />
+        </span>
+        <span className="hidden shrink-0 sm:block">
+          <Logo />
+        </span>
         <nav className="hidden items-center xl:flex" aria-label="Main">
           <div ref={navRef} className="flex items-center">
             {/* Practice Areas mega-menu: area rows → city deep-links */}
@@ -344,7 +349,7 @@ export default function Header() {
           </div>
         </nav>
 
-        <div className="flex items-center gap-1.5">
+        <div className="flex shrink-0 items-center gap-1.5">
           <div className="hidden xl:block">
             <HeaderSearch />
           </div>
@@ -399,6 +404,13 @@ export default function Header() {
             ) : (
               <>
                 {/* No helpline pill until a real support number is confirmed — do not ship a fake number. */}
+                {/* Mobile pill (oladoc pattern) — desktop keeps the SOLID_BTN below. */}
+                <Link
+                  href="/join"
+                  className="inline-flex min-h-[44px] items-center whitespace-nowrap rounded-full bg-court-700 px-3 text-[0.82rem] font-bold text-white shadow-card transition hover:bg-court-800 md:hidden"
+                >
+                  <T en="Join as Lawyer" ur="وکیل بنیں" />
+                </Link>
                 <Link href="/join" className={SOLID_BTN}>
                   <T en="Join as Lawyer" ur="وکیل بنیں" />
                 </Link>

@@ -196,40 +196,72 @@ export default async function Home() {
           <div className="absolute inset-0 bg-gradient-to-l from-court-800 via-court-900 to-ink-950" aria-hidden />
           <div className="absolute -right-24 -top-24 h-[26rem] w-[26rem] rounded-full bg-brass-500/25 blur-3xl" aria-hidden />
           <div className="absolute -bottom-32 -left-16 h-80 w-80 rounded-full bg-court-500/20 blur-3xl" aria-hidden />
-          <div className="relative grid grid-cols-[1.3fr_.7fr] items-center gap-x-4 gap-y-6 p-5 sm:grid-cols-[1.05fr_.95fr] sm:p-10 lg:grid-cols-[1.15fr_0.85fr] lg:gap-10 lg:p-14">
-            <div className="contents lg:col-start-1 lg:row-start-1 lg:block">
-              <div>
-              <p className="inline-flex items-center gap-2 rounded-2xl bg-white/10 px-3 py-1.5 text-[0.72rem] font-bold text-paper ring-1 ring-white/20 sm:rounded-full sm:px-4 sm:py-2 sm:text-[0.95rem]">
+          {/* Mobile (<md): compact oladoc-pattern card — headline → badge →
+              location → full-width search; portrait absolute right ~35%,
+              full card height, edge-bleed with face visible. */}
+          <div className="relative md:hidden">
+            <div className="absolute inset-y-0 right-0 w-[35%]">
+              <SafeImage
+                src={heroPortrait}
+                alt="Shamsuddin Rajper — Founder & Senior Advocate"
+                eager
+                className="h-full w-full object-cover object-[72%_top]"
+                fallback={<div className="h-full w-full bg-court-800" aria-hidden />}
+              />
+            </div>
+            <div className="relative z-10 px-4 pb-3 pt-4">
+              <h1 className="max-w-[62%] font-display text-[1.35rem] font-semibold leading-[1.25] text-white">
+                <T
+                  en={<>Find and Book the <span className="text-brass-300">Best Wakeel</span> near you</>}
+                  ur={<>اپنے قریب <span className="text-brass-300">بہترین وکیل</span> تلاش کریں اور بک کریں</>}
+                />
+              </h1>
+              <p className="mt-2 inline-flex items-center gap-1.5 whitespace-nowrap rounded-full bg-white/10 px-2.5 py-1 text-[0.7rem] font-bold text-brass-200 ring-1 ring-white/15">
+                <span aria-hidden className="text-brass-300">✓</span>
+                <T
+                  en={`${lawyerCount} reviewed profiles`}
+                  ur={`${lawyerCount} جانچی ہوئی پروفائلز`}
+                />
+              </p>
+              <SearchHero compact />
+            </div>
+          </div>
+          {/* md+: existing hero — unchanged. */}
+          <div className="relative hidden md:grid md:grid-cols-[1.05fr_.95fr] md:items-center md:gap-x-4 md:gap-y-6 md:p-10 lg:grid-cols-[1.15fr_0.85fr] lg:gap-10 lg:p-14">
+            <div className="min-w-0 p-5 md:p-0 lg:col-start-1 lg:row-start-1">
+              <p className="inline-flex items-center gap-2 rounded-2xl bg-white/10 px-3 py-1.5 text-[0.72rem] font-bold text-paper ring-1 ring-white/20 md:rounded-full md:px-4 md:py-2 md:text-[0.95rem]">
                 <CheckBadgeIcon className="h-5 w-5 text-brass-300" />
                 <T
                   en={`${lawyerCount} reviewed lawyer profiles`}
                   ur={`${lawyerCount} جانچی ہوئی وکیل پروفائلز`}
                 />
               </p>
-              <h1 className="mt-4 font-display text-[1.55rem] font-semibold leading-[1.12] text-white sm:mt-6 sm:text-[2.6rem] sm:leading-[1.1] lg:text-[3.4rem]">
+              <h1 className="mt-3 font-display text-[1.4rem] font-semibold leading-[1.15] text-white md:mt-6 md:text-[2.6rem] md:leading-[1.1] lg:text-[3.4rem]">
                 <T
                   en={<>Find and Book the <span className="text-brass-300">Best Wakeel</span> near you</>}
                   ur={<>اپنے قریب <span className="text-brass-300">بہترین وکیل</span> تلاش کریں اور بک کریں</>}
                 />
               </h1>
-              <p className="mt-3 hidden max-w-xl text-[1.12rem] leading-relaxed text-ink-200 sm:mt-4 sm:block">
+              <p className="mt-3 hidden max-w-xl text-[1.12rem] leading-relaxed text-ink-200 md:mt-4 md:block">
                 <T
                   en="Online consultation or chamber visit — booked in 3 easy steps. Transparent fees, honest reviews."
                   ur="آن لائن مشاورت یا چیمبر ملاقات — صرف ۳ آسان مراحل میں۔ واضح فیس، ایماندار آراء۔"
                 />
               </p>
-              </div>
-              <div className="col-span-2 row-start-2 [&_form]:mx-0 [&_form]:mt-0 lg:[&_form]:mt-8">
-                <SearchHero />
+              <div className="mt-4 md:hidden">
+                <SearchHero compact />
               </div>
             </div>
-            <div className="relative col-start-2 row-start-1 -mr-5 -mt-5 w-full sm:-mr-10 sm:-mt-10 lg:m-0 lg:mx-auto lg:max-w-sm">
+            <div className="hidden md:block md:col-span-2 md:row-start-2 md:[&_form]:mx-0 md:[&_form]:mt-0 lg:col-span-1 lg:col-start-1 lg:row-start-2 lg:[&_form]:mt-8">
+              <SearchHero />
+            </div>
+            <div className="relative md:col-start-2 md:row-start-1 md:-mr-10 md:-mt-10 lg:m-0 lg:mx-auto lg:row-span-2 lg:w-full lg:max-w-sm">
               <SafeImage
                 src={heroPortrait}
                 alt="Shamsuddin Rajper — Founder & Senior Advocate"
                 eager
-                className="aspect-[3/4] w-full rounded-l-[1.5rem] object-cover object-top lg:aspect-[4/5] lg:rounded-[1.5rem] lg:shadow-lift lg:ring-1 lg:ring-white/25"
-                fallback={<div className="aspect-[3/4] w-full rounded-l-[1.5rem] bg-court-800 lg:aspect-[4/5] lg:rounded-[1.5rem] lg:ring-1 lg:ring-white/25" aria-hidden />}
+                className="absolute inset-0 h-full w-full object-cover object-top md:static md:aspect-[3/4] md:w-full md:rounded-l-[1.5rem] lg:aspect-[4/5] lg:rounded-[1.5rem] lg:shadow-lift lg:ring-1 lg:ring-white/25"
+                fallback={<div className="absolute inset-0 bg-court-800 md:static md:aspect-[3/4] md:w-full md:rounded-l-[1.5rem] lg:aspect-[4/5] lg:rounded-[1.5rem] lg:ring-1 lg:ring-white/25" aria-hidden />}
               />
               <div className="absolute -bottom-5 left-1/2 hidden w-max -translate-x-1/2 rounded-full bg-white px-5 py-2.5 text-[0.95rem] font-bold text-ink-900 shadow-lift lg:block">
                 <T en="3-step booking · No account needed" ur="۳ مراحل میں بکنگ · اکاؤنٹ کی ضرورت نہیں" />
@@ -279,9 +311,68 @@ export default async function Home() {
         </section>
       )}
 
-      {/* ============ SERVICES — 5 image cards, oladoc-style row ============ */}
+      {/* ============ SERVICES — oladoc mobile pattern: 2 large + 3 compact ============ */}
       <section className="mx-auto max-w-7xl px-4 pt-8 sm:pt-10">
-        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 sm:gap-5 lg:grid-cols-5">
+        {/* mobile: 2 large cards side by side */}
+        <div className="grid grid-cols-2 gap-3 md:hidden">
+          {SERVICES.slice(0, 2).map((s, i) => (
+            <Link
+              key={s.titleEn}
+              href={s.href}
+              className="group overflow-hidden rounded-2xl bg-white shadow-card ring-1 ring-ink-900/10 transition hover:shadow-lift"
+            >
+              <div className="relative h-28 overflow-hidden bg-court-950">
+                <SafeImage
+                  src={s.image}
+                  alt=""
+                  className="h-full w-full object-cover object-top transition duration-500 group-hover:scale-[1.04]"
+                  fallback={
+                    <div className="flex h-full w-full items-center justify-center bg-court-900 text-brass-300">
+                      {s.icon}
+                    </div>
+                  }
+                />
+                {i === 0 && onlineCount > 0 && (
+                  <span className="absolute inset-x-0 top-1/2 flex -translate-y-1/2 items-center justify-center gap-1.5 bg-court-800/95 px-2 py-1.5 text-[0.78rem] font-bold text-white">
+                    <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-moss-600" aria-hidden />
+                    <T en={`${onlineCount} Lawyers Online Now`} ur={`${onlineCount} وکیل آن لائن`} />
+                  </span>
+                )}
+              </div>
+              <p className="p-3 text-[0.95rem] font-bold leading-snug text-ink-950">
+                <T en={s.titleEn} ur={s.titleUr} />
+              </p>
+            </Link>
+          ))}
+        </div>
+        {/* mobile: 3 compact cards in a row */}
+        <div className="mt-3 grid grid-cols-3 gap-3 md:hidden">
+          {SERVICES.slice(2).map((s) => (
+            <Link
+              key={s.titleEn}
+              href={s.href}
+              className="group overflow-hidden rounded-2xl bg-white shadow-card ring-1 ring-ink-900/10 transition hover:shadow-lift"
+            >
+              <div className="h-20 overflow-hidden bg-court-50">
+                <SafeImage
+                  src={s.image}
+                  alt=""
+                  className="h-full w-full object-cover object-top transition duration-500 group-hover:scale-[1.04]"
+                  fallback={
+                    <div className="flex h-full w-full items-center justify-center bg-court-900 text-brass-300">
+                      {s.icon}
+                    </div>
+                  }
+                />
+              </div>
+              <p className="p-2 text-center text-[0.8rem] font-bold leading-tight text-ink-950">
+                <T en={s.titleEn} ur={s.titleUr} />
+              </p>
+            </Link>
+          ))}
+        </div>
+        {/* md+: existing card grid untouched */}
+        <div className="hidden gap-5 md:grid md:grid-cols-3 lg:grid-cols-5">
           {SERVICES.map((s, i) => (
             <Link
               key={s.titleEn}

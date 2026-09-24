@@ -36,11 +36,14 @@ export default function NearMeButton({
   onDetected,
   onDetectError,
   small,
+  dark,
 }: {
   onDetected: (slug: string) => void;
   /** Called when detection fails so the parent can offer a manual fallback (e.g. open the city picker). */
   onDetectError?: (err: DetectError) => void;
   small?: boolean;
+  /** Light text for use on dark backgrounds (e.g. the mobile hero card). */
+  dark?: boolean;
 }) {
   const [state, setState] = useState<"idle" | "detecting" | DetectError>("idle");
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -76,7 +79,9 @@ export default function NearMeButton({
         type="button"
         onClick={detect}
         disabled={state === "detecting"}
-        className={`inline-flex items-center gap-1.5 whitespace-nowrap font-bold text-court-800 transition hover:text-court-600 disabled:opacity-60 ${
+        className={`inline-flex items-center gap-1.5 whitespace-nowrap font-bold transition disabled:opacity-60 ${
+          dark ? "text-white hover:text-brass-200" : "text-court-800 hover:text-court-600"
+        } ${
           small ? "min-h-[44px] px-2 text-[0.85rem]" : "min-h-[44px] px-3 text-[0.95rem]"
         }`}
       >
@@ -88,7 +93,7 @@ export default function NearMeButton({
         )}
       </button>
       {state !== "idle" && state !== "detecting" && (
-        <span role="alert" className="max-w-[220px] text-[0.82rem] font-semibold leading-snug text-red-700">
+        <span role="alert" className={`max-w-[220px] text-[0.82rem] font-semibold leading-snug ${dark ? "text-red-200" : "text-red-700"}`}>
           <T en={ERROR_TEXT[state].en} ur={ERROR_TEXT[state].ur} />
         </span>
       )}
