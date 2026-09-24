@@ -6,7 +6,6 @@ import { PhotoAvatar } from "@/components/PhotoAvatar";
 import SearchHero from "@/components/SearchHero";
 import SpecialtyCircles from "@/components/SpecialtyCircles";
 import StatsBand from "@/components/StatsBand";
-import PartnersMarquee from "@/components/PartnersMarquee";
 import FaqAccordion from "@/components/FaqAccordion";
 import {
   ArrowIcon,
@@ -411,9 +410,6 @@ export default async function Home() {
           ))}
         </div>
       </section>
-
-      {/* ============ TRUSTED ACROSS SINDH — institutional partners ============ */}
-      <PartnersMarquee />
 
       <SpecialtyCircles />
 
