@@ -204,8 +204,8 @@ export default async function Home() {
                 src={heroPortrait}
                 alt="Shamsuddin Rajper — Founder & Senior Advocate"
                 eager
-                className="h-full w-full bg-[#f8f5ef] object-cover object-[50%_top]"
-                fallback={<div className="h-full w-full bg-[#f8f5ef]" aria-hidden />}
+                className="h-full w-full object-cover object-[50%_top]"
+                fallback={<div className="h-full w-full bg-court-800" aria-hidden />}
               />
             </div>
             <div className="relative z-10 px-4 pb-3 pt-4">
@@ -266,8 +266,8 @@ export default async function Home() {
                   src={heroPortrait}
                   alt="Shamsuddin Rajper — Founder & Senior Advocate"
                   eager
-                  className="w-full max-w-[22rem] rounded-[1.5rem] bg-[#f8f5ef] object-contain shadow-lift ring-1 ring-white/25"
-                  fallback={<div className="aspect-[821/570] w-full max-w-[22rem] rounded-[1.5rem] bg-[#f8f5ef]" aria-hidden />}
+                  className="w-full max-w-[22rem] rounded-[1.5rem] object-contain shadow-lift ring-1 ring-white/25"
+                  fallback={<div className="aspect-[821/570] w-full max-w-[22rem] rounded-[1.5rem] bg-court-800" aria-hidden />}
                 />
                 <div className="absolute -bottom-5 left-1/2 hidden w-max -translate-x-1/2 rounded-full bg-white px-5 py-2.5 text-[0.95rem] font-bold text-ink-900 shadow-lift lg:block">
                   <T en="3-step booking · No account needed" ur="۳ مراحل میں بکنگ · اکاؤنٹ کی ضرورت نہیں" />
