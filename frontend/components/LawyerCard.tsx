@@ -89,8 +89,8 @@ export default function LawyerCard({ lawyer }: { lawyer: LawyerCardData }) {
                 <VideoIcon className="h-5 w-5" />
                 <T en="Online" ur="آن لائن" />
               </span>
-              <span className="flex shrink-0 flex-col items-end leading-snug">
-                <span className="font-semibold text-ink-700">
+              <span className="flex min-w-0 flex-col items-end leading-snug">
+                <span className="text-right font-semibold text-ink-700">
                   {nextLabel ? (
                     <T en={`Next: ${nextLabel}`} ur={`اگلا: ${nextLabel}`} />
                   ) : (
@@ -109,8 +109,8 @@ export default function LawyerCard({ lawyer }: { lawyer: LawyerCardData }) {
                 <OfficeIcon className="h-5 w-5" />
                 <T en="Chamber" ur="چیمبر" />
               </span>
-              <span className="flex shrink-0 flex-col items-end leading-snug">
-                <span className="font-semibold text-ink-700">
+              <span className="flex min-w-0 flex-col items-end leading-snug">
+                <span className="text-right font-semibold text-ink-700">
                   {nextLabel ? (
                     <T en={`Next: ${nextLabel}`} ur={`اگلا: ${nextLabel}`} />
                   ) : (
