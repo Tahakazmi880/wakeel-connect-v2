@@ -197,7 +197,7 @@ export default async function Home() {
           <div className="absolute -right-24 -top-24 h-[26rem] w-[26rem] rounded-full bg-brass-500/25 blur-3xl" aria-hidden />
           <div className="absolute -bottom-32 -left-16 h-80 w-80 rounded-full bg-court-500/20 blur-3xl" aria-hidden />
           <div className="relative grid items-center gap-10 p-7 sm:p-10 lg:grid-cols-[1.15fr_0.85fr] lg:p-14">
-            <div>
+            <div className="order-2 lg:order-1">
               <p className="inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-2 text-[0.95rem] font-bold text-paper ring-1 ring-white/20">
                 <CheckBadgeIcon className="h-5 w-5 text-brass-300" />
                 <T
@@ -221,7 +221,7 @@ export default async function Home() {
                 <SearchHero />
               </div>
             </div>
-            <div className="relative mx-auto w-full max-w-sm">
+            <div className="relative order-1 mx-auto w-full max-w-sm lg:order-2">
               <SafeImage
                 src={heroPortrait}
                 alt="Shamsuddin Rajper — Founder & Senior Advocate"
