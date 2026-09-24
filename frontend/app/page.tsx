@@ -199,7 +199,7 @@ export default async function Home() {
               location → full-width search; portrait absolute right ~35%,
               full card height, edge-bleed with face visible. */}
           <div className="relative md:hidden">
-            <div className="absolute inset-y-0 right-0 w-[35%]">
+            <div className="absolute bottom-0 right-0 h-[88%] w-[35%]">
               <SafeImage
                 src={heroPortrait}
                 alt="Shamsuddin Rajper — Founder & Senior Advocate"
@@ -260,16 +260,18 @@ export default async function Home() {
             <div className="hidden md:block md:col-span-2 md:row-start-2 md:[&_form]:mx-0 md:[&_form]:mt-0 lg:col-span-1 lg:col-start-1 lg:row-start-2 lg:[&_form]:mt-8">
               <SearchHero />
             </div>
-            <div className="relative md:col-start-2 md:row-start-1 md:-mr-10 md:-mt-10 lg:m-0 lg:mx-auto lg:row-span-2 lg:w-full lg:max-w-sm">
-              <SafeImage
-                src={heroPortrait}
-                alt="Shamsuddin Rajper — Founder & Senior Advocate"
-                eager
-                className="absolute inset-0 h-full w-full object-cover object-top md:static md:aspect-[3/4] md:w-full md:rounded-l-[1.5rem] lg:aspect-[4/5] lg:rounded-[1.5rem] lg:shadow-lift lg:ring-1 lg:ring-white/25"
-                fallback={<div className="absolute inset-0 bg-court-800 md:static md:aspect-[3/4] md:w-full md:rounded-l-[1.5rem] lg:aspect-[4/5] lg:rounded-[1.5rem] lg:ring-1 lg:ring-white/25" aria-hidden />}
-              />
-              <div className="absolute -bottom-5 left-1/2 hidden w-max -translate-x-1/2 rounded-full bg-white px-5 py-2.5 text-[0.95rem] font-bold text-ink-900 shadow-lift lg:block">
-                <T en="3-step booking · No account needed" ur="۳ مراحل میں بکنگ · اکاؤنٹ کی ضرورت نہیں" />
+            <div className="relative hidden md:col-start-2 md:row-start-1 md:flex md:items-center md:justify-center lg:row-span-2">
+              <div className="relative">
+                <SafeImage
+                  src={heroPortrait}
+                  alt="Shamsuddin Rajper — Founder & Senior Advocate"
+                  eager
+                  className="w-full max-w-[22rem] rounded-[1.5rem] object-contain shadow-lift ring-1 ring-white/25"
+                  fallback={<div className="aspect-[821/749] w-full max-w-[22rem] rounded-[1.5rem] bg-court-800" aria-hidden />}
+                />
+                <div className="absolute -bottom-5 left-1/2 hidden w-max -translate-x-1/2 rounded-full bg-white px-5 py-2.5 text-[0.95rem] font-bold text-ink-900 shadow-lift lg:block">
+                  <T en="3-step booking · No account needed" ur="۳ مراحل میں بکنگ · اکاؤنٹ کی ضرورت نہیں" />
+                </div>
               </div>
             </div>
           </div>
