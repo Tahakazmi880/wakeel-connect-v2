@@ -115,7 +115,7 @@ function ReviewCard({ review, onChange }: { review: AdminReview; onChange: (id: 
           {review.comment && <p className="mt-2 text-base text-ink-700">“{review.comment}”</p>}
           <p className="mt-2 text-sm text-ink-500">
             <T en="For" ur="بابت" />{" "}
-            <Link href={`/lawyers/${review.lawyer.slug}`} className="font-bold text-court-700 hover:underline">
+            <Link href={`/lawyer/${review.lawyer.slug}`} className="font-bold text-court-700 hover:underline">
               {review.lawyer.displayName}
             </Link>{" "}
             · <T en="by" ur="از" /> {review.client.fullName} · {fmtDate(review.createdAt)}
