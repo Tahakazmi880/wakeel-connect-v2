@@ -94,21 +94,13 @@ export default function Footer() {
           <div>
             <ColHeading><T en="High Courts" ur="ہائی کورٹس" /></ColHeading>
             <ul className="space-y-0 text-[1.02rem]">
-              {COURTS.map((c) => {
-                const city = getCity(c.citySlug);
-                return (
-                  <li key={c.slug}>
-                    <Link className={LINK_CLS} href={`/lawyers?court=${c.slug}`}>
-                      <T en={c.nameEn} ur={c.nameUr} />
-                      {city && (
-                        <span className="text-ink-400">
-                          {" "}· <T en={city.nameEn} ur={city.nameUr} />
-                        </span>
-                      )}
-                    </Link>
-                  </li>
-                );
-              })}
+              {COURTS.map((c) => (
+                <li key={c.slug}>
+                  <Link className={LINK_CLS} href={`/lawyers?court=${c.slug}`}>
+                    <T en={c.nameEn} ur={c.nameUr} />
+                  </Link>
+                </li>
+              ))}
             </ul>
           </div>
 
@@ -172,7 +164,9 @@ export default function Footer() {
             {CITIES.slice(0, 6).flatMap((c) =>
               PRACTICE_AREAS.slice(0, 6).map((a) => (
                 <li key={`${c.slug}-${a.slug}`}>
-                  <Link className={LINK_CLS} href={`/${c.slug}/${a.slug}`}>
+                  {/* text-pretty keeps the occasional two-line wrap
+                      (e.g. "…in Rawalpindi") balanced instead of ragged. */}
+                  <Link className={`${LINK_CLS} text-pretty leading-snug`} href={`/${c.slug}/${a.slug}`}>
                     <T en={`${a.nameEn} Lawyers in ${c.nameEn}`} ur={`${c.nameUr} میں ${a.nameUr} کے وکیل`} />
                   </Link>
                 </li>
