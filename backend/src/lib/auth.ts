@@ -5,7 +5,7 @@ import { sha256Hex, generateOpaqueToken } from "./crypto.js";
 export interface AccessTokenPayload {
   sub: string; // user id
   role: "CLIENT" | "LAWYER" | "ADMIN";
-  phone: string;
+  phone?: string; // absent for Google-only sign-ups until they add a number
 }
 
 /** Short-lived JWT for API calls (Authorization: Bearer). */

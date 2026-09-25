@@ -1,5 +1,6 @@
 import type { FastifyInstance } from "fastify";
 import { z } from "zod";
+import { OAuth2Client } from "google-auth-library";
 import { prisma } from "../lib/prisma.js";
 import { env } from "../lib/env.js";
 import { normalizePhone, generateOtp, sha256Hex, safeEqual } from "../lib/crypto.js";
@@ -31,6 +32,10 @@ const phoneSchema = z.object({
 const verifySchema = z.object({
   phone: z.string().min(10).max(20),
   code: z.string().regex(/^\d{6}$/, "Code must be 6 digits."),
+});
+
+const googleSchema = z.object({
+  idToken: z.string().min(10, "Missing Google credential."),
 });
 
 export async function authRoutes(app: FastifyInstance) {
@@ -137,12 +142,94 @@ export async function authRoutes(app: FastifyInstance) {
     });
     setRefreshCookie(reply, raw);
 
-    const accessToken = signAccessToken({ sub: user.id, role: user.role, phone: user.phone });
+    const accessToken = signAccessToken({ sub: user.id, role: user.role, phone: user.phone ?? undefined });
     return reply.send({
       ok: true,
       accessToken,
       expiresInSec: env.ACCESS_TOKEN_TTL_SEC,
       user: { id: user.id, phone: user.phone, fullName: user.fullName, role: user.role },
+    });
+  });
+
+  /**
+   * "Continue with Google" — verify the Google ID token, find or create the
+   * user, and start a session. Same token shape as the OTP flow.
+   *
+   * Account linking: if a user already exists with the Google email address
+   * (e.g. signed up via OTP), the Google identity is linked to that account
+   * so they don't end up with two profiles.
+   */
+  app.post("/auth/google", async (req, reply) => {
+    if (!env.GOOGLE_CLIENT_ID) {
+      return reply.code(503).send({ ok: false, error: "GOOGLE_DISABLED", message: "Google sign-in is not configured yet." });
+    }
+    const parsed = googleSchema.safeParse(req.body);
+    if (!parsed.success) throw badRequest("INVALID_TOKEN", "Missing Google credential.");
+
+    const client = new OAuth2Client(env.GOOGLE_CLIENT_ID);
+    let payload;
+    try {
+      const ticket = await client.verifyIdToken({
+        idToken: parsed.data.idToken,
+        audience: env.GOOGLE_CLIENT_ID,
+      });
+      payload = ticket.getPayload();
+    } catch {
+      throw badRequest("INVALID_TOKEN", "Could not verify your Google sign-in. Please try again.");
+    }
+    if (!payload?.sub || !payload?.email) {
+      throw badRequest("INVALID_TOKEN", "Google did not share an email address. Please try another account.");
+    }
+    if (payload.email_verified === false) {
+      throw badRequest("UNVERIFIED_EMAIL", "This Google account's email is not verified.");
+    }
+
+    const googleId = payload.sub;
+    const email = payload.email.toLowerCase();
+    const fullName = (payload.name || email.split("@")[0] || "WakeelConnect User").slice(0, 120);
+    const avatarUrl = typeof payload.picture === "string" ? payload.picture.slice(0, 500) : null;
+
+    // 1) Existing Google-linked account. 2) Same email from OTP sign-up → link.
+    let user = await prisma.user.findUnique({ where: { googleId } });
+    if (!user) {
+      const byEmail = await prisma.user.findUnique({ where: { email } });
+      if (byEmail) {
+        user = await prisma.user.update({
+          where: { id: byEmail.id },
+          data: { googleId, avatarUrl: byEmail.avatarUrl ?? avatarUrl, lastLoginAt: new Date(), status: "ACTIVE" },
+        });
+      } else {
+        user = await prisma.user.create({
+          data: { googleId, email, fullName, avatarUrl, lastLoginAt: new Date() },
+        });
+      }
+    } else {
+      user = await prisma.user.update({
+        where: { id: user.id },
+        data: { lastLoginAt: new Date(), status: "ACTIVE" },
+      });
+    }
+    if (user.status === "SUSPENDED") throw unauthorized("This account has been suspended.");
+
+    const { raw, hash } = newRefreshToken();
+    const expiresAt = new Date(Date.now() + env.REFRESH_TOKEN_TTL_DAYS * 24 * 3600_000);
+    await prisma.refreshSession.create({
+      data: {
+        userId: user.id,
+        tokenHash: hash,
+        userAgent: req.headers["user-agent"]?.slice(0, 255),
+        ip: req.ip,
+        expiresAt,
+      },
+    });
+    setRefreshCookie(reply, raw);
+
+    const accessToken = signAccessToken({ sub: user.id, role: user.role, phone: user.phone ?? undefined });
+    return reply.send({
+      ok: true,
+      accessToken,
+      expiresInSec: env.ACCESS_TOKEN_TTL_SEC,
+      user: { id: user.id, phone: user.phone, email: user.email, fullName: user.fullName, role: user.role },
     });
   });
 
@@ -190,7 +277,7 @@ export async function authRoutes(app: FastifyInstance) {
     ]);
     setRefreshCookie(reply, next.raw);
 
-    const accessToken = signAccessToken({ sub: session.user.id, role: session.user.role, phone: session.user.phone });
+    const accessToken = signAccessToken({ sub: session.user.id, role: session.user.role, phone: session.user.phone ?? undefined });
     return reply.send({ ok: true, accessToken, expiresInSec: env.ACCESS_TOKEN_TTL_SEC });
   });
 
@@ -209,7 +296,7 @@ export async function authRoutes(app: FastifyInstance) {
   app.get("/auth/me", { preHandler: [requireAuth] }, async (req) => {
     const user = await prisma.user.findUnique({
       where: { id: req.user.sub },
-      select: { id: true, phone: true, fullName: true, role: true, phoneVerifiedAt: true, createdAt: true },
+      select: { id: true, phone: true, email: true, fullName: true, role: true, phoneVerifiedAt: true, createdAt: true },
     });
     if (!user) throw unauthorized();
     return { ok: true, user };

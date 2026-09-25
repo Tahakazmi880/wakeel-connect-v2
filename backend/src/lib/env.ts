@@ -43,6 +43,10 @@ const envSchema = z.object({
   // MUST be set back to false once SMS_PROVIDER=twilio is live.
   OTP_ACCEPT_ANY: envBool.default(false),
 
+  // "Continue with Google" — OAuth 2.0 client ID from Google Cloud Console.
+  // When unset, the /auth/google endpoint returns 503 (Google login disabled).
+  GOOGLE_CLIENT_ID: z.string().optional(),
+
   UPLOAD_DIR: z.string().default("./uploads"),
   MAX_UPLOAD_MB: z.coerce.number().int().positive().default(10),
 

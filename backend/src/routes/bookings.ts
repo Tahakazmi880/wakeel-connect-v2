@@ -4,6 +4,7 @@ import crypto from "node:crypto";
 import { prisma } from "../lib/prisma.js";
 import { env } from "../lib/env.js";
 import { storeDocument, deleteDocument, openDocument } from "../lib/storage.js";
+import { normalizePhone } from "../lib/crypto.js";
 import { badRequest, notFound, forbidden, conflict } from "../lib/errors.js";
 import { requireAuth, requireRole } from "../middleware/auth.js";
 
@@ -12,6 +13,9 @@ const createSchema = z.object({
   startAt: z.string().datetime({ message: "startAt must be an ISO datetime." }),
   mode: z.enum(["ONLINE_VIDEO", "IN_CHAMBER", "PHONE"]).default("IN_CHAMBER"),
   clientNote: z.string().max(1000).optional(),
+  // Google sign-ups may not have a phone on file — the booking form can
+  // collect one at checkout (the lawyer needs a number to call).
+  clientPhone: z.string().min(10).max(20).optional(),
 });
 
 const ALLOWED_MIME = new Set([
@@ -55,6 +59,14 @@ export async function bookingRoutes(app: FastifyInstance) {
       throw badRequest("INVALID_SLOT", "Please choose a time at least 15 minutes in the future.");
     }
 
+    // Phone for the lawyer to call: prefer the number given at checkout,
+    // fall back to the number on the user's profile (OTP users).
+    const rawPhone = parsed.data.clientPhone ?? req.user.phone;
+    const clientPhone = rawPhone ? normalizePhone(rawPhone) : null;
+    if (!clientPhone) {
+      throw badRequest("PHONE_REQUIRED", "Please add a mobile number so the lawyer can reach you.");
+    }
+
     const lawyer = await prisma.lawyer.findFirst({
       where: { id: lawyerId, isListed: true, verificationStatus: "APPROVED", isSeedData: false },
       select: { id: true, consultationFeePaisa: true, onlineFeePaisa: true, displayName: true },
@@ -84,7 +96,7 @@ export async function bookingRoutes(app: FastifyInstance) {
         // Online consultations are priced from the lawyer's online fee (0 = on request),
         // never the chamber fee — the profile/card online row shows "Fee on request" for 0.
         feePaisa: mode === "ONLINE_VIDEO" ? lawyer.onlineFeePaisa : lawyer.consultationFeePaisa,
-        clientPhone: req.user.phone,
+        clientPhone,
         clientNote,
       },
       select: {

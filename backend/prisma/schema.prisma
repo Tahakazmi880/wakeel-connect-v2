@@ -100,9 +100,10 @@ enum LeadStatus {
 
 model User {
   id              String      @id @default(cuid())
-  phone           String      @unique // +92... E.164 — primary identifier (OTP auth)
+  phone           String?     @unique // +92... E.164 — OTP auth; null for Google-only sign-ups
   phoneVerifiedAt DateTime?
   email           String?     @unique // optional; always lowercase (service rule)
+  googleId        String?     @unique // Google OAuth subject — "Continue with Google"
   passwordHash    String? // optional fallback; OTP is the primary flow
   fullName        String
   role            Role        @default(CLIENT)
@@ -426,7 +427,7 @@ model Booking {
   status       BookingStatus @default(PENDING)
   mode         BookingMode   @default(IN_CHAMBER)
   feePaisa     Int // snapshot of the fee at booking time
-  clientPhone  String // contact snapshot; shown to lawyer only after confirmation
+  clientPhone  String? // contact snapshot; shown to lawyer only after confirmation (null until a Google user adds a number)
   clientNote   String?       @db.Text
   cancelledAt  DateTime?
   cancelReason String?
