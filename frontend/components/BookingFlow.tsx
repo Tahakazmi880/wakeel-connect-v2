@@ -244,16 +244,20 @@ function PhoneModal({
           </>
         ) : step === "phone" ? (
           <>
-            <div className="mt-4">
-              <GoogleSignIn onDone={() => void onGoogleDone()} />
-            </div>
-            <div className="my-5 flex items-center gap-3" aria-hidden>
-              <span className="h-px flex-1 bg-ink-900/10" />
-              <span className="text-sm font-bold text-ink-400">
-                <T en="or continue with mobile" ur="یا موبائل سے جاری رکھیں" />
-              </span>
-              <span className="h-px flex-1 bg-ink-900/10" />
-            </div>
+            {process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID && (
+              <>
+                <div className="mt-4">
+                  <GoogleSignIn onDone={() => void onGoogleDone()} />
+                </div>
+                <div className="my-5 flex items-center gap-3" aria-hidden>
+                  <span className="h-px flex-1 bg-ink-900/10" />
+                  <span className="text-sm font-bold text-ink-400">
+                    <T en="or continue with mobile" ur="یا موبائل سے جاری رکھیں" />
+                  </span>
+                  <span className="h-px flex-1 bg-ink-900/10" />
+                </div>
+              </>
+            )}
             <p className="text-base text-ink-600">
               <T
                 en="Enter your mobile number — we'll send a verification code. No password needed."

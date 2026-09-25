@@ -163,14 +163,18 @@ function LoginForm() {
 
       <section className="rounded-lg border border-ink-900/10 bg-white p-6 shadow-card sm:p-8" aria-label="Login">
         {/* Continue with Google — no phone needed to start. */}
-        <GoogleSignIn onDone={() => router.replace(next)} />
-        <div className="my-6 flex items-center gap-3" aria-hidden>
-          <span className="h-px flex-1 bg-ink-900/10" />
-          <span className="text-sm font-bold text-ink-400">
-            <T en="or" ur="یا" />
-          </span>
-          <span className="h-px flex-1 bg-ink-900/10" />
-        </div>
+        {process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID && (
+          <>
+            <GoogleSignIn onDone={() => router.replace(next)} />
+            <div className="my-6 flex items-center gap-3" aria-hidden>
+              <span className="h-px flex-1 bg-ink-900/10" />
+              <span className="text-sm font-bold text-ink-400">
+                <T en="or" ur="یا" />
+              </span>
+              <span className="h-px flex-1 bg-ink-900/10" />
+            </div>
+          </>
+        )}
 
         {step === "phone" ? (
           <>
