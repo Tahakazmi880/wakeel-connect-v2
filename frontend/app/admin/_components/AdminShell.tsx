@@ -174,8 +174,8 @@ export default function AdminShell({ children }: { children: ReactNode }) {
           </p>
           <div className="ml-auto flex items-center gap-3">
             {isAdmin && (
-              <p className="hidden truncate text-base text-ink-600 sm:block" title={user?.phone}>
-                {user?.fullName ?? user?.phone}
+              <p className="hidden truncate text-base text-ink-600 sm:block" title={user?.phone ?? user?.email ?? ""}>
+                {user?.fullName ?? user?.phone ?? user?.email}
               </p>
             )}
             <button

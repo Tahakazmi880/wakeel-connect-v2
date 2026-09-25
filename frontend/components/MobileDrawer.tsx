@@ -238,8 +238,8 @@ export default function MobileDrawer({ open, onClose }: { open: boolean; onClose
                   <span className="min-w-0 flex-1">
                     <span className="block truncate text-[1.05rem] font-bold text-ink-900">
                       <T
-                        en={`Hello, ${(user.fullName || user.phone).split(" ")[0]}`}
-                        ur={`السلام علیکم، ${(user.fullName || user.phone).split(" ")[0]}`}
+                        en={`Hello, ${(user.fullName || user.phone || user.email || "").split(" ")[0]}`}
+                        ur={`السلام علیکم، ${(user.fullName || user.phone || user.email || "").split(" ")[0]}`}
                       />
                     </span>
                     <span className="block truncate text-sm text-ink-500">

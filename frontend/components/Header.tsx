@@ -365,10 +365,10 @@ export default function Header() {
                   className={`${MENU_BTN} hidden md:flex`}
                 >
                   <span className="flex h-8 w-8 items-center justify-center rounded-full bg-court-700 text-sm font-bold text-white">
-                    {(user.fullName || user.phone).charAt(0).toUpperCase()}
+                    {(user.fullName || user.phone || user.email || "?").charAt(0).toUpperCase()}
                   </span>
                   <span className="max-w-28 truncate">
-                    {(user.fullName || user.phone).split(" ")[0]}
+                    {(user.fullName || user.phone || user.email || "").split(" ")[0]}
                   </span>
                   <ChevronIcon
                     className={`h-4 w-4 text-ink-400 transition-transform ${openMenu === "account" ? "rotate-180" : ""}`}

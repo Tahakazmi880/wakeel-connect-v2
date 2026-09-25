@@ -33,6 +33,7 @@ import {
   type SlotDay,
 } from "@/lib/api";
 import { useAuth } from "@/lib/useAuth";
+import GoogleSignIn from "./GoogleSignIn";
 
 const MODES: { id: BookingMode; en: string; ur: string; icon: (c: string) => React.ReactNode }[] = [
   { id: "ONLINE_VIDEO", en: "Online consultation", ur: "آن لائن مشاورت", icon: (c) => <VideoIcon className={c} /> },
@@ -87,9 +88,10 @@ function PhoneModal({
   lawyerName: string;
   slotLabel: string;
   onClose: () => void;
-  onVerified: () => void;
+  /** phone is set when a Google user had no number on file and added one here. */
+  onVerified: (phone?: string) => void;
 }) {
-  const [step, setStep] = useState<"phone" | "code">("phone");
+  const [step, setStep] = useState<"phone" | "code" | "google-phone">("phone");
   const [phone, setPhone] = useState("");
   const [code, setCode] = useState("");
   const [busy, setBusy] = useState(false);
@@ -149,6 +151,14 @@ function PhoneModal({
     }
   }
 
+  /** After Google sign-in: continue if we have a phone, else ask for one (no OTP — Google verified the identity). */
+  async function onGoogleDone() {
+    const { getSessionUser } = await import("@/lib/api");
+    const u = getSessionUser();
+    if (u?.phone) onVerified();
+    else setStep("google-phone");
+  }
+
   return (
     <div
       className="fixed inset-0 z-50 flex items-end justify-center bg-ink-950/60 sm:items-center sm:p-4"
@@ -191,9 +201,60 @@ function PhoneModal({
           </button>
         </div>
 
-        {step === "phone" ? (
+        {step === "google-phone" ? (
           <>
             <p className="mt-4 text-base text-ink-600">
+              <T
+                en="One last step — add your mobile number so the lawyer can reach you about the appointment."
+                ur="آخری مرحلہ — اپنا موبائل نمبر لکھیں تاکہ وکیل ملاقات کے بارے میں رابطہ کر سکے۔"
+              />
+            </p>
+            <label className="mt-4 block">
+              <span className="mb-1 block text-base font-bold text-ink-700">
+                <T en="Mobile number" ur="موبائل نمبر" />
+              </span>
+              <span className="flex overflow-hidden rounded-lg border border-ink-900/15 transition focus-within:border-court-600 focus-within:ring-2 focus-within:ring-court-600/20">
+                <span className="flex min-h-[60px] items-center border-r border-ink-900/15 bg-paper-dark/40 px-4 text-lg font-bold text-ink-700">
+                  +92
+                </span>
+                <input
+                  value={phone}
+                  onChange={(e) => {
+                    setPhone(e.target.value.replace(/\D/g, "").slice(0, 10));
+                    setError("");
+                  }}
+                  inputMode="numeric"
+                  placeholder="300 1234567"
+                  autoFocus
+                  aria-label="Mobile number"
+                  className="min-h-[60px] w-full px-4 text-xl font-bold tracking-wider text-ink-950 outline-none"
+                />
+              </span>
+            </label>
+            <div className="mt-5">
+              <PrimaryBtn
+                className="w-full"
+                icon={<CheckIcon className="h-6 w-6" />}
+                disabled={!phoneValid || busy}
+                onClick={() => onVerified(phone)}
+              >
+                <T en="Continue" ur="آگے بڑھیں" />
+              </PrimaryBtn>
+            </div>
+          </>
+        ) : step === "phone" ? (
+          <>
+            <div className="mt-4">
+              <GoogleSignIn onDone={() => void onGoogleDone()} />
+            </div>
+            <div className="my-5 flex items-center gap-3" aria-hidden>
+              <span className="h-px flex-1 bg-ink-900/10" />
+              <span className="text-sm font-bold text-ink-400">
+                <T en="or continue with mobile" ur="یا موبائل سے جاری رکھیں" />
+              </span>
+              <span className="h-px flex-1 bg-ink-900/10" />
+            </div>
+            <p className="text-base text-ink-600">
               <T
                 en="Enter your mobile number — we'll send a verification code. No password needed."
                 ur="اپنا موبائل نمبر لکھیں — تصدیقی کوڈ آئے گا۔ پاس ورڈ کی ضرورت نہیں۔"
@@ -337,6 +398,8 @@ export default function BookingFlow({ lawyerSlug }: { lawyerSlug: string }) {
   const [error, setError] = useState("");
   const [booking, setBooking] = useState<Booking | null>(null);
   const [showPhoneModal, setShowPhoneModal] = useState(false);
+  /** Phone collected in the auth modal for Google users with no number on file. */
+  const [checkoutPhone, setCheckoutPhone] = useState("");
 
   // Session restore + lawyer + slots
   useEffect(() => {
@@ -416,6 +479,7 @@ export default function BookingFlow({ lawyerSlug }: { lawyerSlug: string }) {
         startAt: slotToISO(pick.date, pick.start),
         mode,
         clientNote: note.trim() || undefined,
+        clientPhone: checkoutPhone || undefined,
       });
       setBooking(booking);
       setStep(3);
@@ -619,7 +683,8 @@ export default function BookingFlow({ lawyerSlug }: { lawyerSlug: string }) {
           lawyerName={lawyer.displayName}
           slotLabel={`${pickedDay?.label ?? pick.date} · ${pick.start}`}
           onClose={() => setShowPhoneModal(false)}
-          onVerified={() => {
+          onVerified={(phone) => {
+            if (phone) setCheckoutPhone(phone);
             setShowPhoneModal(false);
             setStep(2);
             window.scrollTo({ top: 0, behavior: "smooth" });

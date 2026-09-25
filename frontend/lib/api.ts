@@ -52,7 +52,8 @@ type ApiEnvelope<T> = ApiSuccess<T> | { ok: false; error: { code: string; messag
 
 export interface SessionUser {
   id: string;
-  phone: string;
+  phone: string | null; // null for Google-only sign-ups until they add a number
+  email: string | null;
   fullName: string | null;
   role: "CLIENT" | "LAWYER" | "ADMIN";
 }
@@ -191,6 +192,20 @@ export async function verifyOtp(phone: string, code: string): Promise<SessionUse
   }>("/auth/otp/verify", {
     method: "POST",
     body: { phone: normalizePhone(phone), code: code.trim() },
+  });
+  setAuth(data.user, data.accessToken);
+  return data.user;
+}
+
+/** "Continue with Google" — exchange the Google ID token for a session. */
+export async function signInWithGoogle(idToken: string): Promise<SessionUser> {
+  const data = await apiFetch<{
+    accessToken: string;
+    expiresInSec: number;
+    user: SessionUser;
+  }>("/auth/google", {
+    method: "POST",
+    body: { idToken },
   });
   setAuth(data.user, data.accessToken);
   return data.user;
@@ -345,6 +360,8 @@ export async function createBooking(input: {
   startAt: string;
   mode: BookingMode;
   clientNote?: string;
+  /** For Google sign-ups with no phone on file — collected at checkout. */
+  clientPhone?: string;
 }): Promise<{ booking: Booking }> {
   return apiFetch("/bookings", { method: "POST", auth: true, body: input });
 }
