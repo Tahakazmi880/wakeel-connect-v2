@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Fraunces, Public_Sans, Noto_Nastaliq_Urdu } from "next/font/google";
+import localFont from "next/font/local";
 import "./globals.css";
 import { LanguageProvider } from "@/components/LanguageContext";
 import AuthBootstrap from "@/components/AuthBootstrap";
@@ -7,27 +7,40 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import CookieBanner from "@/components/CookieBanner";
 
-/** Editorial serif for headings, fees and kickers — authority with warmth. */
-const fraunces = Fraunces({
-  subsets: ["latin"],
+/** Editorial serif for headings, fees and kickers — authority with warmth. (Self-hosted: no build-time Google Fonts fetch.) */
+const fraunces = localFont({
+  src: [
+    { path: "./fonts/fraunces-latin-400-normal.woff2", weight: "400" },
+    { path: "./fonts/fraunces-latin-500-normal.woff2", weight: "500" },
+    { path: "./fonts/fraunces-latin-600-normal.woff2", weight: "600" },
+    { path: "./fonts/fraunces-latin-700-normal.woff2", weight: "700" },
+  ],
   variable: "--font-fraunces",
-  weight: ["400", "500", "600", "700"],
   display: "swap",
 });
 
-/** Humanist sans for UI and body text. */
-const publicSans = Public_Sans({
-  subsets: ["latin"],
+/** Humanist sans for UI and body text. (Self-hosted.) */
+const publicSans = localFont({
+  src: [
+    { path: "./fonts/public-sans-latin-400-normal.woff2", weight: "400" },
+    { path: "./fonts/public-sans-latin-500-normal.woff2", weight: "500" },
+    { path: "./fonts/public-sans-latin-600-normal.woff2", weight: "600" },
+    { path: "./fonts/public-sans-latin-700-normal.woff2", weight: "700" },
+    { path: "./fonts/public-sans-latin-800-normal.woff2", weight: "800" },
+  ],
   variable: "--font-public-sans",
-  weight: ["400", "500", "600", "700", "800"],
   display: "swap",
 });
 
-/** Genuine Nastaliq for Urdu — never an afterthought. */
-const nastaliq = Noto_Nastaliq_Urdu({
-  subsets: ["arabic"],
+/** Genuine Nastaliq for Urdu — never an afterthought. (Self-hosted.) */
+const nastaliq = localFont({
+  src: [
+    { path: "./fonts/noto-nastaliq-urdu-arabic-400-normal.woff2", weight: "400" },
+    { path: "./fonts/noto-nastaliq-urdu-arabic-500-normal.woff2", weight: "500" },
+    { path: "./fonts/noto-nastaliq-urdu-arabic-600-normal.woff2", weight: "600" },
+    { path: "./fonts/noto-nastaliq-urdu-arabic-700-normal.woff2", weight: "700" },
+  ],
   variable: "--font-nastaliq",
-  weight: ["400", "500", "600", "700"],
   display: "swap",
 });
 
