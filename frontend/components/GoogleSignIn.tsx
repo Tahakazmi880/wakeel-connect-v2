@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { T } from "./LanguageContext";
-import { signInWithGoogle, ApiError } from "@/lib/api";
+import { signInWithGoogle, ApiError, type SessionUser } from "@/lib/api";
 
 declare global {
   interface Window {
@@ -24,7 +24,7 @@ const CLIENT_ID = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID ?? "";
  * Exchanges the Google ID token with our backend (/auth/google), which
  * verifies it and starts a normal WakeelConnect session (same as OTP).
  */
-export default function GoogleSignIn({ onDone }: { onDone: () => void }) {
+export default function GoogleSignIn({ onDone }: { onDone: (user: SessionUser) => void }) {
   const btnRef = useRef<HTMLDivElement>(null);
   const [error, setError] = useState(false);
   const [busy, setBusy] = useState(false);
@@ -41,8 +41,8 @@ export default function GoogleSignIn({ onDone }: { onDone: () => void }) {
           setBusy(true);
           setError(false);
           try {
-            await signInWithGoogle(resp.credential);
-            onDone();
+            const user = await signInWithGoogle(resp.credential);
+            onDone(user);
           } catch (err) {
             // GOOGLE_DISABLED etc. — show a simple retry message.
             if (err instanceof ApiError) setError(true);

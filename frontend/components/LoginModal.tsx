@@ -6,6 +6,7 @@ import { T } from "./LanguageContext";
 import { PrimaryBtn, SecondaryBtn } from "./ui";
 import { CheckIcon, PhoneIcon, BriefcaseIcon, UserIcon } from "./icons";
 import { ApiError, requestOtp, verifyOtp, type SessionUser } from "@/lib/api";
+import GoogleSignIn from "./GoogleSignIn";
 
 export type LoginRole = "CLIENT" | "LAWYER";
 
@@ -252,6 +253,26 @@ export default function LoginModal({ open, onClose, onSuccess, initialRole = "CL
 
         {step === "phone" && (
           <>
+            {/* Continue with Google — no phone needed to start. */}
+            {process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID && (
+              <>
+                <div className="mt-5">
+                  <GoogleSignIn
+                    onDone={(user) => {
+                      onClose();
+                      onSuccess?.(user);
+                    }}
+                  />
+                </div>
+                <div className="my-5 flex items-center gap-3" aria-hidden>
+                  <span className="h-px flex-1 bg-ink-900/10" />
+                  <span className="text-sm font-bold text-ink-400">
+                    <T en="or" ur="یا" />
+                  </span>
+                  <span className="h-px flex-1 bg-ink-900/10" />
+                </div>
+              </>
+            )}
             <p className="mt-5 text-base text-ink-600">
               <T
                 en="Enter your mobile number — we'll send a 6-digit verification code. No password needed."
