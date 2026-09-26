@@ -16,16 +16,18 @@ function CircleItem({
   labelEn,
   labelUr,
   children,
+  className = "",
 }: {
   href: string;
   labelEn: string;
   labelUr: string;
   children: React.ReactNode;
+  className?: string;
 }) {
   return (
     <Link
       href={href}
-      className="group flex w-full flex-col items-center gap-2 sm:w-24 sm:shrink-0"
+      className={`group flex w-full flex-col items-center gap-2 sm:w-24 sm:shrink-0 ${className}`}
     >
       <span className="mx-auto block h-16 w-16 overflow-hidden rounded-full ring-1 ring-ink-900/10 transition group-hover:ring-2 group-hover:ring-court-400 min-[420px]:h-20 min-[420px]:w-20 sm:h-24 sm:w-24">
         {children}
@@ -82,6 +84,7 @@ export default function SpecialtyCircles() {
               href={`/lawyers?q=${encodeURIComponent(issue.q)}`}
               labelEn={issue.nameEn}
               labelUr={issue.nameUr}
+              className="w-20 shrink-0 sm:w-24"
             >
               <LegalIssueIcon id={issue.id} />
             </CircleItem>

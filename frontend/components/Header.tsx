@@ -406,7 +406,7 @@ export default function Header() {
                 {/* Mobile pill (oladoc pattern) — desktop keeps the SOLID_BTN below. */}
                 <Link
                   href="/join"
-                  className="inline-flex min-h-[28px] items-center whitespace-nowrap rounded-full bg-court-700 px-2.5 text-[0.65rem] font-bold text-white shadow-card transition hover:bg-court-800 md:hidden"
+                  className="inline-flex min-h-[44px] items-center whitespace-nowrap rounded-full bg-court-700 px-4 text-[0.8rem] font-bold text-white shadow-card transition hover:bg-court-800 md:hidden"
                 >
                   <T en="Join as Lawyer" ur="وکیل بنیں" />
                 </Link>

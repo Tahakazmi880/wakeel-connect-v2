@@ -192,7 +192,7 @@ function LoginForm() {
                   }}
                   inputMode="numeric"
                   placeholder="300 1234567"
-                  className="min-h-[60px] w-full px-4 text-xl font-bold tracking-wider text-ink-950 outline-none"
+                  className="min-h-[60px] w-full min-w-0 flex-1 px-4 text-xl font-bold tracking-wider text-ink-950 outline-none"
                   aria-label="Mobile number"
                   autoFocus
                 />

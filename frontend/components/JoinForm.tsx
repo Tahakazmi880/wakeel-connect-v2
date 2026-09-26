@@ -334,7 +334,7 @@ export default function JoinForm() {
               <span className="mb-1 block text-base font-bold text-ink-700"><T en="Mobile number" ur="موبائل نمبر" /></span>
               <span className="flex overflow-hidden rounded-lg border border-ink-900/15 transition focus-within:border-court-600 focus-within:ring-2 focus-within:ring-court-600/20">
                 <span className="flex min-h-[56px] items-center border-r border-ink-900/15 bg-paper-dark/40 px-4 text-lg font-bold text-ink-700">+92</span>
-                <input value={phone} onChange={(e) => setPhone(e.target.value)} className="min-h-[56px] w-full px-4 text-lg outline-none" inputMode="numeric" placeholder="300 1234567" />
+                <input value={phone} onChange={(e) => setPhone(e.target.value)} className="min-h-[56px] w-full min-w-0 flex-1 px-4 text-lg outline-none" inputMode="numeric" placeholder="300 1234567" />
               </span>
               {err("phone")}
             </label>

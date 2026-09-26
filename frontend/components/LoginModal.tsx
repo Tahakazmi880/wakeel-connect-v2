@@ -311,7 +311,7 @@ export default function LoginModal({ open, onClose, onSuccess, initialRole = "CL
                   placeholder={isPk ? "300 1234567" : "5X XXX XXXX"}
                   dir="ltr"
                   aria-label="Mobile number"
-                  className="min-h-[60px] w-full px-4 text-xl font-bold tracking-wider text-ink-950 outline-none"
+                  className="min-h-[60px] w-full min-w-0 flex-1 px-4 text-xl font-bold tracking-wider text-ink-950 outline-none"
                 />
               </span>
               <span className="mt-1 block text-sm font-semibold text-ink-500">

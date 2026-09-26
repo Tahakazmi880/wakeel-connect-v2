@@ -98,7 +98,7 @@ export default function CallbackForm() {
             +92
           </span>
           <input
-            className={INPUT}
+            className={`${INPUT} min-w-0 flex-1`}
             value={phone}
             onChange={(e) => setPhone(e.target.value)}
             placeholder="300 1234567"
