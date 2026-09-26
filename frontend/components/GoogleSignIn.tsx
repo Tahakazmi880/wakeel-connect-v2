@@ -23,6 +23,9 @@ const CLIENT_ID = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID ?? "";
  * "Continue with Google" — official Google Identity Services button.
  * Exchanges the Google ID token with our backend (/auth/google), which
  * verifies it and starts a normal WakeelConnect session (same as OTP).
+ *
+ * Responsive: the button width follows its container (clamped to Google's
+ * 200–400px limits) so it looks right on mobile and desktop.
  */
 export default function GoogleSignIn({ onDone }: { onDone: (user: SessionUser) => void }) {
   const btnRef = useRef<HTMLDivElement>(null);
@@ -32,6 +35,22 @@ export default function GoogleSignIn({ onDone }: { onDone: (user: SessionUser) =
   useEffect(() => {
     if (!CLIENT_ID || !btnRef.current) return;
     let cancelled = false;
+
+    const renderAtContainerWidth = () => {
+      if (cancelled || !window.google?.accounts?.id || !btnRef.current) return;
+      // Clear any previous render so a resize doesn't stack buttons.
+      btnRef.current.innerHTML = "";
+      const w = Math.max(200, Math.min(400, Math.floor(btnRef.current.clientWidth || 320)));
+      window.google.accounts.id.renderButton(btnRef.current, {
+        type: "standard",
+        theme: "outline",
+        size: "large",
+        text: "continue_with",
+        shape: "pill",
+        logo_alignment: "left",
+        width: String(w),
+      });
+    };
 
     const init = () => {
       if (cancelled || !window.google?.accounts?.id || !btnRef.current) return;
@@ -52,16 +71,23 @@ export default function GoogleSignIn({ onDone }: { onDone: (user: SessionUser) =
           }
         },
       });
-      window.google.accounts.id.renderButton(btnRef.current, {
-        type: "standard",
-        theme: "outline",
-        size: "large",
-        text: "continue_with",
-        shape: "rectangular",
-        logo_alignment: "left",
-        width: "320",
-      });
+      renderAtContainerWidth();
     };
+
+    let ro: ResizeObserver | null = null;
+    const onResize = () => {
+      // Debounce: re-render the button at the new width.
+      if (ro) return;
+      ro = new ResizeObserver(() => {
+        if (ro) {
+          ro.disconnect();
+          ro = null;
+        }
+        renderAtContainerWidth();
+      });
+      if (btnRef.current) ro.observe(btnRef.current);
+    };
+    window.addEventListener("resize", onResize);
 
     if (window.google?.accounts?.id) {
       init();
@@ -72,12 +98,11 @@ export default function GoogleSignIn({ onDone }: { onDone: (user: SessionUser) =
       s.defer = true;
       s.onload = init;
       document.head.appendChild(s);
-      return () => {
-        cancelled = true;
-      };
     }
     return () => {
       cancelled = true;
+      window.removeEventListener("resize", onResize);
+      if (ro) ro.disconnect();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -85,8 +110,8 @@ export default function GoogleSignIn({ onDone }: { onDone: (user: SessionUser) =
   if (!CLIENT_ID) return null;
 
   return (
-    <div>
-      <div ref={btnRef} className="flex justify-center [&>div]:w-full [&_iframe]:mx-auto" aria-busy={busy} />
+    <div className="w-full">
+      <div ref={btnRef} className="flex w-full justify-center [&>div]:!w-full [&_iframe]:!mx-auto [&_iframe]:!max-w-full" aria-busy={busy} />
       {error && (
         <p className="mt-2 text-center text-sm font-bold text-clay-700">
           <T en="Google sign-in failed — please try again." ur="گوگل سائن اِن ناکام — دوبارہ کوشش کریں۔" />
